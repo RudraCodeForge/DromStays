@@ -1,0 +1,66 @@
+.ReviewCard_Con {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 1rem;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
+
+/* Cards ko fixed width de do taaki row me line by line dikhe */
+.ReviewCard_Con > div {
+  min-width: 450px; /* adjust as per your card size */
+}
+
+/* Optional: Clean horizontal scrollbar */
+.ReviewCard_Con::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ReviewCard_Con::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+
+.ReviewCard_Con::-webkit-scrollbar-thumb {
+  background: #b3b3b3;
+  border-radius: 8px;
+}
+
+.ReviewCard_Con::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.ReviewCard {
+  background: #fffdfd;
+  margin: 0 15px 0 5px;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+.ReviewCard:hover {
+  transform: translateY(-5px);
+}
+.icon {
+  font-size: 1.5rem;
+  border-radius: 50%;
+  width: fit-content;
+  background-color: var(--primary-transparant-color);
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+.rating {
+  display: flex;
+  gap: 3px;
+  margin-top: 5px;
+  font-size: 18px;
+}
+@media (max-width: 768px) {
+  .ReviewCard_Con > div {
+    min-width: 350px; /* adjust for smaller screens */
+  }
+}

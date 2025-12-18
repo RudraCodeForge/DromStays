@@ -1,0 +1,98 @@
+.LoginContainer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.LoginContent {
+  text-align: center;
+}
+.LoginContent h1 {
+  font-family: "Rubik Glitch", system-ui;
+  color: var(--primary-color);
+  font-weight: 400;
+  font-style: normal;
+}
+.LoginForm label {
+  font-weight: 600;
+  display: block;
+}
+.LoginForm input {
+  background-color: var(--primary-transparant-color);
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: none;
+  width: 100%;
+  display: block;
+  margin: 0 0 20px 0;
+}
+.LoginForm input:focus {
+  outline: 2px solid var(--primary-color);
+}
+.Forgot {
+  list-style: none;
+  width: 100%;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.Forgot a {
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+.Forgot a:hover {
+  text-decoration: underline;
+}
+.Login_Btn {
+  width: 100%;
+  background-color: var(--primary-color);
+  font-weight: 700;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+.Login_Btn:hover {
+  background-color: #fff;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  cursor: pointer;
+}
+.GoogleLogin {
+  width: 100%;
+  background-color: var(--primary-transparant-color);
+  color: var(--primary-color);
+  font-weight: 700;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 10px;
+}
+.GoogleLogin:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+}
+.SignupRedirect {
+  margin-top: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.SignupRedirect a {
+  text-decoration: none;
+}
+.SignupRedirect span {
+  color: var(--primary-color);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.SignupRedirect span:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}

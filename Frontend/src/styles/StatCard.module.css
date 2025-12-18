@@ -1,0 +1,74 @@
+.Card {
+  background: #ffffff;
+  border-radius: 14px;
+  margin: 10px;
+  width: 300px;
+  padding: 18px 20px;
+  display: inline-block;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: 0.3s ease;
+}
+
+.Card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+/* Top row */
+.TopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Icon square */
+.IconBox {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #eef4ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2563eb;
+  font-size: 18px;
+}
+
+/* Badge */
+.Badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+/* Badge types */
+.success {
+  background: #e8f7ee;
+  color: #16a34a;
+}
+
+.warning {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+.info {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+/* Text */
+.Title {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.Value {
+  margin-top: 4px;
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+}

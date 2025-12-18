@@ -1,0 +1,194 @@
+/* Navbar Container */
+.Navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 28px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Logo styling */
+.Logo {
+  height: 45px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Desktop Navigation */
+.NavLinks {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  list-style: none;
+}
+
+.NavLinks li a {
+  text-decoration: none;
+  font-family: "Roboto Slab", serif;
+  font-size: 17px;
+  margin-top: 10px;
+  font-weight: 700;
+  color: #2b2b2b;
+  transition: 0.3s;
+}
+
+.NavLinks li a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+.Login a {
+  color: grey !important;
+  margin-top: 8px;
+}
+.Login a:hover {
+  text-decoration: underline;
+  color: var(--primary-color) !important;
+}
+.Signup a {
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color);
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 10px;
+}
+.Signup a:hover {
+  background-color: var(--primary-color);
+  color: #fff !important;
+  text-decoration: none;
+}
+.Profile {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.active {
+  color: var(--primary-color) !important;
+  font-family: "Foldit", sans-serif;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 4px;
+}
+
+/* Hamburger Icon (Mobile Only) */
+.Hamburger {
+  display: none;
+  cursor: pointer;
+}
+
+/* Mobile Menu Sidebar */
+.MobileMenu {
+  height: 100%;
+  width: 260px;
+  background: #ffffff;
+  position: fixed;
+  top: 0;
+  right: -260px;
+  padding: 22px;
+  transition: 0.35s ease-in-out;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.ShowMenu {
+  right: 0;
+}
+
+/* Mobile Menu Header */
+.MobileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.MobileLogo {
+  height: 42px;
+}
+
+.CloseIcon {
+  cursor: pointer;
+}
+
+/* Mobile Navigation Links */
+.MobileNavLinks {
+  list-style: none;
+  margin-top: 40px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.MobileNavLinks li {
+  background-color: var(--primary-color);
+  text-align: center;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+  transition: 0.35s ease-in-out;
+}
+.MobileNavLinks li:hover {
+  background-color: #fff;
+  border: 2px solid var(--primary-color);
+}
+.MobileNavLinks li:hover a {
+  color: var(--primary-color) !important;
+}
+.MobileNavLinks li a {
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.MobileNavLinks li a:hover {
+  color: var(--primary-color);
+  font-family: "Foldit", sans-serif;
+}
+.MobileLogoText {
+  color: var(--primary-color);
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .NavLinks {
+    display: none;
+  }
+
+  .Hamburger {
+    display: block;
+  }
+}
+
+.OwnerProfile {
+  border-left: 2px solid #d1d5db;
+  padding-left: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.OwnerProfile p {
+  color: black;
+  margin: 0;
+  text-align: right;
+  line-height: 1.2;
+}
+
+.Role {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.Profile {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.Pactive div {
+  color: var(--primary-color) !important;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 4px;
+}

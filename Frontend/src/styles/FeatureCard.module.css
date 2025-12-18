@@ -1,0 +1,33 @@
+.FeatureCard {
+  background: #fffdfd;
+  margin: 15px;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+.FeatureCard:hover {
+  transform: translateY(-5px);
+}
+.icon {
+  font-size: 1.5rem;
+  border-radius: 50%;
+  padding: 5px 7.5px;
+  width: fit-content;
+  background-color: var(--primary-transparant-color);
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #111827; /* Gray-900 */
+}
+
+p {
+  font-size: 1rem;
+  color: #6b7280; /* Gray-500 */
+  line-height: 1.5;
+}

@@ -1,0 +1,210 @@
+.dashboardContainer {
+  padding: 2rem;
+}
+
+/* ================= HEADER ================= */
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboardTitle {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.dashboardDescription {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 40px;
+}
+
+.Date {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #6b7280;
+}
+
+/* ================= CARDS ================= */
+
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* ================= PLACEHOLDER SECTION ================= */
+
+.placeholderSection {
+  display: flex;
+  margin-top: 2rem;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Boxes */
+
+.RightBox,
+.LeftBox {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 8px;
+  height: auto;
+}
+
+.RightBox {
+  width: 60%;
+}
+
+.LeftBox {
+  width: 38%;
+}
+
+.LeftBox h2 {
+  color: black;
+  font-weight: bold;
+}
+
+.LeftBox p {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* ================= ACTION LIST ================= */
+
+.ActionList {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.ActionList li {
+  margin-bottom: 15px;
+  background-color: var(--primary-transparant-color);
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.ActionList li a {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+}
+
+.ActionLink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Hover */
+.ActionList li:hover {
+  background-color: var(--primary-color);
+}
+
+.ActionList li:hover .ActionLink {
+  color: white;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 1024px) {
+  .dashboardTitle {
+    font-size: 2.4rem;
+  }
+
+  .dashboardDescription {
+    font-size: 0.95rem;
+    margin-bottom: 28px;
+  }
+
+  .cardsContainer {
+    gap: 16px;
+  }
+
+  .placeholderSection {
+    flex-direction: column;
+  }
+
+  .RightBox,
+  .LeftBox {
+    width: 100%;
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 16px;
+  }
+
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboardTitle {
+    font-size: 2rem;
+  }
+
+  .dashboardDescription {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .Date {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .cardsContainer {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .ActionList li a {
+    padding: 16px;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+  .dashboardTitle {
+    font-size: 1.7rem;
+  }
+
+  .dashboardDescription {
+    font-size: 0.85rem;
+  }
+
+  .Date {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ================= TOUCH DEVICES ================= */
+
+@media (hover: none) {
+  .ActionList li:hover {
+    background-color: var(--primary-transparant-color);
+  }
+}

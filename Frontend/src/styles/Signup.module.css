@@ -1,0 +1,198 @@
+.SignupContainer {
+  display: flex;
+  align-items: center;
+  padding: 3rem;
+  justify-content: center;
+  height: 120vh;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+  border-radius: 10px;
+}
+.leftSection {
+  position: relative;
+  border-radius: 10px 0 0px 10px;
+  background-color: var(--primary-color);
+  padding: 1rem;
+  width: 20%;
+  height: 100%;
+  color: white;
+}
+.leftSection h1 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+}
+.BottomText {
+  position: absolute;
+  bottom: 0;
+}
+.BottomText p {
+  color: white;
+}
+.rightSection {
+  border-radius: 0 10px 10px 0;
+  height: 100%;
+  background-color: white;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.RoleBox p {
+  color: black;
+  font-weight: bold;
+}
+.RoleBtn {
+  border: 2px solid var(--primary-transparant-color);
+  background-color: white;
+  font-weight: bold;
+  color: gray;
+  padding: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: all 0.3s ease;
+}
+.RoleBtn:hover {
+  border: 2px solid var(--primary-color);
+  color: white;
+  background-color: var(--primary-transparant-color);
+}
+.Active {
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: var(--primary-transparant-color);
+}
+
+/* Form container */
+.SignupForm {
+  margin-top: 1rem;
+  width: 100%;
+  animation: fadeIn 0.5s ease-in-out;
+}
+.SignupForm label {
+  display: block;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+.SignupForm input {
+  border: 2px solid var(--primary-transparant-color);
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  color: var(--primary-color);
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.SignupForm input:focus {
+  outline: 2px solid var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-color);
+}
+
+.SignupForm button {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.LoginRedirect {
+  margin-top: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+.LoginRedirect a {
+  text-decoration: none;
+}
+
+.LoginRedirect span {
+  color: var(--primary-color);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.LoginRedirect span:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+/* -------------------------------------- */
+/*            RESPONSIVE DESIGN           */
+/* -------------------------------------- */
+
+@media (max-width: 1024px) {
+  .SignupContainer {
+    padding: 2rem;
+    height: auto;
+  }
+
+  .leftSection {
+    width: 30%;
+  }
+}
+
+@media (max-width: 768px) {
+  .SignupContainer {
+    flex-direction: column;
+    height: auto;
+    padding: 2rem 1rem;
+  }
+
+  .leftSection {
+    width: 100%;
+    height: auto;
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+  }
+
+  .leftSection h1 {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+  }
+
+  .BottomText {
+    position: relative;
+    margin-top: 1rem;
+  }
+
+  .rightSection {
+    width: 100%;
+    height: auto;
+    border-radius: 0 0 10px 10px;
+    padding: 1.5rem;
+  }
+
+  .RoleBtn {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .SignupContainer {
+    padding: 1rem;
+  }
+
+  .leftSection h1 {
+    font-size: 1.1rem;
+  }
+
+  .SignupForm label {
+    font-size: 0.9rem;
+  }
+
+  .SignupForm input {
+    padding: 0.45rem;
+    font-size: 0.9rem;
+  }
+
+  .SignupForm button {
+    padding: 0.7rem;
+    font-size: 1rem;
+  }
+}

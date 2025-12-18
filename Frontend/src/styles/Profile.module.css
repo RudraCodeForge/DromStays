@@ -1,0 +1,41 @@
+.ProfileHeader {
+  margin: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 1rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.ProfileImg {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 2px solid #ccc;
+}
+.ProfileInfo p {
+  font-size: 16px;
+  margin: 0;
+  color: #555;
+}
+.NotVerified {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  font-weight: bold;
+}
+.VerifyBtn {
+  font-weight: bold;
+  background-color: transparent;
+  font-size: 15px;
+  color: blue;
+  border: none;
+  cursor: pointer;
+}
+.VerifyBtn:hover {
+  text-decoration: underline;
+}

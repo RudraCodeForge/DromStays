@@ -1,0 +1,147 @@
+.mainFooter {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2.5rem 1rem;
+  margin-top: 3rem;
+}
+
+.footerContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footerLogo {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.footerTagline {
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.4rem;
+}
+
+/* Social Icons */
+.icon {
+  position: relative;
+  color: white;
+  font-size: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.3s;
+}
+
+/* Hover effect */
+.icon:hover {
+  opacity: 0.7;
+}
+
+/* Tooltip style */
+.icon::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 4px 10px;
+  border-radius: 5px;
+  color: white;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+/* Tooltip visible on hover */
+.icon:hover::after {
+  opacity: 1;
+  bottom: -38px;
+}
+
+.footerHeading {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.footerList {
+  list-style: none;
+  padding: 0;
+}
+
+.footerList li {
+  margin: 0.4rem 0;
+}
+
+.footerList li a {
+  text-decoration: none;
+  color: white;
+  position: relative;
+  transition: 0.3s;
+}
+
+.footerList li a::before,
+.footerList li a::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  width: 0%;
+  background: white;
+  transition: 0.3s ease;
+  left: 0;
+}
+
+.footerList li a::before {
+  bottom: -2px;
+}
+
+.footerList li a::after {
+  bottom: -5px;
+}
+
+.footerList li a:hover::before,
+.footerList li a:hover::after {
+  width: 100%;
+}
+
+.footerLine {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  margin: 2rem auto;
+  width: 90%;
+}
+
+.footerCopy {
+  text-align: center;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footerContainer {
+    grid-template-columns: repeat(2, 1fr);
+    text-align: center;
+  }
+  .footerSocial {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footerContainer {
+    grid-template-columns: 1fr;
+  }
+}

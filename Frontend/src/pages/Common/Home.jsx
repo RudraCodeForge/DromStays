@@ -1,0 +1,49 @@
+import Navbar from "../../components/Navbar/Navbar.jsx";
+import Style from "../../styles/Home.module.css";
+import Footer from "../../components/Footer.jsx";
+import ReviewsSection from "../../components/ReviewSection.jsx";
+import HeroSection from "../../components/HeroSection.jsx";
+import { useEffect, useState } from "react";
+import { getReviews } from "../../services/reviews";
+import HowItWorks from "../../components/HowItWorks.jsx";
+import { steps } from "../../data/steps.js";
+import { features } from "../../data/features.js";
+import FeatureSection from "../../components/FeatureSection.jsx";
+import FilterContainer from "../../components/FilterContainer.jsx";
+const Home = () => {
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    getReviews()
+      .then((data) => {
+        setReviews(data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  return (
+    <div>
+      <Navbar />
+      <div className={Style.Home_Con}>
+        <HeroSection />
+        <FilterContainer />
+      </div>
+      <div className={Style.WhyUs_Con}>
+        <h2>Why Choose Us?</h2>
+        <p>
+          We provide the best tools to make your rental experience smooth and
+          secure.
+        </p>
+      </div>
+      <FeatureSection features={features} />
+      <HowItWorks steps={steps} />
+      <div className={Style.WhyUs_Con}>
+        <h2>What Our Users Say</h2>
+        <p>Real stories from our happy community of renters and landlords.</p>
+      </div>
+      <ReviewsSection reviews={reviews} />
+      <Footer />
+    </div>
+  );
+};
+export default Home;

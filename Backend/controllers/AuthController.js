@@ -3,6 +3,26 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const { check, validationResult } = require("express-validator");
 const { generateAccessToken, generateRefreshToken } = require("../utils/Token");
+const sendVerificationEmail = require("../utils/sendEmail");
+
+/* ======================================================
+   🔧 HELPER : format user (single source of truth)
+====================================================== */
+const formatUser = (user) => ({
+  id: user._id,
+  Name: user.Name,
+  Email: user.Email,
+  Phone: user.Phone,
+  Role: user.Role,
+  isVerified: user.isVerified,
+  ProfilePicture: user.ProfilePicture,
+  Address: user.Address,
+  isProfileComplete: user.isProfileComplete,
+});
+
+/* ======================================================
+   🟢 POST SIGNUP
+====================================================== */
 exports.POSTSIGNUP = [
   // -------- VALIDATION -------- //
   check("Role")
@@ -88,46 +108,42 @@ exports.POSTSIGNUP = [
   },
 ];
 
+/* ======================================================
+   🟢 POST LOGIN
+====================================================== */
 exports.POSTLOGIN = async (req, res) => {
   try {
     const { Email, Password } = req.body;
-    // Find user by email
-    const user = await User.findOne({ Email });
-    if (!user) {
+
+    const user = await User.findOne({ Email }).select("+Password");
+
+    if (!user || !user.Password) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    // Compare passwords
+
     const isMatch = await bcrypt.compare(Password, user.Password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    // Successful login
 
+    // 🔥🔥 FINAL FIX — POORA USER OBJECT PASS KARO
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
     user.RefreshToken = refreshToken;
     await user.save();
 
-    // 5️⃣ Send refresh token in httpOnly cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: false, // production me true
+      secure: false,
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json({
+    res.json({
       message: "Login successful",
       accessToken,
-      user: {
-        id: user._id,
-        Name: user.Name,
-        Email: user.Email,
-        Role: user.Role,
-        Phone: user.Phone,
-        isVerified: user.isVerified,
-      },
+      user: formatUser(user),
     });
   } catch (error) {
     console.error("Login Error:", error);
@@ -135,9 +151,12 @@ exports.POSTLOGIN = async (req, res) => {
   }
 };
 
+/* ======================================================
+   🟢 SEND VERIFICATION EMAIL
+====================================================== */
 exports.SEND_VERIFICATION_EMAIL = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -147,35 +166,30 @@ exports.SEND_VERIFICATION_EMAIL = async (req, res) => {
       return res.json({ message: "Account already verified" });
     }
 
-    // 🔑 RAW TOKEN
     const rawToken = crypto.randomBytes(32).toString("hex");
 
-    // 🔐 HASHED TOKEN (DB)
     user.VerificationToken = crypto
       .createHash("sha256")
       .update(rawToken)
       .digest("hex");
 
-    user.VerificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000; // 24h
+    user.VerificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
 
     await user.save();
 
     const verifyLink = `http://localhost:5173/verify?token=${rawToken}`;
+    await sendVerificationEmail(user.Email, verifyLink);
 
-    console.log("VERIFY LINK:", verifyLink);
-
-    // TODO: nodemailer yahan lagana hai
-    // await sendEmail(user.Email, verifyLink);
-
-    return res.json({
-      message: "Verification email sent successfully",
-    });
+    res.json({ message: "Verification email sent successfully" });
   } catch (error) {
     console.error("Send verification error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+/* ======================================================
+   🟢 VERIFY ACCOUNT
+====================================================== */
 exports.POSTVERIFYACCOUNT = async (req, res) => {
   try {
     const { token } = req.query;
@@ -201,9 +215,34 @@ exports.POSTVERIFYACCOUNT = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "Account verified successfully" });
+    res.json({
+      success: true,
+      message: "Account verified successfully",
+      user: formatUser(user),
+    });
   } catch (error) {
     console.error("Verify error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ======================================================
+   🟢 GET CURRENT USER (/auth/me)
+====================================================== */
+exports.GET_ME = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      user: formatUser(user),
+    });
+  } catch (error) {
+    console.error("GET_ME Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

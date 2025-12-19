@@ -3,7 +3,7 @@
   align-items: center;
   padding: 3rem;
   justify-content: center;
-  height: 120vh;
+  height: 130vh;
   background-color: #f5f5f5;
   font-family: Arial, sans-serif;
   border-radius: 10px;
@@ -102,7 +102,7 @@
 }
 
 .LoginRedirect {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   text-align: center;
   width: 100%;
 }

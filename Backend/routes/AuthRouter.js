@@ -16,5 +16,6 @@ AuthRouter.post(
   "/verify",
   AuthController.POSTVERIFYACCOUNT // ❌ NO authMiddleware
 );
+AuthRouter.get("/me", authMiddleware, AuthController.GET_ME);
 
 module.exports = AuthRouter;

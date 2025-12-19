@@ -28,14 +28,32 @@ const UserSchema = new mongoose.Schema(
     Password: {
       type: String,
       required: true,
+      select: false, // 🔐 VERY IMPORTANT
     },
 
     ProfilePicture: {
       type: String,
-      default: "https://example.com/default-profile.png",
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
     },
 
-    // 💥 MOST IMPORTANT FOR SECURE SYSTEM
+    Address: {
+      houseNo: String,
+      street: String,
+      locality: String,
+      city: String,
+      state: String,
+      pincode: {
+        type: String,
+        match: /^[0-9]{6}$/,
+      },
+    },
+
+    isProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
+
     RefreshToken: {
       type: String,
       default: null,
@@ -46,21 +64,21 @@ const UserSchema = new mongoose.Schema(
       default: false,
     },
 
-    // Future payments ke liye useful
     WalletBalance: {
       type: Number,
       default: 0,
     },
 
-    // User verification (optional)
     isVerified: {
       type: Boolean,
       default: false,
     },
+
     VerificationToken: {
       type: String,
       default: null,
     },
+
     VerificationTokenExpiry: {
       type: Date,
       default: null,

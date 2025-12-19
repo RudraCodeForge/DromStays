@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { logout } from "../../redux/authSlice.js";
 import { SendVerificationEmail } from "../../services/auth.js";
 import Style from "../../styles/Profile.module.css";
+import { NavLink } from "react-router-dom";
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -27,7 +28,7 @@ const Profile = () => {
       <div className={Style.ProfileContainer}>
         <div className={Style.ProfileHeader}>
           <img
-            src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+            src={user?.ProfilePicture}
             alt="Profile"
             className={Style.ProfileImg}
           />
@@ -47,14 +48,50 @@ const Profile = () => {
             )}
           </div>
         </div>
-        <button
-          className={Style.LogoutBtn}
-          onClick={() => {
-            dispatch(logout());
-          }}
-        >
-          Logout
-        </button>
+        <div className={Style.DetailsSection}>
+          <h3>Profile Details</h3>
+          <div className={Style.DetailItem}>
+            <strong>Email:</strong> {user?.Email}
+          </div>
+          <div className={Style.DetailItem}>
+            <strong>Phone:</strong> {user?.Phone || "N/A"}
+          </div>
+          <div className={Style.DetailItem}>
+            <strong>Address:</strong>{" "}
+            {user?.Address && Object.values(user.Address).some((v) => v)
+              ? [
+                  user.Address.houseNo,
+                  user.Address.street,
+                  user.Address.locality,
+                  user.Address.city,
+                  user.Address.state,
+                  user.Address.pincode && `- ${user.Address.pincode}`,
+                ]
+                  .filter(Boolean)
+                  .join(", ")
+              : "N/A"}
+          </div>
+        </div>
+        <div className={Style.LinkSection}>
+          <NavLink to="/EditProfile" className={Style.EditLink}>
+            Edit Profile
+          </NavLink>
+          <NavLink to="/ChangePassword" className={Style.EditLink}>
+            Change Password
+          </NavLink>
+          <NavLink to="/Subscriptions" className={Style.EditLink}>
+            Subscriptions
+          </NavLink>
+
+          <button
+            className={Style.LogoutBtn}
+            onClick={() => {
+              dispatch(logout());
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </div>
       <Footer />
     </>

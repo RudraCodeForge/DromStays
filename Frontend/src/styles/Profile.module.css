@@ -1,41 +1,146 @@
+/* ===== Profile Container ===== */
+.ProfileContainer {
+  max-width: 1100px;
+  margin: auto;
+  padding: 1rem;
+}
+
+/* ===== Header ===== */
 .ProfileHeader {
-  margin: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-size: 24px;
   display: flex;
   align-items: center;
   gap: 20px;
-  padding: 1rem;
-  font-weight: bold;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   margin-bottom: 20px;
 }
+
 .ProfileImg {
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   object-fit: cover;
-  object-position: center;
-  border: 2px solid #ccc;
+  border: 3px solid var(--primary-color);
 }
-.ProfileInfo p {
-  font-size: 16px;
+
+.ProfileInfo h2 {
   margin: 0;
-  color: #555;
+  font-size: 28px;
+  font-weight: 700;
 }
+
+.ProfileInfo p {
+  margin: 6px 0;
+  font-size: 15px;
+  color: #666;
+}
+
+.Verified {
+  color: green;
+  font-weight: 700;
+}
+
 .NotVerified {
   display: flex;
-  gap: 20px;
+  gap: 15px;
   align-items: center;
-  font-weight: bold;
 }
+
 .VerifyBtn {
-  font-weight: bold;
-  background-color: transparent;
-  font-size: 15px;
-  color: blue;
+  background: transparent;
+  color: var(--primary-color);
   border: none;
+  font-weight: 600;
   cursor: pointer;
 }
+
 .VerifyBtn:hover {
   text-decoration: underline;
+}
+
+/* ===== Details ===== */
+.DetailsSection {
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.DetailsSection h3 {
+  font-size: 26px;
+  margin-bottom: 15px;
+  color: var(--primary-color);
+}
+
+.DetailItem {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--primary-transparant-color);
+  margin-bottom: 12px;
+  font-size: 15px;
+}
+
+.DetailItem strong {
+  color: #444;
+}
+
+/* ===== Links Section ===== */
+.LinkSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.EditLink {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.EditLink:hover {
+  text-decoration: underline;
+}
+
+.LogoutBtn {
+  padding: 10px 20px;
+  background: #e63946;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.LogoutBtn:hover {
+  background: #c62828;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .ProfileHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .DetailItem {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .LinkSection {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .LogoutBtn {
+    width: 100%;
+  }
 }

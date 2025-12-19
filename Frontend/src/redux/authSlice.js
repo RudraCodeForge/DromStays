@@ -1,50 +1,46 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  user: localStorage.getItem("user")
-    ? JSON.parse(localStorage.getItem("user"))
-    : null,
-
-  token: localStorage.getItem("accessToken") || null,
-  role: localStorage.getItem("role") || null,
-
-  isAuthenticated: !!localStorage.getItem("accessToken"),
+  user: null,
+  role: null,
+  isAuthenticated: false,
+  loading: true,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // ✅ Login success
     loginSuccess: (state, action) => {
-      const { user, token, role } = action.payload;
-
-      state.user = user;
-      state.token = token;
-      state.role = role;
+      state.user = action.payload.user;
+      state.role = action.payload.user.Role;
       state.isAuthenticated = true;
-
-      // 🔐 persistence
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("role", role);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      console.log("Role stored in localStorage:", localStorage.getItem("role"));
+      state.loading = false;
+      localStorage.setItem("accessToken", action.payload.token);
     },
 
-    // ✅ Logout
+    setUserFromBackend: (state, action) => {
+      state.user = action.payload;
+      state.role = action.payload.Role;
+      state.isAuthenticated = true;
+      state.loading = false;
+    },
+
+    authCheckFinished: (state) => {
+      state.loading = false; // 🔥 critical
+    },
+
     logout: (state) => {
       state.user = null;
-      state.token = null;
       state.role = null;
       state.isAuthenticated = false;
-
+      state.loading = false;
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("role");
-      localStorage.removeItem("user");
     },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, setUserFromBackend, authCheckFinished, logout } =
+  authSlice.actions;
+
 export default authSlice.reducer;

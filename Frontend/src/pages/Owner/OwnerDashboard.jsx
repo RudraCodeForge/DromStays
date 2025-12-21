@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const OwnerDashboard = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const statCardsData = [
     {
       icon: faHouseChimney,
@@ -49,15 +50,13 @@ const OwnerDashboard = () => {
     {
       icon: faWallet,
       title: "Total Earnings",
-      value: "₹4,250",
+      value: `₹${user?.WalletBalance || 0}`,
       backgroundColor: "#37ec0a6a",
       color: "#1a5c0aff",
       badge: "+12% this month",
       badgeType: "success",
     },
   ];
-
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   const todayDate = new Date().toLocaleDateString("en-US", {

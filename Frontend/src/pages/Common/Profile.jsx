@@ -8,6 +8,7 @@ import Style from "../../styles/Profile.module.css";
 import { NavLink } from "react-router-dom";
 import { useState, useRef } from "react";
 import { uploadImageToCloudinary } from "../../services/Cloudinary.js";
+import { updateProfilePictureApi } from "../../services/user.js";
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -40,7 +41,8 @@ const Profile = () => {
       console.log("Cloudinary URL:", url);
 
       setPreview(url); // 🔥 IMPORTANT
-
+      const res = await updateProfilePictureApi({ ProfilePicture: url });
+      console.log(res);
       alert("Image uploaded successfully!");
     } catch (err) {
       console.error(err.message);

@@ -1,8 +1,9 @@
 const uploadImageToCloudinary = async (file) => {
-  const formData = new FormData();
+  if (!file) throw new Error("No file selected");
 
+  const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "profile_upload"); // MUST EXIST
+  formData.append("upload_preset", "profile_upload");
   formData.append("folder", "profile_pictures");
 
   const res = await fetch(
@@ -14,12 +15,13 @@ const uploadImageToCloudinary = async (file) => {
   );
 
   const data = await res.json();
-  console.log("Cloudinary Response:", data);
+  console.log("Cloudinary response:", data);
 
-  if (!data.secure_url) {
+  if (!res.ok) {
     throw new Error(data.error?.message || "Upload failed");
   }
 
-  return data.secure_url; // ✅ FINAL URL
+  return data.secure_url;
 };
+
 export { uploadImageToCloudinary };

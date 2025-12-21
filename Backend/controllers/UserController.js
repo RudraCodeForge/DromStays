@@ -65,3 +65,26 @@ exports.UPDATE_PROFILE = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.UPDATE_PROFILE_PICTURE = async (req, res) => {
+  try {
+    const userId = req.user.id; // from JWT middleware
+    const { ProfilePicture } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!ProfilePicture) {
+      return res.status(400).json({ message: "ProfilePicture is required" });
+    }
+    user.ProfilePicture = ProfilePicture;
+    await user.save();
+    return res.status(200).json({
+      message: "Profile picture updated successfully",
+      user: formatUser(user),
+    });
+  } catch (error) {
+    console.error("Update Profile Picture Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

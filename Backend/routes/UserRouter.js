@@ -9,4 +9,9 @@ UserRouter.put(
   UserController.UPDATE_PROFILE
 );
 
+UserRouter.put(
+  "/profilePicture",
+  authMiddleware, // ✅ logged-in user
+  UserController.UPDATE_PROFILE_PICTURE
+);
 module.exports = UserRouter;

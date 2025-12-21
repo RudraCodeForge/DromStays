@@ -11,3 +11,15 @@ export const updateProfileApi = async (profileData) => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const updateProfilePictureApi = async (pictureData) => {
+  try {
+    const response = await api.put("/user/profilePicture", pictureData);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

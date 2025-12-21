@@ -6,6 +6,8 @@ import { logout } from "../../redux/authSlice.js";
 import { SendVerificationEmail } from "../../services/auth.js";
 import Style from "../../styles/Profile.module.css";
 import { NavLink } from "react-router-dom";
+import { useState, useRef } from "react";
+import { uploadImageToCloudinary } from "../../services/Cloudinary.js";
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -21,17 +23,52 @@ const Profile = () => {
       alert(err.message);
     }
   };
+
+  const [preview, setPreview] = useState(user?.ProfilePicture);
+  const fileInputRef = useRef(null);
+
+  const UpdateProfile = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadImageToCloudinary(file);
+      console.log("Cloudinary URL:", url);
+
+      setPreview(url); // 🔥 IMPORTANT
+
+      alert("Image uploaded successfully!");
+    } catch (err) {
+      console.error(err.message);
+      alert(err.message);
+    }
+  };
+
   return (
     <>
       <Navbar />
 
       <div className={Style.ProfileContainer}>
         <div className={Style.ProfileHeader}>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            hidden
+          />
+
           <img
-            src={user?.ProfilePicture}
+            onClick={UpdateProfile}
+            src={preview}
             alt="Profile"
             className={Style.ProfileImg}
           />
+
           <div className={Style.ProfileInfo}>
             <h2>{user?.Name}</h2>
             <p>{user?.Role}</p>

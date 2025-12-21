@@ -6,6 +6,7 @@ import Signup from "./pages/Auth/Signup.jsx";
 import Profile from "./pages/Common/Profile.jsx";
 import Verify from "./pages/Common/Verify.jsx";
 import OwnerDashboard from "./pages/Owner/OwnerDashboard.jsx";
+import EditProfile from "./pages/Common/EditProfile.jsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCurrentUser } from "./redux/authThunks";
@@ -49,6 +50,15 @@ function App() {
         element={
           <ProtectedRoute>
             <OwnerDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/EditProfile"
+        element={
+          <ProtectedRoute>
+            <EditProfile />
           </ProtectedRoute>
         }
       />

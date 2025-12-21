@@ -38,14 +38,15 @@ const UserSchema = new mongoose.Schema(
     },
 
     Address: {
-      houseNo: String,
-      street: String,
-      locality: String,
-      city: String,
-      state: String,
+      houseNo: { type: String, default: "" },
+      street: { type: String, default: "" },
+      locality: { type: String, default: "" },
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
       pincode: {
         type: String,
         match: /^[0-9]{6}$/,
+        default: "",
       },
     },
 

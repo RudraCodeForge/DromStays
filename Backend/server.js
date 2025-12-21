@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const AuthRouter = require("./routes/AuthRouter");
+const UserRouter = require("./routes/UserRouter");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(
 
 app.use(express.json());
 app.use("/auth", AuthRouter);
+app.use("/user", UserRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

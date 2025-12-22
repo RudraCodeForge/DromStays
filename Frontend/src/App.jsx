@@ -7,6 +7,9 @@ import Profile from "./pages/Common/Profile.jsx";
 import Verify from "./pages/Common/Verify.jsx";
 import OwnerDashboard from "./pages/Owner/OwnerDashboard.jsx";
 import EditProfile from "./pages/Common/EditProfile.jsx";
+import ChangePassword from "./pages/Auth/ChangePassword.jsx";
+import ResetPassword from "./pages/Auth/ResetPassword.jsx";
+import NewPassword from "./pages/Common/NewPassword.jsx";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchCurrentUser } from "./redux/authThunks";
@@ -34,6 +37,8 @@ function App() {
       <Route path="/Login" element={<Login />} />
       <Route path="/Signup" element={<Signup />} />
       <Route path="/verify" element={<Verify />} />
+      <Route path="/Forgot_password" element={<ResetPassword />} />
+      <Route path="/reset-password" element={<NewPassword />} />
 
       {/* 🔐 Protected Routes */}
       <Route
@@ -62,6 +67,16 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/ChangePassword"
+        element={
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* 404 Page Not Found */}
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>

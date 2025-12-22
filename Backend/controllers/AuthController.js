@@ -3,7 +3,10 @@ const User = require("../models/User");
 const crypto = require("crypto");
 const { check, validationResult } = require("express-validator");
 const { generateAccessToken, generateRefreshToken } = require("../utils/Token");
-const sendVerificationEmail = require("../utils/sendEmail");
+const {
+  sendVerificationEmail,
+  sendResetPasswordEmail,
+} = require("../utils/sendEmail");
 
 /* ======================================================
    🔧 HELPER : format user (single source of truth)
@@ -244,5 +247,165 @@ exports.GET_ME = async (req, res) => {
   } catch (error) {
     console.error("GET_ME Error:", error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ======================================================
+    🟢 UPDATE PASSWORD
+====================================================== */
+
+exports.UPDATE_PASSWORD = async (req, res) => {
+  try {
+    const { Current_Password, New_Password } = req.body;
+
+    if (!Current_Password || !New_Password) {
+      return res.status(400).json({
+        success: false,
+        errors: ["All fields are required"],
+      });
+    }
+
+    // 🔹 Password strength validation
+    const passwordErrors = [];
+
+    if (New_Password.length < 8)
+      passwordErrors.push("Password must be at least 8 characters long");
+    if (!/[A-Z]/.test(New_Password))
+      passwordErrors.push("Password must contain an uppercase letter");
+    if (!/[a-z]/.test(New_Password))
+      passwordErrors.push("Password must contain a lowercase letter");
+    if (!/[0-9]/.test(New_Password))
+      passwordErrors.push("Password must contain a number");
+    if (!/[!@#$%^&*]/.test(New_Password))
+      passwordErrors.push("Password must contain a special character");
+
+    if (passwordErrors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        errors: passwordErrors,
+      });
+    }
+
+    const user = await User.findById(req.user.id).select("+Password");
+    console.log("User fetched for password update:", user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        errors: ["User not found"],
+      });
+    }
+
+    // 🔹 Current password check
+    const isMatch = await bcrypt.compare(Current_Password, user.Password);
+    if (!isMatch) {
+      return res.status(400).json({
+        success: false,
+        errors: ["Current password is incorrect"],
+      });
+    }
+
+    // 🔹 Prevent same password reuse
+    const isSame = await bcrypt.compare(New_Password, user.Password);
+    if (isSame) {
+      return res.status(400).json({
+        success: false,
+        errors: ["New password must be different from current password"],
+      });
+    }
+
+    // 🔹 Hash & save new password
+    user.Password = await bcrypt.hash(New_Password, 10);
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("Update Password Error:", error);
+    return res.status(500).json({
+      success: false,
+      errors: ["Server error. Please try again later"],
+    });
+  }
+};
+
+exports.POSTFORGETPASSWORD = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ Email: email });
+    if (!user) {
+      return res
+        .status(200)
+        .json({ message: "If the email exists, a reset link has been sent." });
+    }
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.ResetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.ResetPasswordExpiry = Date.now() + 60 * 60 * 1000;
+    await user.save();
+    const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
+    await sendResetPasswordEmail(user.Email, resetLink);
+    res
+      .status(200)
+      .json({ message: "If the email exists, a reset link has been sent." });
+  } catch (error) {
+    console.error("Forget Password Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.POSTRESETPASSWORD = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Token and new password are required",
+      });
+    }
+
+    const crypto = require("crypto");
+    const bcrypt = require("bcryptjs");
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const user = await User.findOneAndUpdate(
+      {
+        ResetPasswordToken: hashedToken,
+        ResetPasswordExpiry: { $gt: Date.now() },
+      },
+      {
+        $set: {
+          Password: hashedPassword,
+          ResetPasswordToken: null,
+          ResetPasswordExpiry: null,
+        },
+      },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    console.error("RESET PASSWORD ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };

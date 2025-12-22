@@ -5,6 +5,8 @@ const authMiddleware = require("../middlewares/authMiddleware");
 
 AuthRouter.post("/signup", AuthController.POSTSIGNUP);
 AuthRouter.post("/login", AuthController.POSTLOGIN);
+AuthRouter.post("/forget-password", AuthController.POSTFORGETPASSWORD);
+AuthRouter.post("/reset-password", AuthController.POSTRESETPASSWORD);
 
 AuthRouter.post(
   "/send-verification",
@@ -17,5 +19,11 @@ AuthRouter.post(
   AuthController.POSTVERIFYACCOUNT // ❌ NO authMiddleware
 );
 AuthRouter.get("/me", authMiddleware, AuthController.GET_ME);
+
+AuthRouter.post(
+  "/change-password",
+  authMiddleware, // ✅ logged-in user
+  AuthController.UPDATE_PASSWORD
+);
 
 module.exports = AuthRouter;

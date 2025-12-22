@@ -23,12 +23,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true, // ✅ BEST PRACTICE
+      trim: true,
     },
 
     Password: {
       type: String,
       required: true,
-      select: false, // 🔐 VERY IMPORTANT
+      select: false,
     },
 
     ProfilePicture: {
@@ -81,6 +83,17 @@ const UserSchema = new mongoose.Schema(
     },
 
     VerificationTokenExpiry: {
+      type: Date,
+      default: null,
+    },
+
+    // 🔐 FORGOT / RESET PASSWORD
+    ResetPasswordToken: {
+      type: String,
+      default: null,
+    },
+
+    ResetPasswordExpiry: {
       type: Date,
       default: null,
     },

@@ -368,27 +368,12 @@ exports.POSTRESETPASSWORD = async (req, res) => {
       });
     }
 
-    const crypto = require("crypto");
-    const bcrypt = require("bcryptjs");
-
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    const user = await User.findOneAndUpdate(
-      {
-        ResetPasswordToken: hashedToken,
-        ResetPasswordExpiry: { $gt: Date.now() },
-      },
-      {
-        $set: {
-          Password: hashedPassword,
-          ResetPasswordToken: null,
-          ResetPasswordExpiry: null,
-        },
-      },
-      { new: true }
-    );
+    const user = await User.findOne({
+      ResetPasswordToken: hashedToken,
+      ResetPasswordExpiry: { $gt: Date.now() },
+    }).select("+Password");
 
     if (!user) {
       return res.status(400).json({
@@ -396,6 +381,16 @@ exports.POSTRESETPASSWORD = async (req, res) => {
         message: "Invalid or expired token",
       });
     }
+
+    user.Password = await bcrypt.hash(newPassword, 10);
+    user.ResetPasswordToken = null;
+    user.ResetPasswordExpiry = null;
+
+    // 🔐 FORCE LOGOUT ALL DEVICES
+    user.tokenVersion += 1;
+    user.RefreshToken = null;
+
+    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -407,5 +402,28 @@ exports.POSTRESETPASSWORD = async (req, res) => {
       success: false,
       message: "Server error",
     });
+  }
+};
+
+exports.LOGOUT_ALL_DEVICES = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.tokenVersion += 1;
+    user.RefreshToken = null;
+    await user.save();
+
+    res.clearCookie("refreshToken");
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out from all devices successfully",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -86,7 +86,11 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-
+    // 🔐 JWT TOKEN VERSIONING FOR LOGOUT ALL DEVICES
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
     // 🔐 FORGOT / RESET PASSWORD
     ResetPasswordToken: {
       type: String,

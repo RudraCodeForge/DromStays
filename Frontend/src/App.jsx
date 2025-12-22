@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { fetchCurrentUser } from "./redux/authThunks";
 import { authCheckFinished } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AboutUs from "./pages/Common/About_Us.jsx";
+import PrivacyPolicy from "./pages/Common/PrivacyPolicy.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -39,6 +41,8 @@ function App() {
       <Route path="/verify" element={<Verify />} />
       <Route path="/Forgot_password" element={<ResetPassword />} />
       <Route path="/reset-password" element={<NewPassword />} />
+      <Route path="/about_us" element={<AboutUs />} />
+      <Route path="/privacy_policy" element={<PrivacyPolicy />} />
 
       {/* 🔐 Protected Routes */}
       <Route

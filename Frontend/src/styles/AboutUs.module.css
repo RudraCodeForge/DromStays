@@ -1,0 +1,197 @@
+.wrapper {
+  background: #0f172a;
+  color: #e5e7eb;
+  font-family: "Inter", sans-serif;
+}
+
+/* HERO */
+.hero {
+  padding: 90px 20px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+.hero h1 span {
+  color: #38bdf8;
+}
+
+.hero p {
+  margin-top: 20px;
+  font-size: 1.1rem;
+  color: #cbd5f5;
+}
+
+/* STORY */
+.story {
+  max-width: 900px;
+  margin: auto;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.story h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.story p {
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.bold {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+/* FIX */
+.fix {
+  background: #020617;
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.fix h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.box {
+  background: #020617;
+  border: 1px solid #1e293b;
+  padding: 20px;
+  border-radius: 14px;
+  font-size: 1rem;
+}
+
+/* PEOPLE */
+.people {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.people h2 {
+  font-size: 2rem;
+  margin-bottom: 40px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 25px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.card {
+  background: #020617;
+  padding: 30px;
+  border-radius: 18px;
+  border: 1px solid #1e293b;
+}
+
+.card h3 {
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+/* VIBE */
+.vibe {
+  background: #020617;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.vibe h2 {
+  margin-bottom: 20px;
+}
+
+.vibe ul {
+  list-style: none;
+  padding: 0;
+}
+
+.vibe li {
+  margin-bottom: 10px;
+  color: #cbd5f5;
+}
+
+/* END */
+.end {
+  padding: 70px 20px;
+  text-align: center;
+}
+
+.end p {
+  font-size: 1.4rem;
+}
+
+.end span {
+  color: #22d3ee;
+}
+
+.end small {
+  display: block;
+  margin-top: 15px;
+  color: #94a3b8;
+}
+
+.diff,
+.impact,
+.future {
+  max-width: 1000px;
+  margin: auto;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.diffGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.diffGrid div {
+  border: 1px dashed #334155;
+  padding: 14px;
+  border-radius: 12px;
+  color: #cbd5f5;
+}
+
+.impact .highlight {
+  margin-top: 20px;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.future ul {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+}
+
+.future li {
+  margin-bottom: 12px;
+  color: #cbd5f5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.2rem;
+  }
+}

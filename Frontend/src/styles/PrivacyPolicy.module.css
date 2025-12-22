@@ -1,0 +1,72 @@
+.wrapper {
+  background: #0f172a;
+  color: #e5e7eb;
+  padding-bottom: 60px;
+}
+
+/* HEADER */
+.header {
+  max-width: 900px;
+  margin: auto;
+  padding: 80px 20px 50px;
+  text-align: center;
+}
+
+.header h1 {
+  font-size: 3rem;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: #cbd5f5;
+}
+
+.header small {
+  color: #94a3b8;
+}
+
+/* SECTIONS */
+.section {
+  max-width: 900px;
+  margin: auto;
+  padding: 40px 20px;
+  border-bottom: 1px solid #1e293b;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 12px;
+  color: #f8fafc;
+}
+
+.section p,
+.section li {
+  color: #cbd5f5;
+  line-height: 1.8;
+}
+
+.section ul {
+  padding-left: 20px;
+}
+
+/* CONTACT */
+.contact {
+  margin-top: 10px;
+  color: #38bdf8;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: #94a3b8;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.2rem;
+  }
+}

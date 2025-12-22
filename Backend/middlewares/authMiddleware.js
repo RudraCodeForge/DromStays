@@ -19,6 +19,13 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    // 🔐 LOGOUT FROM ALL DEVICES CHECK
+    if (decoded.tokenVersion !== user.tokenVersion) {
+      return res.status(401).json({
+        message: "Session expired. Please login again.",
+      });
+    }
+
     // 🔴 BLOCK CHECK
     if (user.isBlocked) {
       return res.status(403).json({

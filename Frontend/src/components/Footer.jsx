@@ -48,6 +48,9 @@ const Footer = () => {
             <li>
               <NavLink to="/privacy_policy">Privacy Policy</NavLink>
             </li>
+            <li>
+              <NavLink to="/feedback">Feedback</NavLink>
+            </li>
           </ul>
         </div>
 

@@ -118,7 +118,7 @@ const Profile = () => {
           <NavLink to="/ChangePassword" className={Style.EditLink}>
             Change Password
           </NavLink>
-          <NavLink to="/Subscriptions" className={Style.EditLink}>
+          <NavLink to="/SubscriptionPlans" className={Style.EditLink}>
             Subscriptions
           </NavLink>
 

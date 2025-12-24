@@ -21,6 +21,7 @@ const formatUser = (user) => ({
   ProfilePicture: user.ProfilePicture,
   Address: user.Address,
   isProfileComplete: user.isProfileComplete,
+  Subscriptions: user.Subscriptions,
 });
 
 /* ======================================================
@@ -105,7 +106,6 @@ exports.POSTSIGNUP = [
         },
       });
     } catch (error) {
-      console.error("Signup Error:", error);
       res.status(500).json({ message: "Server error" });
     }
   },
@@ -149,7 +149,6 @@ exports.POSTLOGIN = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
-    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -185,7 +184,6 @@ exports.SEND_VERIFICATION_EMAIL = async (req, res) => {
 
     res.json({ message: "Verification email sent successfully" });
   } catch (error) {
-    console.error("Send verification error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -224,7 +222,6 @@ exports.POSTVERIFYACCOUNT = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
-    console.error("Verify error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -245,7 +242,6 @@ exports.GET_ME = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
-    console.error("GET_ME Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -287,7 +283,6 @@ exports.UPDATE_PASSWORD = async (req, res) => {
     }
 
     const user = await User.findById(req.user.id).select("+Password");
-    console.log("User fetched for password update:", user);
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -322,7 +317,6 @@ exports.UPDATE_PASSWORD = async (req, res) => {
       message: "Password updated successfully",
     });
   } catch (error) {
-    console.error("Update Password Error:", error);
     return res.status(500).json({
       success: false,
       errors: ["Server error. Please try again later"],
@@ -352,7 +346,6 @@ exports.POSTFORGETPASSWORD = async (req, res) => {
       .status(200)
       .json({ message: "If the email exists, a reset link has been sent." });
   } catch (error) {
-    console.error("Forget Password Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -397,7 +390,6 @@ exports.POSTRESETPASSWORD = async (req, res) => {
       message: "Password updated successfully",
     });
   } catch (error) {
-    console.error("RESET PASSWORD ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

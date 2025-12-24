@@ -20,10 +20,10 @@ const ReviewCard = ({ item }) => {
       <div>
         <img
           className={Style.icon}
-          src="/profile.webp"
+          src={item.ProfileImg}
           alt={item.Name}
-          width="50px"
-          height="50px"
+          width="70px"
+          height="70px"
         />
       </div>
       <h3>{item.Name}</h3>

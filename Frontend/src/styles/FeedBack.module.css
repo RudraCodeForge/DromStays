@@ -1,0 +1,132 @@
+.feedbackContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 480px;
+  padding: 35px 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Heading */
+.card h2 {
+  text-align: center;
+  margin-bottom: 8px;
+  color: #1f2933;
+  font-size: 26px;
+}
+
+/* Subtitle */
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* Form */
+.feedbackForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Input Group */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputGroup label {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* Inputs & Textarea */
+.inputGroup input,
+.inputGroup textarea {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.inputGroup textarea {
+  resize: none;
+}
+
+.inputGroup input:focus,
+.inputGroup textarea:focus {
+  border-color: #43cea2;
+  box-shadow: 0 0 0 2px rgba(67, 206, 162, 0.25);
+}
+
+/* Button */
+.feedbackForm button {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #43cea2, #185a9d);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedbackForm button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(24, 90, 157, 0.4);
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: 28px 22px;
+  }
+
+  .card h2 {
+    font-size: 22px;
+  }
+}
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+/* Rating Input */
+.ratingInput {
+  display: flex;
+  gap: 6px;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.ratingInput span {
+  color: #d1d5db;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.ratingInput span:hover {
+  transform: scale(1.1);
+}
+
+.ratingInput .filled {
+  color: #fbbf24;
+}

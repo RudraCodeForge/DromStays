@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Review = require("../models/Review");
 
 const formatUser = (user) => ({
   id: user._id,

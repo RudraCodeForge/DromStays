@@ -10,16 +10,20 @@ import EditProfile from "./pages/Common/EditProfile.jsx";
 import ChangePassword from "./pages/Auth/ChangePassword.jsx";
 import ResetPassword from "./pages/Auth/ResetPassword.jsx";
 import NewPassword from "./pages/Common/NewPassword.jsx";
+import FeedBack from "./pages/Common/Feedback.jsx";
+import SubscriptionPlans from "./pages/Common/SubscriptionPlans.jsx";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCurrentUser } from "./redux/authThunks";
 import { authCheckFinished } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AboutUs from "./pages/Common/About_Us.jsx";
 import PrivacyPolicy from "./pages/Common/PrivacyPolicy.jsx";
+import PageLoader from "./components/PageLoader.jsx";
 
 function App() {
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
@@ -31,6 +35,10 @@ function App() {
 
     dispatch(fetchCurrentUser());
   }, [dispatch]);
+
+  if (loading) {
+    return <PageLoader text="Checking your session..." />;
+  }
 
   return (
     <Routes>
@@ -76,6 +84,22 @@ function App() {
         element={
           <ProtectedRoute>
             <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Feedback"
+        element={
+          <ProtectedRoute>
+            <FeedBack />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/SubscriptionPlans"
+        element={
+          <ProtectedRoute>
+            <SubscriptionPlans />
           </ProtectedRoute>
         }
       />

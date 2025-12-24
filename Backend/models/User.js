@@ -23,7 +23,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      lowercase: true, // ✅ BEST PRACTICE
+      lowercase: true,
       trim: true,
     },
 
@@ -86,12 +86,14 @@ const UserSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    // 🔐 JWT TOKEN VERSIONING FOR LOGOUT ALL DEVICES
+
+    // 🔐 JWT TOKEN VERSIONING
     tokenVersion: {
       type: Number,
       default: 0,
     },
-    // 🔐 FORGOT / RESET PASSWORD
+
+    // 🔐 RESET PASSWORD
     ResetPasswordToken: {
       type: String,
       default: null,
@@ -100,6 +102,36 @@ const UserSchema = new mongoose.Schema(
     ResetPasswordExpiry: {
       type: Date,
       default: null,
+    },
+
+    // ✅ ✅ SUBSCRIPTION (CORRECT PLACE)
+    Subscription: {
+      planName: {
+        type: String,
+        enum: ["Basic", "Pro", "Premium"],
+        default: null,
+      },
+
+      status: {
+        type: String,
+        enum: ["active", "expired", "cancelled"],
+        default: null,
+      },
+
+      startDate: {
+        type: Date,
+        default: null,
+      },
+
+      endDate: {
+        type: Date,
+        default: null,
+      },
+
+      paymentId: {
+        type: String,
+        default: null,
+      },
     },
   },
   { timestamps: true }

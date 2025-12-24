@@ -117,7 +117,7 @@ const Navbar = () => {
                   </p>
 
                   <img
-                    src="/profile.webp"
+                    src={user.ProfilePicture}
                     alt="profile"
                     className={Styles.Profile}
                     width="30"

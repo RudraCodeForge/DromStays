@@ -1,0 +1,9 @@
+[33mb88c848[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m feat: add free starter subscription plan for owners
+[33m4634232[m[33m ([m[1;31morigin/main[m[33m)[m fix(profile): handle null subscription plan correctly
+[33mf5e7a06[m feat: add subscription plans component with loader and error handling
+[33mf1295ba[m feat: add comprehensive privacy policy and terms of use page
+[33m33b8ced[m Fix reset password bug by aligning frontend payload with backend and enabling API call
+[33mfc93928[m Updated user profile edit and cloudinary integration
+[33m9cb734a[m feat(profile): add edit profile with image upload and secure update API
+[33m7c34bbc[m Implement JWT auth with refresh token and protected routes
+[33m3005af5[m Initial project structure (frontend + backend)

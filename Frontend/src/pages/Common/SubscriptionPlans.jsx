@@ -42,7 +42,7 @@ const SubscriptionPlans = () => {
       alert("You are already subscribed to this plan.");
       return;
     }
-    if (plan.amount !== 0) {
+    if (plan.pricing.amount !== 0) {
       alert("Redirecting to payment gateway... (Not implemented)");
       return;
     }

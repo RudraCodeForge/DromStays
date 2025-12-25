@@ -21,7 +21,7 @@ const formatUser = (user) => ({
   ProfilePicture: user.ProfilePicture,
   Address: user.Address,
   isProfileComplete: user.isProfileComplete,
-  Subscriptions: user.Subscriptions,
+  Subscription: user.Subscription,
 });
 
 /* ======================================================

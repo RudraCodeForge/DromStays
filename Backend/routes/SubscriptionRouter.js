@@ -9,4 +9,10 @@ SubscriptionRouter.get(
   SubscriptionController.GET_SUBSCRIPTIONS
 );
 
+SubscriptionRouter.post(
+  "/Subscribe",
+  authMiddleware,
+  SubscriptionController.SUBSCRIBE_TO_PLAN
+);
+
 module.exports = SubscriptionRouter;

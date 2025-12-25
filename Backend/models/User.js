@@ -105,16 +105,23 @@ const UserSchema = new mongoose.Schema(
     },
 
     // ✅ ✅ SUBSCRIPTION (CORRECT PLACE)
+    // ✅ SUBSCRIPTION (FIXED & FUTURE PROOF)
     Subscription: {
       planName: {
         type: String,
-        enum: ["Basic", "Pro", "Premium"],
+        enum: ["Basic", "Starter", "Pro", "Pro Plus", "Premium"],
         default: null,
       },
 
       status: {
         type: String,
         enum: ["active", "expired", "cancelled"],
+        default: null,
+      },
+
+      billingCycle: {
+        type: String,
+        enum: ["free", "monthly", "quarterly", "yearly"],
         default: null,
       },
 

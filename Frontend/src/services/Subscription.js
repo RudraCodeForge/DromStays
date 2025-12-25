@@ -9,3 +9,13 @@ export const getSubscriptionPlans = async () => {
     throw error;
   }
 };
+
+export const subscribeToPlan = async (planName) => {
+  try {
+    const response = await api.post("/subscriptions/Subscribe", { planName });
+    return response.data;
+  } catch (error) {
+    console.error("Error subscribing to plan:", error);
+    throw error;
+  }
+};

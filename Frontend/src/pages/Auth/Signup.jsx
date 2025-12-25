@@ -46,7 +46,6 @@ const Signup = () => {
 
     const data = new FormData(e.target);
     const user = Object.fromEntries(data.entries());
-    console.log("User Data:", user);
 
     const newErrors = [];
 
@@ -81,7 +80,6 @@ const Signup = () => {
     // ------------------ BACKEND CALL FIXED ------------------ //
     try {
       const res = await SignupService(payload);
-      console.log("Signup Response:", res);
       // Clear form
       e.target.reset();
       setRole("");

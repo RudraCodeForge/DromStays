@@ -2,4 +2,8 @@
 :root {
   --primary-color: #2e126a;
   --primary-transparant-color: #2e126a2f;
+  --bg-color: #f7f8fc;
+  --card-bg: #ffffff;
+  --text-dark: #1f1f1f;
+  --text-light: #6b7280;
 }

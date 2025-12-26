@@ -1,0 +1,326 @@
+/* Container */
+.container {
+  padding: 2rem;
+  min-height: 80vh;
+  background: linear-gradient(
+    180deg,
+    var(--primary-transparent-color),
+    var(--bg-color)
+  );
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 1.9rem;
+  color: var(--text-dark);
+}
+
+/* Add Button */
+.addButton {
+  background: linear-gradient(135deg, var(--primary-color), #4c1dbd);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.4rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 12px 25px var(--primary-transparent-color);
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  transform: translateY(-3px);
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.6rem;
+}
+
+/* Property Card */
+.propertyCard {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.35s ease;
+}
+
+.propertyCard:hover {
+  transform: translateY(-8px);
+}
+
+/* Image */
+.imageWrapper {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.propertyCard:hover img {
+  transform: scale(1.1);
+}
+
+/* Content */
+.cardContent {
+  padding: 1.2rem;
+}
+
+.cardContent h2 {
+  color: var(--primary-color);
+  margin-bottom: 0.4rem;
+}
+
+.cardContent p {
+  font-size: 0.95rem;
+  color: var(--text-light);
+}
+
+/* Actions */
+.cardActions {
+  padding: 1rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+/* View Rooms - full width */
+.viewBtn {
+  width: 100%;
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  padding: 0.6rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.viewBtn:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* Bottom buttons */
+.bottomActions {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.bottomActions button {
+  flex: 1;
+  padding: 0.55rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Edit */
+.editBtn {
+  background-color: var(--primary-transparant-color);
+  color: var(--primary-color);
+}
+
+.editBtn:hover {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* Delete */
+.deleteBtn {
+  background: #fde8e8;
+  color: #b91c1c;
+}
+
+.deleteBtn:hover {
+  background: #b91c1c;
+  color: #fff;
+}
+
+/* Empty */
+.empty {
+  text-align: center;
+  margin-top: 4rem;
+  color: var(--text-light);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .addButton {
+    width: 100%;
+  }
+}
+/* Info rows (Label | Value) */
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.4rem 0;
+  font-size: 0.9rem;
+}
+
+.label {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.value {
+  color: var(--text-dark);
+  font-weight: 600;
+  text-align: right;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Title + Rating row */
+.titleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+/* ⭐ Rating badge */
+.rating {
+  background: #fff7ed;
+  color: #b45309;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid #fed7aa;
+  white-space: nowrap;
+}
+
+/* Section Heading */
+.Heading {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--primary-color);
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  font-family: "Poppins", "Inter", sans-serif;
+  text-transform: uppercase;
+}
+
+/* Underline */
+.Heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 65%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), #6d28d9);
+  border-radius: 4px;
+}
+.noProperties {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 14px;
+  padding: 3rem 2rem;
+  margin: 2rem auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* Heading */
+.noProperties h2 {
+  font-size: 1.8rem;
+  color: #111827;
+  margin-bottom: 0.6rem;
+}
+
+/* Description */
+.noProperties p {
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 1.6rem;
+  max-width: 420px;
+}
+
+/* CTA Button */
+.addFirstPropertyButton {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.8rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.35);
+}
+
+/* Hover */
+.addFirstPropertyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.45);
+  background: linear-gradient(135deg, #4338ca, #4f46e5);
+}
+
+/* Active */
+.addFirstPropertyButton:active {
+  transform: scale(0.96);
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+  .noProperties {
+    padding: 2rem 1.2rem;
+  }
+
+  .noProperties h2 {
+    font-size: 1.4rem;
+  }
+
+  .noProperties p {
+    font-size: 0.95rem;
+  }
+}

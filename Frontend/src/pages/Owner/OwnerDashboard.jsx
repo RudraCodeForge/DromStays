@@ -126,7 +126,7 @@ const OwnerDashboard = () => {
             <p>Manage your properties effciently</p>
             <ul className={Styles.ActionList}>
               <li>
-                <NavLink to="/Owner/AddProperty" className={Styles.ActionLink}>
+                <NavLink to="/Owner/add-property" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
                     <FontAwesomeIcon icon={faCirclePlus} />
                     &nbsp;Add New Property

@@ -29,10 +29,28 @@ exports.SUBMIT_REVIEW = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
+    if (!rating || rating < 1 || rating > 5) {
+      return res
+        .status(400)
+        .json({ message: "Rating must be between 1 and 5" });
+    }
+
+    const updatedMessage = message.trim();
+    if (updatedMessage.length === 0) {
+      return res.status(400).json({ message: "Message cannot be empty" });
+    }
+
+    if (updatedMessage.length > 500) {
+      return res
+        .status(400)
+        .json({ message: "Message too long (max 500 chars)" });
+    }
+
     const newReview = new Review({
       user: userId,
       rating, // ✅ correct
-      message, // ✅ correct
+      message: updatedMessage, // ✅ correct
       title: getTitleFromRole(user.Role), // ✅ optional but best
       isApproved: false,
     });

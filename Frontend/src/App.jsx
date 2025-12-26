@@ -20,6 +20,8 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AboutUs from "./pages/Common/About_Us.jsx";
 import PrivacyPolicy from "./pages/Common/PrivacyPolicy.jsx";
 import PageLoader from "./components/PageLoader.jsx";
+import Property from "./pages/Owner/Property.jsx";
+import AddProperty from "./pages/Owner/AddProperty.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -100,6 +102,22 @@ function App() {
         element={
           <ProtectedRoute>
             <SubscriptionPlans />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Owner/properties"
+        element={
+          <ProtectedRoute>
+            <Property />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/add-property"
+        element={
+          <ProtectedRoute>
+            <AddProperty />
           </ProtectedRoute>
         }
       />

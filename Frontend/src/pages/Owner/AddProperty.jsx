@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ErrorContainer from "../../components/ErrorContainer";
+import { Add_Property } from "../../services/Properties";
 
 const AddProperty = () => {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ const AddProperty = () => {
   };
 
   // 🧾 Submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
@@ -121,7 +122,14 @@ const AddProperty = () => {
     };
 
     console.log("FINAL PAYLOAD 👉", payload);
-    // 🔥 API CALL HERE
+    try {
+      const res = await Add_Property(payload);
+      console.log("Add Property Success:", res);
+      navigate("/owner/properties");
+    } catch (error) {
+      console.error("Add Property Failed:", error);
+      setErrorMessage(error.message || "Failed to add property.");
+    }
   };
 
   return (
@@ -157,6 +165,7 @@ const AddProperty = () => {
                   <option value="PG">PG</option>
                   <option value="Hostel">Hostel</option>
                   <option value="Flat">Flat</option>
+                  <option value="Room">Room</option>
                 </select>
               </div>
 

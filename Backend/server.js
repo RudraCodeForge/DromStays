@@ -7,6 +7,7 @@ const AuthRouter = require("./routes/AuthRouter");
 const UserRouter = require("./routes/UserRouter");
 const ReviewRouter = require("./routes/ReviewRouter");
 const SubscriptionRouter = require("./routes/SubscriptionRouter");
+const PropertyRouter = require("./routes/PropertyRouter");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use("/properties", PropertyRouter);
 app.use("/auth", AuthRouter);
 app.use("/user", UserRouter);
 app.use("/reviews", ReviewRouter);

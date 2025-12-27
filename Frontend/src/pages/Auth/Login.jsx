@@ -1,199 +1,149 @@
-import Styles from "../../styles/AddProperty.module.css";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faBed } from "@fortawesome/free-solid-svg-icons";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import LineText from "../../components/LineText";
+import Styles from "../../styles/Auth.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { loginSuccess } from "../../redux/authSlice";
+import { fetchCurrentUser } from "../../redux/authThunks";
+import { Login as LoginService } from "../../services/auth";
 import ErrorContainer from "../../components/ErrorContainer";
 
-const AddProperty = () => {
-  const navigate = useNavigate();
-
-  const MEERUT_BOUNDS = {
-    minLat: 28.9,
-    maxLat: 29.1,
-    minLng: 77.6,
-    maxLng: 77.85,
-  };
-
-  const isInsideMeerut = (lat, lng) =>
-    lat >= MEERUT_BOUNDS.minLat &&
-    lat <= MEERUT_BOUNDS.maxLat &&
-    lng >= MEERUT_BOUNDS.minLng &&
-    lng <= MEERUT_BOUNDS.maxLng;
-
-  const [coords, setCoords] = useState({
-    latitude: "",
-    longitude: "",
-  });
-
+const Login = () => {
+  const [showPass, setShowPass] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const getCurrentLocation = () => {
-    setErrorMessage("");
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    if (!navigator.geolocation) {
-      setErrorMessage("Geolocation is not supported by your browser.");
-      return;
+  // 🔐 Already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
     }
+  }, [isAuthenticated, navigate]);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+  // 🎨 Background
+  useEffect(() => {
+    document.body.style.backgroundColor = "#2e126a2f";
+    return () => {
+      document.body.style.backgroundColor = "";
+    };
+  }, []);
 
-        if (!isInsideMeerut(lat, lng)) {
-          setErrorMessage("Currently we are live only in Meerut.");
-          return;
-        }
-
-        setCoords({ latitude: lat, longitude: lng });
-      },
-      () => {
-        setErrorMessage("Location permission denied.");
-      }
-    );
-  };
-
-  const handleSubmit = (e) => {
+  // 🟢 Submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
 
-    const lat = parseFloat(coords.latitude);
-    const lng = parseFloat(coords.longitude);
+    const data = new FormData(e.target);
+    const user = Object.fromEntries(data.entries());
 
-    if (
-      coords.latitude === "" ||
-      coords.longitude === "" ||
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng)
-    ) {
-      setErrorMessage("Please enter valid latitude and longitude.");
-      return;
-    }
-
-    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-      setErrorMessage(
-        "Latitude must be between -90 to 90 and Longitude between -180 to 180."
-      );
-      return;
-    }
-
-    if (!isInsideMeerut(lat, lng)) {
-      setErrorMessage("Currently we are live only in Meerut.");
-      return;
-    }
-
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-
-    const payload = {
-      name: data.name.trim(),
-      propertyType: data.propertyType,
-      totalRooms: Number(data.totalRooms),
-      location: {
-        city: data.city,
-        area: data.area,
-        address: data.address,
-        geo: {
-          type: "Point",
-          coordinates: [lng, lat],
-        },
-      },
+    const credentials = {
+      Email: user.Email,
+      Password: user.Password,
     };
 
-    console.log("FINAL PAYLOAD 👉", payload);
+    try {
+      const res = await LoginService(credentials);
+
+      localStorage.setItem("accessToken", res.accessToken);
+
+      dispatch(
+        loginSuccess({
+          user: res.user,
+          token: res.accessToken,
+        })
+      );
+
+      dispatch(fetchCurrentUser());
+      e.target.reset();
+
+      if (res.user.Role === "owner") {
+        navigate("/Owner/dashboard");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      setErrorMessage(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
+    }
   };
 
   return (
-    <>
-      <Navbar />
+    <div className={Styles.LoginContainer}>
+      <ErrorContainer message={errorMessage} />
 
-      <div className={Styles.container}>
-        <div className={Styles.card}>
-          <h1>Add New Property</h1>
-          <p>List your property so tenants can find it easily nearby</p>
-
-          <ErrorContainer message={errorMessage} />
-
-          <form className={Styles.form} onSubmit={handleSubmit}>
-            <div className={Styles.section}>
-              <h3>Property Details</h3>
-              <input name="name" placeholder="Property Name" required />
-              <select name="propertyType" required>
-                <option value="">Select type</option>
-                <option value="PG">PG</option>
-                <option value="Hostel">Hostel</option>
-                <option value="Flat">Flat</option>
-              </select>
-              <input type="number" name="totalRooms" min="1" required />
-            </div>
-
-            <div className={Styles.section}>
-              <h3>Location</h3>
-              <input name="city" required />
-              <input name="area" required />
-              <textarea name="address" rows="3" />
-            </div>
-
-            <div className={Styles.section}>
-              <h3>Coordinates (Meerut only)</h3>
-
-              <button
-                type="button"
-                className={Styles.locationBtn}
-                onClick={getCurrentLocation}
-              >
-                Use My Current Location
-              </button>
-
-              <input
-                type="text"
-                inputMode="decimal"
-                placeholder="Latitude"
-                value={coords.latitude}
-                onChange={(e) =>
-                  setCoords((p) => ({ ...p, latitude: e.target.value }))
-                }
-                onKeyDown={(e) => {
-                  if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
-                }}
-                required
-              />
-
-              <input
-                type="text"
-                inputMode="decimal"
-                placeholder="Longitude"
-                value={coords.longitude}
-                onChange={(e) =>
-                  setCoords((p) => ({ ...p, longitude: e.target.value }))
-                }
-                onKeyDown={(e) => {
-                  if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
-                }}
-                required
-              />
-            </div>
-
-            <div className={Styles.actions}>
-              <button
-                type="button"
-                className={Styles.cancelBtn}
-                onClick={() => navigate(-1)}
-              >
-                Cancel
-              </button>
-              <button type="submit" className={Styles.submitBtn}>
-                Add Property
-              </button>
-            </div>
-          </form>
-        </div>
+      <div className={Styles.LoginContent}>
+        <h1>
+          <FontAwesomeIcon icon={faBed} /> &nbsp; DORMSTAYS
+        </h1>
+        <h2>Welcome Back</h2>
+        <p>Login to continue managing your steps.</p>
       </div>
 
-      <Footer />
-    </>
+      <form className={Styles.LoginForm} onSubmit={handleSubmit}>
+        <label>Email</label>
+        <input
+          type="email"
+          name="Email"
+          placeholder="Enter your email address"
+          required
+        />
+
+        <label>Password</label>
+        <div style={{ position: "relative" }}>
+          <input
+            type={showPass ? "text" : "password"}
+            name="Password"
+            placeholder="Enter your password"
+            required
+            style={{ width: "100%", paddingRight: "40px" }}
+          />
+
+          <span
+            onClick={() => setShowPass(!showPass)}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+            }}
+          >
+            {showPass ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
+        <li className={Styles.Forgot}>
+          <Link to="/Forgot_password">Forgot Password?</Link>
+        </li>
+
+        <button type="submit" className={Styles.Login_Btn}>
+          Login
+        </button>
+      </form>
+
+      <LineText>OR</LineText>
+
+      <div className={Styles.GoogleLogin}>
+        <FontAwesomeIcon icon={faGoogle} />
+        &nbsp; Continue with Google
+      </div>
+
+      <div className={Styles.SignupRedirect}>
+        Don't have an account? &nbsp;
+        <Link to="/Signup">
+          <span>Sign Up</span>
+        </Link>
+      </div>
+    </div>
   );
 };
 
-export default AddProperty;
+export default Login;

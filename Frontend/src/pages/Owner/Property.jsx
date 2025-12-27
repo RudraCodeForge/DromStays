@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
+import { Get_Owner_Properties } from "../../services/Properties";
 
 const Property = () => {
   const navigate = useNavigate();
@@ -14,7 +15,17 @@ const Property = () => {
   if (!isAuthenticated || role !== "owner") {
     return <Navigate to="/pagenotfound" />;
   }
-
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const data = await Get_Owner_Properties();
+        setProperties(data.properties); // ✅ FIX 2
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+    fetchProperties();
+  }, []);
   return (
     <>
       <Navbar />
@@ -25,7 +36,7 @@ const Property = () => {
           <h2>No Properties Found</h2>
           <p>You have not added any properties yet.</p>
           <button
-            className={Styles.addButton}
+            className={Styles.addFirstPropertyButton}
             onClick={() => navigate("/add-property")}
           >
             + Add Your First Property

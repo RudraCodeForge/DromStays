@@ -158,3 +158,52 @@ exports.sendSubscriptionConfirmationEmail = async (
     `,
   });
 };
+exports.SendPropertyCreationEmail = async (toEmail, propertyName) => {
+  await sendMail({
+    to: toEmail,
+    subject: "🏠 Your Property Is Live on DormStays!",
+    html: `
+      <div style="font-family:Arial, Helvetica, sans-serif; background:#f8f9fb; padding:24px;">
+        <div style="max-width:600px; margin:auto; background:#ffffff; border-radius:12px; padding:28px; box-shadow:0 10px 25px rgba(0,0,0,0.08);">
+          
+          <h2 style="color:#4f46e5; margin-bottom:12px;">
+            🎉 Property Created Successfully!
+          </h2>
+
+          <p style="font-size:15px; color:#374151;">
+            Hi there,
+          </p>
+
+          <p style="font-size:15px; color:#374151;">
+            Your property <strong>${propertyName}</strong> has been successfully created on 
+            <strong>DormStays</strong>.
+          </p>
+
+          <p style="font-size:15px; color:#374151;">
+            You can now start adding rooms, managing availability, and connecting with tenants — all from one place.
+          </p>
+
+          <div style="margin:24px 0; padding:16px; background:#eef2ff; border-radius:8px;">
+            <p style="margin:0; font-size:14px; color:#4338ca;">
+              👉 <strong>Next step:</strong> Add rooms to make your property visible to tenants.
+            </p>
+          </div>
+
+          <p style="font-size:14px; color:#6b7280;">
+            If you need any help, feel free to reach out — we’re always here for you.
+          </p>
+
+          <p style="margin-top:24px; font-size:14px; color:#374151;">
+            Warm regards,<br/>
+            <strong>DormStays Team</strong>
+          </p>
+
+        </div>
+
+        <p style="text-align:center; font-size:12px; color:#9ca3af; margin-top:16px;">
+          © ${new Date().getFullYear()} DormStays. All rights reserved.
+        </p>
+      </div>
+    `,
+  });
+};

@@ -1,5 +1,7 @@
 const Property = require("../models/Property");
 const Room = require("../models/Room");
+const SendPropertyCreationEmail =
+  require("../utils/sendEmail").SendPropertyCreationEmail;
 
 exports.addProperty = async (req, res) => {
   try {
@@ -87,6 +89,8 @@ exports.addProperty = async (req, res) => {
     }
 
     await Room.insertMany(rooms);
+    // 📧 3️⃣ Send Notification Email to Owner
+    await SendPropertyCreationEmail(req.user.Email, newProperty.name);
 
     // ✅ Response
     return res.status(201).json({

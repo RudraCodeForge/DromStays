@@ -52,6 +52,15 @@ exports.addProperty = async (req, res) => {
       });
     }
 
+    const images = [
+      {
+        url:
+          req.body.imageUrl ||
+          "https://res.cloudinary.com/de80xznxj/image/upload/v1766855795/default_Property_wazpgw.jpg",
+        public_id: req.body.imagePublicId || "default_Property_wazpgw",
+      },
+    ];
+
     // 🏠 1️⃣ Create Property
     const newProperty = await Property.create({
       name: name.trim(),
@@ -67,10 +76,19 @@ exports.addProperty = async (req, res) => {
         },
       },
       owner: ownerId,
+      images,
     });
 
     // 🛏️ 2️⃣ Auto-create Rooms
     const rooms = [];
+    const Roomimages = [
+      {
+        url:
+          req.body.imageUrl ||
+          "https://res.cloudinary.com/de80xznxj/image/upload/v1766856271/default_rooms_gmuyyg.jpg",
+        public_id: req.body.imagePublicId || "default_rooms_gmuyyg",
+      },
+    ];
 
     for (let i = 1; i <= Number(totalRooms); i++) {
       rooms.push({
@@ -85,6 +103,7 @@ exports.addProperty = async (req, res) => {
         },
         amenities: [],
         isAvailable: true,
+        images: Roomimages,
       });
     }
 

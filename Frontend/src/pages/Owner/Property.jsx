@@ -26,6 +26,10 @@ const Property = () => {
     };
     fetchProperties();
   }, []);
+
+  const getPropertyImage = (property) =>
+    property.images?.[0]?.url || "/placeholder.jpg";
+
   return (
     <>
       <Navbar />
@@ -60,10 +64,7 @@ const Property = () => {
               <div key={property._id} className={Styles.propertyCard}>
                 {/* IMAGE */}
                 <div className={Styles.imageWrapper}>
-                  <img
-                    src={property.image || "/placeholder.jpg"}
-                    alt={property.name}
-                  />
+                  <img src={getPropertyImage(property)} alt={property.name} />
                 </div>
 
                 {/* CONTENT */}

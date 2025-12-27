@@ -158,6 +158,7 @@ exports.sendSubscriptionConfirmationEmail = async (
     `,
   });
 };
+
 exports.SendPropertyCreationEmail = async (toEmail, propertyName) => {
   await sendMail({
     to: toEmail,

@@ -35,6 +35,8 @@ const Rooms = () => {
     fetchRooms();
   }, [propertyId]);
 
+  const getRoomImage = (room) => room.images?.[0]?.url || "/placeholder.jpg";
+
   return (
     <>
       <Navbar />
@@ -82,8 +84,8 @@ const Rooms = () => {
               <div key={room._id} className={Styles.roomCard}>
                 {/* 🖼️ Image */}
                 <img
-                  src="/default-room.jpg"
-                  alt={`Room ${room.roomNumber}`}
+                  src={getRoomImage(room)}
+                  alt={room.name}
                   className={Styles.roomImage}
                 />
 

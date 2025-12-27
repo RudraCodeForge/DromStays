@@ -8,6 +8,7 @@ const UserRouter = require("./routes/UserRouter");
 const ReviewRouter = require("./routes/ReviewRouter");
 const SubscriptionRouter = require("./routes/SubscriptionRouter");
 const PropertyRouter = require("./routes/PropertyRouter");
+const RoomRouter = require("./routes/RoomRouter");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/auth", AuthRouter);
 app.use("/user", UserRouter);
 app.use("/reviews", ReviewRouter);
 app.use("/subscriptions", SubscriptionRouter);
+app.use("/rooms", RoomRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

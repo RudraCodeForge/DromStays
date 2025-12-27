@@ -22,6 +22,7 @@ import PrivacyPolicy from "./pages/Common/PrivacyPolicy.jsx";
 import PageLoader from "./components/PageLoader.jsx";
 import Property from "./pages/Owner/Property.jsx";
 import AddProperty from "./pages/Owner/AddProperty.jsx";
+import Rooms from "./pages/Owner/Rooms.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -118,6 +119,14 @@ function App() {
         element={
           <ProtectedRoute>
             <AddProperty />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/property/:propertyId/rooms"
+        element={
+          <ProtectedRoute>
+            <Rooms />
           </ProtectedRoute>
         }
       />

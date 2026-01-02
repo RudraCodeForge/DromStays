@@ -256,6 +256,10 @@
   height: 4px;
   background: linear-gradient(90deg, var(--primary-color), #6d28d9);
   border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.Heading:hover::after {
+  width: 100%;
 }
 .noProperties {
   min-height: 60vh;

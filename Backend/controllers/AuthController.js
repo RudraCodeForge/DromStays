@@ -116,6 +116,7 @@ exports.POSTSIGNUP = [
 ====================================================== */
 exports.POSTLOGIN = async (req, res) => {
   try {
+    console.log("Login attempt:", req.body);
     const { Email, Password } = req.body;
 
     const user = await User.findOne({ Email }).select("+Password");

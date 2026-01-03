@@ -5,10 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ErrorContainer from "../../components/ErrorContainer";
 import { Add_Property } from "../../services/Properties";
+import { useSelector } from "react-redux";
 
 const AddProperty = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  if (!isAuthenticated) {
+    navigate("/login");
+  }
+  if (user?.role !== "Owner") {
+    navigate("/");
+  }
   // 📍 Meerut boundary
   const MEERUT_BOUNDS = {
     minLat: 27.8,

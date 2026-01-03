@@ -23,3 +23,15 @@ export const Get_Owner_Properties = async () => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const Get_Property_By_Id = async (propertyId) => {
+  try {
+    const response = await api.get(`/properties/${propertyId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

@@ -149,3 +149,40 @@ exports.getOwnerProperties = async (req, res) => {
     });
   }
 };
+
+exports.getPropertyById = async (req, res) => {
+  try {
+    const ownerId = req.user?.id;
+    const { id: propertyId } = req.params;
+
+    if (!ownerId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const property = await Property.findOne({
+      _id: propertyId,
+      owner: ownerId,
+    }).lean();
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      property,
+    });
+  } catch (error) {
+    console.error("Get Property By ID Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};

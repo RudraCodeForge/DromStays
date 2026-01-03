@@ -104,7 +104,14 @@ const Property = () => {
                   </button>
 
                   <div className={Styles.bottomActions}>
-                    <button className={Styles.editBtn}>✏️ Edit</button>
+                    <button
+                      className={Styles.editBtn}
+                      onClick={() =>
+                        navigate(`/property/${property._id}/editproperty`)
+                      }
+                    >
+                      ✏️ Edit
+                    </button>
                     <button className={Styles.deleteBtn}>🗑 Delete</button>
                   </div>
                 </div>

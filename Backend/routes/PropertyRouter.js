@@ -9,5 +9,6 @@ PropertyRouter.get(
   authMiddleware,
   PropertyController.getOwnerProperties
 );
+PropertyRouter.get("/:id", authMiddleware, PropertyController.getPropertyById);
 
 module.exports = PropertyRouter;

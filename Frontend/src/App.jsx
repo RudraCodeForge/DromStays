@@ -23,6 +23,7 @@ import PageLoader from "./components/PageLoader.jsx";
 import Property from "./pages/Owner/Property.jsx";
 import AddProperty from "./pages/Owner/AddProperty.jsx";
 import Rooms from "./pages/Owner/Rooms.jsx";
+import EditProperty from "./pages/Owner/EditProperty.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -127,6 +128,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Rooms />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/property/:propertyId/editproperty"
+        element={
+          <ProtectedRoute>
+            <EditProperty />
           </ProtectedRoute>
         }
       />

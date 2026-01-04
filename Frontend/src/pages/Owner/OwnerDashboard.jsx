@@ -1,6 +1,6 @@
 import Styles from "../../styles/OwnerDashboard.module.css";
 import Navbar from "../../components/Navbar/Navbar.jsx";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer.jsx";
 import { useEffect, useState } from "react";
 import {
@@ -19,18 +19,99 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatCard from "../../components/StatCard.jsx";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Get_Owner_Rooms } from "../../services/Rooms";
+
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const OwnerDashboard = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const [Rooms, setRooms] = useState(0); // Forcing re-render if needed
+  const navigate = useNavigate();
+
+  const [Rooms, setRooms] = useState(0);
+  const [newRooms, setNewRooms] = useState(0);
+
+  // 🔐 Auth + Role Guard
+  useEffect(() => {
+    if (!isAuthenticated || user?.Role?.toLowerCase() !== "owner") {
+      navigate("/Login");
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  // 🎨 Background
+  useEffect(() => {
+    document.body.style.backgroundColor = "#1f126a1f";
+    return () => {
+      document.body.style.backgroundColor = "";
+    };
+  }, []);
+
+  // 🏠 Rooms + 24hr Badge Logic (Frontend Only)
+  useEffect(() => {
+    const fetchRoomCount = async () => {
+      try {
+        const data = await Get_Owner_Rooms();
+        const currentCount = data?.rooms?.length || 0;
+
+        const prevCount =
+          Number(localStorage.getItem("owner_rooms_count")) || 0;
+
+        const storedBadge = JSON.parse(
+          localStorage.getItem("owner_rooms_badge")
+        );
+
+        const now = Date.now();
+        const ONE_DAY = 24 * 60 * 60 * 1000;
+
+        // 🧹 Auto cleanup after 24 hrs
+        if (storedBadge && now - storedBadge.timestamp > ONE_DAY) {
+          localStorage.removeItem("owner_rooms_badge");
+        }
+
+        // 🆕 New rooms added
+        if (currentCount > prevCount) {
+          const diff = currentCount - prevCount;
+
+          const updatedCount = storedBadge ? storedBadge.count + diff : diff;
+
+          localStorage.setItem(
+            "owner_rooms_badge",
+            JSON.stringify({
+              count: updatedCount,
+              timestamp: storedBadge?.timestamp || now,
+            })
+          );
+
+          setNewRooms(updatedCount);
+        }
+        // 🔁 No new room, but badge exists
+        else if (storedBadge) {
+          setNewRooms(storedBadge.count);
+        } else {
+          setNewRooms(0);
+        }
+
+        setRooms(currentCount);
+        localStorage.setItem("owner_rooms_count", currentCount);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    };
+
+    fetchRoomCount();
+  }, []);
+
+  const todayDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
   const statCardsData = [
     {
       icon: faHouseChimney,
       title: "Total Rooms",
       value: Rooms,
-      badge: "+2 new",
+      badge: newRooms > 0 ? `+${newRooms} new` : null,
       badgeType: "success",
     },
     {
@@ -59,39 +140,6 @@ const OwnerDashboard = () => {
       badgeType: "success",
     },
   ];
-  const navigate = useNavigate();
-
-  const todayDate = new Date().toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-
-  useEffect(() => {
-    if (!isAuthenticated || user?.Role?.toLowerCase() !== "owner") {
-      navigate("/Login");
-    }
-  }, [isAuthenticated, user, navigate]);
-
-  useEffect(() => {
-    document.body.style.backgroundColor = "#1f126a1f";
-    return () => {
-      document.body.style.backgroundColor = "";
-    };
-  }, []);
-
-  useEffect(() => {
-    // Simulate fetching room count
-    const fetchRoomCount = async () => {
-      try {
-        const data = await Get_Owner_Rooms();
-        setRooms(data?.rooms?.length || 0);
-      } catch (error) {
-        console.error("Error fetching rooms:", error);
-      }
-    };
-    fetchRoomCount();
-  }, []);
 
   return (
     <>
@@ -101,16 +149,17 @@ const OwnerDashboard = () => {
         <h1 className={Styles.dashboardTitle}>
           Welcome back, {user?.Name || "Owner"}
         </h1>
+
         <div className={Styles.dashboardHeader}>
           <p className={Styles.dashboardDescription}>
             Here's what happening with your properties today.
           </p>
           <span className={Styles.Date}>
-            <FontAwesomeIcon icon={faCalendar} />
-            &nbsp;{todayDate}
+            <FontAwesomeIcon icon={faCalendar} /> &nbsp;{todayDate}
           </span>
         </div>
 
+        {/* 📊 Stats */}
         <div className={Styles.cardsContainer}>
           {statCardsData.map((card, index) => (
             <StatCard
@@ -125,31 +174,30 @@ const OwnerDashboard = () => {
             />
           ))}
         </div>
+
+        {/* 📌 Activity + Actions */}
         <div className={Styles.placeholderSection}>
           <div className={Styles.RightBox}>
             <h2>Recent Activity</h2>
-
             <ul className={Styles.ActivityList}>
               <li>🛏️ Room booked by Rahul</li>
               <li>💰 Payment received ₹3,000</li>
-              <li>➕ New room added</li>
+              {newRooms > 0 && <li>➕ {newRooms} new room added</li>}
               <li>🧹 Cleaning service requested</li>
             </ul>
           </div>
+
           <div className={Styles.LeftBox}>
             <h2>Quick Actions</h2>
-            <p>Manage your properties effciently</p>
+            <p>Manage your properties efficiently</p>
+
             <ul className={Styles.ActionList}>
               <li>
                 <NavLink to="/Owner/add-property" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
-                    <FontAwesomeIcon icon={faCirclePlus} />
-                    &nbsp;Add New Property
+                    <FontAwesomeIcon icon={faCirclePlus} /> Add New Property
                   </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className={Styles.Arrow}
-                  />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>
               </li>
 
@@ -159,52 +207,36 @@ const OwnerDashboard = () => {
                   className={Styles.ActionLink}
                 >
                   <span className={Styles.Left}>
-                    <FontAwesomeIcon icon={faListCheck} />
-                    &nbsp;Manage Services
+                    <FontAwesomeIcon icon={faListCheck} /> Manage Services
                   </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className={Styles.Arrow}
-                  />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>
               </li>
 
               <li>
                 <NavLink to="/Owner/ViewPayments" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
-                    <FontAwesomeIcon icon={faMoneyBills} />
-                    &nbsp;View Payments
+                    <FontAwesomeIcon icon={faMoneyBills} /> View Payments
                   </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className={Styles.Arrow}
-                  />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>
               </li>
 
               <li>
                 <NavLink to="/FeedBack" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
-                    <FontAwesomeIcon icon={faComments} />
-                    &nbsp;FeedBack
+                    <FontAwesomeIcon icon={faComments} /> Feedback
                   </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className={Styles.Arrow}
-                  />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>
               </li>
 
               <li>
                 <NavLink to="/Owner/Support" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
-                    <FontAwesomeIcon icon={faHeadset} />
-                    &nbsp;Support
+                    <FontAwesomeIcon icon={faHeadset} /> Support
                   </span>
-                  <FontAwesomeIcon
-                    icon={faArrowRight}
-                    className={Styles.Arrow}
-                  />
+                  <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>
               </li>
             </ul>

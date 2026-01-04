@@ -2,22 +2,27 @@ import Styles from "../../styles/AddProperty.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorContainer from "../../components/ErrorContainer";
 import { Add_Property } from "../../services/Properties";
 import { useSelector } from "react-redux";
 
 const AddProperty = () => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
-  if (user?.role !== "Owner") {
-    navigate("/");
-  }
-  // 📍 Meerut boundary
+  /* 🔐 AUTH + ROLE CHECK (SAFE) */
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/");
+    }
+  }, [isAuthenticated, role, navigate]);
+
+  /* 📍 Meerut Boundary */
   const MEERUT_BOUNDS = {
     minLat: 27.8,
     maxLat: 29.2,
@@ -31,21 +36,21 @@ const AddProperty = () => {
     lng >= MEERUT_BOUNDS.minLng &&
     lng <= MEERUT_BOUNDS.maxLng;
 
-  // 🔹 Geo state
+  /* 🌍 GEO STATE */
   const [coords, setCoords] = useState({
     latitude: "",
     longitude: "",
   });
 
-  // ❌ Error state
+  /* ❌ ERROR STATE */
   const [errorMessage, setErrorMessage] = useState("");
 
-  // 📍 Auto fetch current location
+  /* 📍 GET CURRENT LOCATION */
   const getCurrentLocation = () => {
     setErrorMessage("");
 
     if (!navigator.geolocation) {
-      setErrorMessage("Geolocation not supported");
+      setErrorMessage("Geolocation is not supported by your browser.");
       return;
     }
 
@@ -61,7 +66,7 @@ const AddProperty = () => {
 
         if (!isInsideMeerut(lat, lng)) {
           setErrorMessage(
-            "Location detected may be inaccurate. If you are in Meerut, please adjust coordinates manually."
+            "Detected location may be inaccurate. Please ensure the property is inside Meerut."
           );
         }
       },
@@ -76,7 +81,7 @@ const AddProperty = () => {
     );
   };
 
-  // 🧾 Submit handler
+  /* 🧾 SUBMIT HANDLER */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -84,18 +89,13 @@ const AddProperty = () => {
     const lat = parseFloat(coords.latitude);
     const lng = parseFloat(coords.longitude);
 
-    // ❌ Empty / invalid
-    if (
-      coords.latitude === "" ||
-      coords.longitude === "" ||
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng)
-    ) {
+    /* ❌ INVALID COORDINATES */
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
       setErrorMessage("Please enter valid latitude and longitude.");
       return;
     }
 
-    // ❌ Earth range
+    /* ❌ EARTH RANGE CHECK */
     if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
       setErrorMessage(
         "Latitude must be between -90 to 90 and Longitude between -180 to 180."
@@ -103,7 +103,7 @@ const AddProperty = () => {
       return;
     }
 
-    // ❌ Meerut only
+    /* ❌ MEERUT ONLY */
     if (!isInsideMeerut(lat, lng)) {
       setErrorMessage(
         "Property location must be inside Meerut. Please adjust coordinates."
@@ -119,9 +119,9 @@ const AddProperty = () => {
       propertyType: data.propertyType,
       totalRooms: Number(data.totalRooms),
       location: {
-        city: data.city,
-        area: data.area,
-        address: data.address,
+        city: data.city.trim(),
+        area: data.area.trim(),
+        address: data.address.trim(),
         geo: {
           type: "Point",
           coordinates: [lng, lat], // ✅ GeoJSON order
@@ -129,14 +129,13 @@ const AddProperty = () => {
       },
     };
 
-    console.log("FINAL PAYLOAD 👉", payload);
     try {
-      const res = await Add_Property(payload);
-      console.log("Add Property Success:", res);
+      await Add_Property(payload);
       navigate("/owner/properties");
     } catch (error) {
-      console.error("Add Property Failed:", error);
-      setErrorMessage(error.message || "Failed to add property.");
+      setErrorMessage(
+        error?.response?.data?.message || "Failed to add property."
+      );
     }
   };
 
@@ -147,12 +146,12 @@ const AddProperty = () => {
       <div className={Styles.container}>
         <div className={Styles.card}>
           <h1>Add New Property</h1>
-          <p>List your property so tenants can find it easily nearby</p>
+          <p>List your property so tenants can find it easily</p>
 
           <ErrorContainer message={errorMessage} />
 
           <form className={Styles.form} onSubmit={handleSubmit}>
-            {/* PROPERTY DETAILS */}
+            {/* 🏠 PROPERTY DETAILS */}
             <div className={Styles.section}>
               <h3>🏠 Property Details</h3>
 
@@ -189,14 +188,19 @@ const AddProperty = () => {
               </div>
             </div>
 
-            {/* LOCATION DETAILS */}
+            {/* 📍 LOCATION DETAILS */}
             <div className={Styles.section}>
               <h3>📍 Location Details</h3>
 
               <div className={Styles.grid}>
                 <div className={Styles.formGroup}>
                   <label>City</label>
-                  <input type="text" name="city" placeholder="City" required />
+                  <input
+                    type="text"
+                    name="city"
+                    defaultValue="Meerut"
+                    required
+                  />
                 </div>
 
                 <div className={Styles.formGroup}>
@@ -204,7 +208,7 @@ const AddProperty = () => {
                   <input
                     type="text"
                     name="area"
-                    placeholder="Area / Locality"
+                    placeholder="Khaduli, Bhola Road"
                     required
                   />
                 </div>
@@ -216,15 +220,16 @@ const AddProperty = () => {
                   name="address"
                   placeholder="Near college / landmark"
                   rows="3"
+                  required
                 />
               </div>
             </div>
 
-            {/* GEO LOCATION */}
+            {/* 🗺️ GEO LOCATION */}
             <div className={Styles.section}>
               <h3>🗺️ Map Coordinates</h3>
               <p className={Styles.helper}>
-                Used for nearby & college-based search
+                Used for nearby & location-based search
               </p>
 
               <button
@@ -245,10 +250,6 @@ const AddProperty = () => {
                     onChange={(e) =>
                       setCoords({ ...coords, latitude: e.target.value })
                     }
-                    onKeyDown={(e) => {
-                      if (["e", "E", "+", "-"].includes(e.key))
-                        e.preventDefault();
-                    }}
                     required
                   />
                 </div>
@@ -262,17 +263,13 @@ const AddProperty = () => {
                     onChange={(e) =>
                       setCoords({ ...coords, longitude: e.target.value })
                     }
-                    onKeyDown={(e) => {
-                      if (["e", "E", "+", "-"].includes(e.key))
-                        e.preventDefault();
-                    }}
                     required
                   />
                 </div>
               </div>
             </div>
 
-            {/* ACTIONS */}
+            {/* 🔘 ACTIONS */}
             <div className={Styles.actions}>
               <button
                 type="button"

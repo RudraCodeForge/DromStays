@@ -2,7 +2,7 @@ import Styles from "../../styles/OwnerDashboard.module.css";
 import Navbar from "../../components/Navbar/Navbar.jsx";
 import { NavLink } from "react-router-dom";
 import Footer from "../../components/Footer.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   faHouseChimney,
   faCalendarCheck,
@@ -20,14 +20,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatCard from "../../components/StatCard.jsx";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { Get_Owner_Rooms } from "../../services/Rooms";
 
 const OwnerDashboard = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [Rooms, setRooms] = useState(0); // Forcing re-render if needed
   const statCardsData = [
     {
       icon: faHouseChimney,
       title: "Total Rooms",
-      value: "12",
+      value: Rooms,
       badge: "+2 new",
       badgeType: "success",
     },
@@ -76,6 +78,19 @@ const OwnerDashboard = () => {
     return () => {
       document.body.style.backgroundColor = "";
     };
+  }, []);
+
+  useEffect(() => {
+    // Simulate fetching room count
+    const fetchRoomCount = async () => {
+      try {
+        const data = await Get_Owner_Rooms();
+        setRooms(data?.rooms?.length || 0);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    };
+    fetchRoomCount();
   }, []);
 
   return (

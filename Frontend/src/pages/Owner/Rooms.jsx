@@ -4,7 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import { Get_Owner_Rooms } from "../../services/Rooms";
+import { Get_Owner_Property_Rooms } from "../../services/Rooms";
 
 const Rooms = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Rooms = () => {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const data = await Get_Owner_Rooms(propertyId);
+        const data = await Get_Owner_Property_Rooms(propertyId);
         setRooms(data?.rooms || []);
       } catch (error) {
         console.error("Error fetching rooms:", error);

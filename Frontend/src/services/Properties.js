@@ -35,3 +35,30 @@ export const Get_Property_By_Id = async (propertyId) => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const Update_Property = async (propertyId, propertyData) => {
+  try {
+    const response = await api.put(
+      `/properties/update/${propertyId}`,
+      propertyData
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};
+
+export const Delete_Property = async (propertyId) => {
+  try {
+    const response = await api.delete(`/properties/delete/${propertyId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

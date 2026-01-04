@@ -10,5 +10,15 @@ PropertyRouter.get(
   PropertyController.getOwnerProperties
 );
 PropertyRouter.get("/:id", authMiddleware, PropertyController.getPropertyById);
+PropertyRouter.put(
+  "/update/:id",
+  authMiddleware,
+  PropertyController.updateProperty
+);
+PropertyRouter.delete(
+  "/delete/:id",
+  authMiddleware,
+  PropertyController.deleteProperty
+);
 
 module.exports = PropertyRouter;

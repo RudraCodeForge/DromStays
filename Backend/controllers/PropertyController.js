@@ -2,6 +2,7 @@ const Property = require("../models/Property");
 const Room = require("../models/Room");
 const SendPropertyCreationEmail =
   require("../utils/sendEmail").SendPropertyCreationEmail;
+const { deleteFromCloudinary } = require("../utils/cloudinaryHelper");
 
 exports.addProperty = async (req, res) => {
   try {
@@ -180,6 +181,108 @@ exports.getPropertyById = async (req, res) => {
     });
   } catch (error) {
     console.error("Get Property By ID Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+exports.updateProperty = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const propertyId = req.params.id;
+
+    const { name, propertyType, totalRooms, isActive, images } = req.body;
+
+    const property = await Property.findOne({
+      _id: propertyId,
+      owner: ownerId,
+    });
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    const oldImage = property.images?.[0];
+    const newImage = images?.[0];
+
+    // 🔥 DELETE ONLY IF IMAGE ACTUALLY CHANGED
+    if (
+      newImage &&
+      oldImage &&
+      oldImage.public_id &&
+      oldImage.public_id !== "default_Property_wazpgw" &&
+      newImage.public_id !== oldImage.public_id
+    ) {
+      await deleteFromCloudinary(oldImage.public_id);
+    }
+
+    // 🔄 UPDATE FIELDS (SAFE)
+    if (name) property.name = name;
+    if (propertyType) property.propertyType = propertyType;
+    if (totalRooms) property.totalRooms = totalRooms;
+    if (typeof isActive === "boolean") property.isActive = isActive;
+    if (images?.length) property.images = images;
+
+    await property.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Property updated successfully",
+    });
+  } catch (error) {
+    console.error("Update Property Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+exports.deleteProperty = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const propertyId = req.params.id;
+
+    // 🔍 Find property
+    const property = await Property.findOne({
+      _id: propertyId,
+      owner: ownerId,
+    });
+
+    if (!property) {
+      return res.status(404).json({
+        success: false,
+        message: "Property not found",
+      });
+    }
+
+    // 🔥 1️⃣ Delete all rooms of this property
+    await Room.deleteMany({ property: propertyId });
+
+    // 🔥 2️⃣ Delete property image from Cloudinary (if not default)
+    const image = property.images?.[0];
+    if (
+      image &&
+      image.public_id &&
+      image.public_id !== "default_Property_wazpgw"
+    ) {
+      await deleteFromCloudinary(image.public_id);
+    }
+
+    // 🔥 3️⃣ Delete property itself
+    await Property.deleteOne({ _id: propertyId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Property and all its rooms deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete Property Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

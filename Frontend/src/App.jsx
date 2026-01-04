@@ -116,7 +116,7 @@ function App() {
         }
       />
       <Route
-        path="/add-property"
+        path="Owner/add-property"
         element={
           <ProtectedRoute>
             <AddProperty />

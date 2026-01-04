@@ -1,20 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Upload_Property_Images } from "../../services/Cloudinary";
-import { Get_Property_By_Id } from "../../services/Properties";
+import { Get_Property_By_Id, Update_Property } from "../../services/Properties";
 import styles from "../../styles/EditProperty.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
-const { isAuthenticated, user } = useSelector((state) => state.auth);
-const navigate = useNavigate();
+
 const EditProperty = () => {
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
-  if (user?.role !== "Owner") {
-    navigate("/");
-  }
+  // ✅ hooks ALWAYS inside component
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const { propertyId } = useParams();
   const formRef = useRef(null);
 
@@ -25,6 +21,15 @@ const EditProperty = () => {
     url: "",
     public_id: "",
   });
+
+  // 🔒 AUTH GUARD (correct way)
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    } else if (user?.Role !== "owner") {
+      navigate("/");
+    }
+  }, [isAuthenticated, user, navigate]);
 
   // 🔹 GET PROPERTY DETAILS
   useEffect(() => {
@@ -54,18 +59,15 @@ const EditProperty = () => {
     fetchProperty();
   }, [propertyId]);
 
-  // 🔹 IMAGE UPLOAD HANDLER
+  // 🔹 IMAGE UPLOAD
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     try {
       setImageUploading(true);
-
       const imageData = await Upload_Property_Images(file);
-      setImage(imageData); // { url, public_id }
-
-      console.log("Uploaded image:", imageData);
+      setImage(imageData);
     } catch (err) {
       console.error("Image upload failed:", err.message);
     } finally {
@@ -73,7 +75,7 @@ const EditProperty = () => {
     }
   };
 
-  // 🔹 SUBMIT FORM
+  // 🔹 SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,8 +91,13 @@ const EditProperty = () => {
 
     console.log("UPDATE PAYLOAD 👉", payload);
 
-    // 🔜 PUT API CALL HERE
-    // await Update_Property_By_Id(propertyId, payload);
+    try {
+      const data = await Update_Property(propertyId, payload);
+      console.log("Property updated successfully:", data);
+      navigate("/owner/properties");
+    } catch (error) {
+      console.error("Error updating property:", error);
+    }
   };
 
   if (loading) {
@@ -104,59 +111,45 @@ const EditProperty = () => {
         <h2 className={styles.heading}>Edit Property</h2>
 
         <form ref={formRef} className={styles.form} onSubmit={handleSubmit}>
-          {/* NAME */}
           <div className={styles.formGroup}>
             <label>Property Name</label>
             <input name="name" type="text" />
           </div>
 
-          {/* TYPE */}
           <div className={styles.formGroup}>
             <label>Property Type</label>
             <select name="propertyType">
               <option value="Hostel">Hostel</option>
               <option value="PG">PG</option>
-              <option value="Hotel">Hotel</option>
-              <option value="Apartment">Apartment</option>
+              <option value="Flat">Flat</option>
+              <option value="Room">Room</option>
             </select>
           </div>
 
-          {/* ROOMS */}
           <div className={styles.formGroup}>
             <label>Total Rooms</label>
             <input name="totalRooms" type="number" />
           </div>
 
-          {/* ACTIVE */}
           <div className={styles.formGroupCheckbox}>
             <input name="isActive" type="checkbox" />
             <span>Property Active</span>
           </div>
 
-          {/* IMAGE PREVIEW */}
           {image.url && (
             <div className={styles.imageBox}>
               <img src={image.url} alt="Property" />
             </div>
           )}
 
-          {/* IMAGE UPLOAD */}
           <div className={styles.formGroup}>
             <label>Update Image</label>
             <input type="file" onChange={handleImageUpload} />
-
-            {imageUploading && (
-              <p className={styles.uploadingText}>Uploading image...</p>
-            )}
+            {imageUploading && <p>Uploading image...</p>}
           </div>
 
-          {/* SUBMIT */}
-          <button
-            type="submit"
-            className={styles.saveBtn}
-            disabled={imageUploading}
-          >
-            {imageUploading ? "Uploading..." : "Update Property"}
+          <button type="submit" disabled={imageUploading}>
+            Update Property
           </button>
         </form>
       </div>

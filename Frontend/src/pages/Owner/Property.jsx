@@ -4,7 +4,10 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import { Get_Owner_Properties } from "../../services/Properties";
+import {
+  Get_Owner_Properties,
+  Delete_Property,
+} from "../../services/Properties";
 
 const Property = () => {
   const navigate = useNavigate();
@@ -30,6 +33,27 @@ const Property = () => {
   const getPropertyImage = (property) =>
     property.images?.[0]?.url || "/placeholder.jpg";
 
+  const handleDeleteProperty = async (propertyId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this property?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const res = await Delete_Property(propertyId);
+      // 🟢 UI se property remove (without reload)
+      setProperties((prev) =>
+        prev.filter((property) => property._id !== propertyId)
+      );
+
+      alert(res.message);
+    } catch (error) {
+      console.error("Error deleting property:", error);
+      alert("Failed to delete property");
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -41,7 +65,7 @@ const Property = () => {
           <p>You have not added any properties yet.</p>
           <button
             className={Styles.addFirstPropertyButton}
-            onClick={() => navigate("/add-property")}
+            onClick={() => navigate("/Owner/add-property")}
           >
             + Add Your First Property
           </button>
@@ -53,7 +77,7 @@ const Property = () => {
             <h1 className={Styles.Heading}>YOUR PROPERTIES</h1>
             <button
               className={Styles.addButton}
-              onClick={() => navigate("/add-property")}
+              onClick={() => navigate("/Owner/add-property")}
             >
               + Add New Property
             </button>
@@ -112,7 +136,12 @@ const Property = () => {
                     >
                       ✏️ Edit
                     </button>
-                    <button className={Styles.deleteBtn}>🗑 Delete</button>
+                    <button
+                      className={Styles.deleteBtn}
+                      onClick={() => handleDeleteProperty(property._id)}
+                    >
+                      🗑 Delete
+                    </button>
                   </div>
                 </div>
               </div>

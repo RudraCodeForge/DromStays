@@ -24,6 +24,8 @@ import Property from "./pages/Owner/Property.jsx";
 import AddProperty from "./pages/Owner/AddProperty.jsx";
 import Rooms from "./pages/Owner/Rooms.jsx";
 import EditProperty from "./pages/Owner/EditProperty.jsx";
+import Bookings from "./pages/Common/Bookings.jsx";
+import Settings from "./pages/Common/Settings.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -136,6 +138,22 @@ function App() {
         element={
           <ProtectedRoute>
             <EditProperty />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/bookings"
+        element={
+          <ProtectedRoute>
+            <Bookings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />

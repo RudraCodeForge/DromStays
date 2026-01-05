@@ -79,7 +79,7 @@ const Navbar = () => {
 
             <li>
               <NavLink
-                to="/Owner/settings"
+                to="/Settings"
                 className={({ isActive }) => (isActive ? Styles.active : "")}
               >
                 Settings
@@ -88,7 +88,7 @@ const Navbar = () => {
 
             <li>
               <NavLink
-                to="/Owner/bookings"
+                to="/bookings"
                 className={({ isActive }) => (isActive ? Styles.active : "")}
               >
                 Bookings

@@ -4,6 +4,8 @@ const SendPropertyCreationEmail =
   require("../utils/sendEmail").SendPropertyCreationEmail;
 const { deleteFromCloudinary } = require("../utils/cloudinaryHelper");
 
+const { createRoomsForProperty } = require("../services/room.service");
+
 exports.addProperty = async (req, res) => {
   try {
     const ownerId = req.user?.id;
@@ -15,7 +17,7 @@ exports.addProperty = async (req, res) => {
       });
     }
 
-    const { name, propertyType, totalRooms, location } = req.body;
+    const { name, propertyType, totalRooms, location, floorConfig } = req.body;
 
     // 🔍 Validation
     if (
@@ -81,7 +83,6 @@ exports.addProperty = async (req, res) => {
     });
 
     // 🛏️ 2️⃣ Auto-create Rooms
-    const rooms = [];
     const Roomimages = [
       {
         url:
@@ -91,25 +92,15 @@ exports.addProperty = async (req, res) => {
       },
     ];
 
-    for (let i = 1; i <= Number(totalRooms); i++) {
-      rooms.push({
-        property: newProperty._id,
-        owner: ownerId,
-        roomNumber: `R-${i}`, // default room numbers
-        floor: 0,
-        capacity: 1,
-        roomType: "Single",
-        pricing: {
-          billingType: "monthly",
-        },
-        amenities: [],
-        isAvailable: true,
-        images: Roomimages,
-      });
-    }
+    const rooms = await createRoomsForProperty({
+      propertyId: newProperty._id,
+      ownerId,
+      totalRooms: Number(totalRooms),
+      floorConfig,
+      roomImages: Roomimages,
+    });
+    console.log("Rooms created:", rooms.length);
 
-    await Room.insertMany(rooms);
-    // 📧 3️⃣ Send Notification Email to Owner
     await SendPropertyCreationEmail(req.user.Email, newProperty.name);
 
     // ✅ Response

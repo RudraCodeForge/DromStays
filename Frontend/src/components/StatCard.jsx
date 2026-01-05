@@ -9,9 +9,23 @@ const StatCard = ({
   badgeType,
   backgroundColor,
   color,
+  onClick, // 👈 NEW (optional)
 }) => {
   return (
-    <div className={Styles.Card}>
+    <div
+      className={Styles.Card}
+      onClick={onClick}
+      style={{
+        cursor: onClick ? "pointer" : "default",
+      }}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (onClick && (e.key === "Enter" || e.key === " ")) {
+          onClick();
+        }
+      }}
+    >
       <div className={Styles.TopRow}>
         <div
           className={Styles.IconBox}

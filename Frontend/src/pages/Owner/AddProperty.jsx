@@ -11,6 +11,10 @@ const AddProperty = () => {
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  /* 🏢 FLOOR CONFIG (NEW – ONLY ADD) */
+  const [totalFloors, setTotalFloors] = useState("1");
+  const [floorConfig, setFloorConfig] = useState([{ floor: 1, rooms: "1" }]);
+
   /* 🔐 AUTH + ROLE CHECK (SAFE) */
   useEffect(() => {
     if (!isAuthenticated) {
@@ -114,10 +118,18 @@ const AddProperty = () => {
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
 
+    const parsedFloorConfig = floorConfig.map((f) => ({
+      floor: f.floor,
+      rooms: parseInt(f.rooms, 10) || 0,
+    }));
+
+    const totalRooms = parsedFloorConfig.reduce((sum, f) => sum + f.rooms, 0);
+
     const payload = {
       name: data.name.trim(),
       propertyType: data.propertyType,
-      totalRooms: Number(data.totalRooms),
+      totalRooms: totalRooms,
+      floorConfig: parsedFloorConfig,
       location: {
         city: data.city.trim(),
         area: data.area.trim(),
@@ -137,6 +149,36 @@ const AddProperty = () => {
         error?.response?.data?.message || "Failed to add property."
       );
     }
+  };
+
+  /* 🏢 FLOOR CONFIG HANDLERS (NEW – ONLY ADD) */
+
+  const handleFloorInput = (value) => {
+    if (/^\d*$/.test(value)) setTotalFloors(value);
+  };
+
+  const applyFloorChange = () => {
+    const floors = parseInt(totalFloors, 10);
+    if (!floors || floors < 1) {
+      setTotalFloors("1");
+      return;
+    }
+
+    const updated = [];
+    for (let i = 1; i <= floors; i++) {
+      const existing = floorConfig.find((f) => f.floor === i);
+      updated.push(existing || { floor: i, rooms: "1" });
+    }
+
+    setTotalFloors(String(floors));
+    setFloorConfig(updated);
+  };
+
+  const updateRooms = (floor, value) => {
+    if (!/^\d*$/.test(value)) return;
+    setFloorConfig((prev) =>
+      prev.map((f) => (f.floor === floor ? { ...f, rooms: value } : f))
+    );
   };
 
   return (
@@ -175,17 +217,34 @@ const AddProperty = () => {
                   <option value="Room">Room</option>
                 </select>
               </div>
+            </div>
+
+            {/* 🏢 FLOOR CONFIG (NEW – ONLY ADD THIS) */}
+            <div className={Styles.section}>
+              <h3>🏢 Floor Configuration</h3>
 
               <div className={Styles.formGroup}>
-                <label>Total Rooms</label>
+                <label>Total Floors</label>
                 <input
-                  type="number"
-                  name="totalRooms"
-                  min="1"
-                  placeholder="Eg: 10"
-                  required
+                  type="text"
+                  inputMode="numeric"
+                  value={totalFloors}
+                  onChange={(e) => handleFloorInput(e.target.value)}
+                  onBlur={applyFloorChange}
                 />
               </div>
+
+              {floorConfig.map((f) => (
+                <div key={f.floor} className={Styles.formGroup}>
+                  <label>Rooms on Floor {f.floor}</label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    value={f.rooms}
+                    onChange={(e) => updateRooms(f.floor, e.target.value)}
+                  />
+                </div>
+              ))}
             </div>
 
             {/* 📍 LOCATION DETAILS */}

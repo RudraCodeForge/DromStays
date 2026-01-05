@@ -15,6 +15,7 @@ import {
   faHeadset,
   faArrowRight,
   faComments,
+  faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatCard from "../../components/StatCard.jsx";
@@ -30,7 +31,7 @@ const OwnerDashboard = () => {
   const [Rooms, setRooms] = useState(0);
   const [newRooms, setNewRooms] = useState(0);
 
-  // 🔐 Auth + Role Guard
+  // 🔐 Auth + Role Guard (Role with capital R)
   useEffect(() => {
     if (!isAuthenticated || user?.Role?.toLowerCase() !== "owner") {
       navigate("/Login");
@@ -60,7 +61,6 @@ const OwnerDashboard = () => {
         );
 
         const now = Date.now();
-        const ONE_DAY = 24 * 60 * 60 * 1000;
 
         // 🧹 Auto cleanup after 24 hrs
         if (storedBadge && now - storedBadge.timestamp > ONE_DAY) {
@@ -77,14 +77,12 @@ const OwnerDashboard = () => {
             "owner_rooms_badge",
             JSON.stringify({
               count: updatedCount,
-              timestamp: storedBadge?.timestamp || now,
+              timestamp: storedBadge ? storedBadge.timestamp : now,
             })
           );
 
           setNewRooms(updatedCount);
-        }
-        // 🔁 No new room, but badge exists
-        else if (storedBadge) {
+        } else if (storedBadge) {
           setNewRooms(storedBadge.count);
         } else {
           setNewRooms(0);
@@ -106,41 +104,6 @@ const OwnerDashboard = () => {
     day: "numeric",
   });
 
-  const statCardsData = [
-    {
-      icon: faHouseChimney,
-      title: "Total Rooms",
-      value: Rooms,
-      badge: newRooms > 0 ? `+${newRooms} new` : null,
-      badgeType: "success",
-    },
-    {
-      icon: faCalendarCheck,
-      title: "Active Bookings",
-      value: "8",
-      backgroundColor: "#f5e6ffa7",
-      color: "#bc05ffff",
-    },
-    {
-      icon: faClock,
-      title: "Pending Requests",
-      value: "3",
-      backgroundColor: "#fff4e5",
-      color: "#ff9900",
-      badge: "Action needed",
-      badgeType: "warning",
-    },
-    {
-      icon: faWallet,
-      title: "Total Earnings",
-      value: `₹${user?.WalletBalance || 0}`,
-      backgroundColor: "#37ec0a6a",
-      color: "#1a5c0aff",
-      badge: "+12% this month",
-      badgeType: "success",
-    },
-  ];
-
   return (
     <>
       <Navbar />
@@ -152,7 +115,7 @@ const OwnerDashboard = () => {
 
         <div className={Styles.dashboardHeader}>
           <p className={Styles.dashboardDescription}>
-            Here's what happening with your properties today.
+            Here's what's happening with your properties today.
           </p>
           <span className={Styles.Date}>
             <FontAwesomeIcon icon={faCalendar} /> &nbsp;{todayDate}
@@ -161,18 +124,49 @@ const OwnerDashboard = () => {
 
         {/* 📊 Stats */}
         <div className={Styles.cardsContainer}>
-          {statCardsData.map((card, index) => (
-            <StatCard
-              key={index}
-              icon={card.icon}
-              title={card.title}
-              value={card.value}
-              badge={card.badge}
-              badgeType={card.badgeType}
-              backgroundColor={card.backgroundColor}
-              color={card.color}
-            />
-          ))}
+          <StatCard
+            icon={faHouseChimney}
+            title="Total Rooms"
+            value={Rooms}
+            badge={newRooms > 0 ? `+${newRooms} new` : null}
+            badgeType="success"
+          />
+
+          <StatCard icon={faCalendarCheck} title="Active Bookings" value="8" />
+
+          {/* 🔔 CLICKABLE CARD */}
+          <StatCard
+            icon={faClock}
+            title="Pending Requests"
+            value="3"
+            badge="Needs action"
+            badgeType="warning"
+            onClick={() => navigate("/Owner/Requests")}
+          />
+
+          <StatCard
+            icon={faMoneyBills}
+            title="Rent Due Today"
+            value="3"
+            badge="Action needed"
+            badgeType="danger"
+          />
+
+          <StatCard
+            icon={faTriangleExclamation}
+            title="Overdue Payments"
+            value="₹5,500"
+          />
+
+          <StatCard icon={faWallet} title="Advance Balance" value="₹8,000" />
+
+          <StatCard
+            icon={faMoneyBills}
+            title="Expected Collection"
+            value="₹42,000"
+            badge="This month"
+            badgeType="success"
+          />
         </div>
 
         {/* 📌 Activity + Actions */}
@@ -183,7 +177,7 @@ const OwnerDashboard = () => {
               <li>🛏️ Room booked by Rahul</li>
               <li>💰 Payment received ₹3,000</li>
               {newRooms > 0 && <li>➕ {newRooms} new room added</li>}
-              <li>🧹 Cleaning service requested</li>
+              <li>⏰ Rent due reminder sent</li>
             </ul>
           </div>
 
@@ -217,6 +211,15 @@ const OwnerDashboard = () => {
                 <NavLink to="/Owner/ViewPayments" className={Styles.ActionLink}>
                   <span className={Styles.Left}>
                     <FontAwesomeIcon icon={faMoneyBills} /> View Payments
+                  </span>
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink to="/Owner/Requests" className={Styles.ActionLink}>
+                  <span className={Styles.Left}>
+                    <FontAwesomeIcon icon={faClock} /> Manage Requests
                   </span>
                   <FontAwesomeIcon icon={faArrowRight} />
                 </NavLink>

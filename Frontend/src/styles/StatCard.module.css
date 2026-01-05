@@ -1,12 +1,18 @@
 .Card {
   background: #ffffff;
   border-radius: 14px;
-  margin: 10px;
-  width: 300px;
   padding: 18px 20px;
-  display: inline-block;
+
+  /* 🔥 IMPORTANT FIXES */
+  width: 100%; /* grid ke hisaab se stretch */
+  height: 100%; /* equal height cards */
+  margin: 0; /* grid gap handle karega */
+  display: flex; /* content balance */
+  flex-direction: column;
+  justify-content: space-between;
+
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  transition: 0.3s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .Card:hover {
@@ -14,17 +20,19 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
-/* Top row */
+/* ================= TOP ROW ================= */
+
 .TopRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Icon square */
+/* ================= ICON ================= */
+
 .IconBox {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   background: #eef4ff;
   display: flex;
@@ -32,14 +40,17 @@
   justify-content: center;
   color: #2563eb;
   font-size: 18px;
+  flex-shrink: 0;
 }
 
-/* Badge */
+/* ================= BADGE ================= */
+
 .Badge {
   font-size: 12px;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 4px 10px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 
 /* Badge types */
@@ -58,17 +69,36 @@
   color: #4f46e5;
 }
 
-/* Text */
+.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* ================= TEXT ================= */
+
 .Title {
-  margin-top: 14px;
+  margin-top: 16px;
   font-size: 14px;
   color: #6b7280;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .Value {
-  margin-top: 4px;
+  margin-top: 6px;
   font-size: 26px;
   font-weight: 800;
   color: #111827;
+  line-height: 1.2;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 768px) {
+  .Card {
+    padding: 16px;
+  }
+
+  .Value {
+    font-size: 24px;
+  }
 }

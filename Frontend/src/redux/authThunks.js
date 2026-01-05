@@ -1,4 +1,4 @@
-import api from "../services/api";
+import api from "../services/api.service";
 import { setUserFromBackend, authCheckFinished } from "./authSlice";
 
 export const fetchCurrentUser = () => async (dispatch) => {

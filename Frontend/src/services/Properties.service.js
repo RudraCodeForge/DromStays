@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./api.service";
 
 export const Add_Property = async (propertyData) => {
   try {

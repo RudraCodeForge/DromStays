@@ -1,4 +1,4 @@
-import api from "./api";
+import api from "./api.service";
 
 export const Get_Owner_Property_Rooms = async (propertyId) => {
   try {

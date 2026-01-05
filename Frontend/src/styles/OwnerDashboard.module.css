@@ -285,3 +285,57 @@
     background-color: var(--primary-transparant-color);
   }
 }
+/* Recently edited files. Do not suggest code that has been deleted. */
+/* ================= ACTIVITY LIST ================= */
+
+/* Single activity item */
+.ActivityItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Icon */
+.ActivityIcon {
+  font-size: 20px;
+  line-height: 1;
+  margin-top: 3px;
+}
+
+/* Text wrapper */
+.ActivityContent {
+  display: flex;
+  justify-content: space-between; /* 🔥 LEFT + RIGHT */
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Message (left) */
+.ActivityMessage {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  flex: 1; /* 🔥 take remaining space */
+  word-break: break-word;
+}
+
+/* Time (right) */
+.ActivityTime {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap; /* 🔥 never wrap */
+}
+
+@media (max-width: 768px) {
+  .ActivityContent {
+    flex-direction: column; /* time below text */
+    align-items: flex-start;
+  }
+
+  .ActivityTime {
+    font-size: 11px;
+  }
+}

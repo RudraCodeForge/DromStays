@@ -6,6 +6,8 @@ const { deleteFromCloudinary } = require("../utils/cloudinaryHelper");
 
 const { createRoomsForProperty } = require("../services/room.service");
 
+const { logActivity } = require("../services/activity.service");
+
 exports.addProperty = async (req, res) => {
   try {
     const ownerId = req.user?.id;
@@ -99,7 +101,16 @@ exports.addProperty = async (req, res) => {
       floorConfig,
       roomImages: Roomimages,
     });
-    console.log("Rooms created:", rooms.length);
+
+    // 📝 3️⃣ Log Activity
+    await logActivity({
+      owner: ownerId,
+      entityType: "PROPERTY",
+      entityId: newProperty._id,
+      action: "CREATED",
+      message: `Property "${newProperty.name}" has been successfully created with ${rooms.length} rooms.`,
+      meta: { totalRooms: rooms.length },
+    });
 
     await SendPropertyCreationEmail(req.user.Email, newProperty.name);
 
@@ -221,6 +232,18 @@ exports.updateProperty = async (req, res) => {
 
     await property.save();
 
+    // Record Activity
+    await logActivity({
+      owner: ownerId,
+      entityType: "PROPERTY",
+      entityId: property._id,
+      action: "UPDATED",
+      message: `Property "${property.name}" details were updated.`,
+      meta: { updatedFields: Object.keys(req.body) },
+    });
+
+    // ✅ Response
+
     return res.status(200).json({
       success: true,
       message: "Property updated successfully",
@@ -264,6 +287,15 @@ exports.deleteProperty = async (req, res) => {
     ) {
       await deleteFromCloudinary(image.public_id);
     }
+
+    // 📝 4️⃣ Log Activity
+    await logActivity({
+      owner: ownerId,
+      entityType: "PROPERTY",
+      entityId: propertyId,
+      action: "DELETED",
+      message: `Property "${property.name}" and all its rooms were deleted.`,
+    });
 
     // 🔥 3️⃣ Delete property itself
     await Property.deleteOne({ _id: propertyId });

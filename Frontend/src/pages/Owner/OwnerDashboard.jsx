@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatCard from "../../components/StatCard.jsx";
 import { useSelector } from "react-redux";
 import { Get_Owner_Rooms } from "../../services/Rooms";
+import { Get_All_Activities } from "../../services/RecentActivity.service.js";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -30,6 +31,10 @@ const OwnerDashboard = () => {
 
   const [Rooms, setRooms] = useState(0);
   const [newRooms, setNewRooms] = useState(0);
+  const [activities, setActivities] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // 🔐 Auth + Role Guard (Role with capital R)
   useEffect(() => {
@@ -43,6 +48,39 @@ const OwnerDashboard = () => {
     document.body.style.backgroundColor = "#1f126a1f";
     return () => {
       document.body.style.backgroundColor = "";
+    };
+  }, []);
+
+  // Recent Activities
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchActivities = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await Get_All_Activities();
+
+        if (isMounted) {
+          setActivities(data.activities || []);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err?.message || "Failed to load activities");
+          console.error("Error fetching activities:", err);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchActivities();
+
+    return () => {
+      isMounted = false;
     };
   }, []);
 
@@ -67,27 +105,60 @@ const OwnerDashboard = () => {
           localStorage.removeItem("owner_rooms_badge");
         }
 
-        // 🆕 New rooms added
-        if (currentCount > prevCount) {
+        // 🆕 / 🔴 Handle room count change
+        if (currentCount !== prevCount) {
           const diff = currentCount - prevCount;
 
-          const updatedCount = storedBadge ? storedBadge.count + diff : diff;
+          // 🟢 Rooms added
+          if (diff > 0) {
+            const updatedCount = storedBadge ? storedBadge.count + diff : diff;
 
-          localStorage.setItem(
-            "owner_rooms_badge",
-            JSON.stringify({
-              count: updatedCount,
-              timestamp: storedBadge ? storedBadge.timestamp : now,
-            })
-          );
+            localStorage.setItem(
+              "owner_rooms_badge",
+              JSON.stringify({
+                count: updatedCount,
+                timestamp: storedBadge ? storedBadge.timestamp : now,
+              })
+            );
 
-          setNewRooms(updatedCount);
-        } else if (storedBadge) {
+            setNewRooms(updatedCount);
+          }
+
+          // 🔴 Rooms deleted
+          else {
+            if (storedBadge) {
+              const reducedCount = Math.max(
+                storedBadge.count + diff, // diff is negative
+                0
+              );
+
+              if (reducedCount > 0) {
+                localStorage.setItem(
+                  "owner_rooms_badge",
+                  JSON.stringify({
+                    count: reducedCount,
+                    timestamp: storedBadge.timestamp,
+                  })
+                );
+                setNewRooms(reducedCount);
+              } else {
+                localStorage.removeItem("owner_rooms_badge");
+                setNewRooms(0);
+              }
+            } else {
+              setNewRooms(0);
+            }
+          }
+        }
+
+        // Same count – keep badge if exists
+        else if (storedBadge) {
           setNewRooms(storedBadge.count);
         } else {
           setNewRooms(0);
         }
 
+        // 🔄 Update current count
         setRooms(currentCount);
         localStorage.setItem("owner_rooms_count", currentCount);
       } catch (error) {
@@ -103,6 +174,35 @@ const OwnerDashboard = () => {
     month: "short",
     day: "numeric",
   });
+
+  // Activites list rendring logic can be added here
+
+  const getActivityIcon = (activity) => {
+    const { entityType, action } = activity;
+
+    if (entityType === "PROPERTY" && action === "CREATED") return "🏠";
+    if (entityType === "PROPERTY" && action === "DELETED") return "🗑️";
+
+    if (entityType === "BOOKING" && action === "BOOKED") return "🛏️";
+    if (entityType === "BOOKING" && action === "CANCELLED") return "❌";
+
+    if (entityType === "PAYMENT" && action === "PAID") return "💰";
+    if (entityType === "PAYMENT" && action === "FAILED") return "⚠️";
+
+    if (entityType === "SERVICE" && action === "COMPLETED") return "🧹";
+
+    return "🔔";
+  };
+
+  const timeAgo = (date) => {
+    const diff = Math.floor((Date.now() - new Date(date)) / 1000);
+
+    if (diff < 60) return "Just now";
+    if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
+
+    return `${Math.floor(diff / 86400)} days ago`;
+  };
 
   return (
     <>
@@ -173,11 +273,46 @@ const OwnerDashboard = () => {
         <div className={Styles.placeholderSection}>
           <div className={Styles.RightBox}>
             <h2>Recent Activity</h2>
+
             <ul className={Styles.ActivityList}>
-              <li>🛏️ Room booked by Rahul</li>
-              <li>💰 Payment received ₹3,000</li>
-              {newRooms > 0 && <li>➕ {newRooms} new room added</li>}
-              <li>⏰ Rent due reminder sent</li>
+              {/* Loading */}
+              {loading && (
+                <li className={Styles.EmptyActivity}>Loading activities…</li>
+              )}
+
+              {/* Error */}
+              {!loading && error && (
+                <li className={Styles.EmptyActivity}>{error}</li>
+              )}
+
+              {/* Empty */}
+              {!loading && !error && activities.length === 0 && (
+                <li className={Styles.EmptyActivity}>No recent activity</li>
+              )}
+
+              {/* List */}
+              {!loading &&
+                !error &&
+                activities.slice(0, 10).map((activity) => (
+                  <li
+                    key={activity._id}
+                    className={Styles.ActivityItem}
+                    aria-label="Recent activity item"
+                  >
+                    <span className={Styles.ActivityIcon}>
+                      {getActivityIcon(activity)}
+                    </span>
+
+                    <div className={Styles.ActivityContent}>
+                      <p className={Styles.ActivityMessage}>
+                        {activity.message}
+                      </p>
+                      <span className={Styles.ActivityTime}>
+                        {timeAgo(activity.createdAt)}
+                      </span>
+                    </div>
+                  </li>
+                ))}
             </ul>
           </div>
 

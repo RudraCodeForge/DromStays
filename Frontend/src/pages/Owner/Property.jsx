@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import {
   Get_Owner_Properties,
   Delete_Property,
-} from "../../services/Properties";
+} from "../../services/Properties.service";
 
 const Property = () => {
   const navigate = useNavigate();

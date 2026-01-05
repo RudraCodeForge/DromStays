@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Upload_Property_Images } from "../../services/Cloudinary";
-import { Get_Property_By_Id, Update_Property } from "../../services/Properties";
+import { Upload_Property_Images } from "../../services/Cloudinary.service";
+import {
+  Get_Property_By_Id,
+  Update_Property,
+} from "../../services/Properties.service";
 import styles from "../../styles/EditProperty.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";

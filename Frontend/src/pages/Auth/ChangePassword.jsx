@@ -6,7 +6,7 @@ import { useState } from "react";
 import Footer from "../../components/Footer";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ErrorContainer from "../../components/ErrorContainer.jsx";
-import { Update_Password } from "../../services/auth";
+import { Update_Password } from "../../services/auth.service.js";
 import { logout } from "../../redux/authSlice";
 
 const ChangePassword = () => {

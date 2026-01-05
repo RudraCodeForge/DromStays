@@ -4,7 +4,7 @@ import Footer from "../../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ErrorContainer from "../../components/ErrorContainer";
-import { Add_Property } from "../../services/Properties";
+import { Add_Property } from "../../services/Properties.service";
 import { useSelector } from "react-redux";
 
 const AddProperty = () => {

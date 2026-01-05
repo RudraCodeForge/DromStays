@@ -1,7 +1,7 @@
 import Styles from "../../styles/ResetPassword.module.css";
 import ErrorContainer from "../../components/ErrorContainer";
 import { useState } from "react";
-import { Forget_Password } from "../../services/auth";
+import { Forget_Password } from "../../services/auth.service";
 
 const ResetPassword = () => {
   const [errors, setErrors] = useState(null);

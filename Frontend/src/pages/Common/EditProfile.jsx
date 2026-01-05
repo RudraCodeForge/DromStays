@@ -5,7 +5,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import Style from "../../styles/EditProfile.module.css";
 //import { updateUser } from "../../redux/authSlice";
-import { updateProfileApi } from "../../services/user"; // backend later
+import { updateProfileApi } from "../../services/user.service"; // backend later
 
 const EditProfile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);

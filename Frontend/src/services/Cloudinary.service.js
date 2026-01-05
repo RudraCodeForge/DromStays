@@ -1,4 +1,4 @@
-const uploadImageToCloudinary = async (file) => {
+const upload_Profile_ImageToCloudinary = async (file) => {
   if (!file) throw new Error("No file selected");
 
   const formData = new FormData();
@@ -55,4 +55,4 @@ const Upload_Property_Images = async (file) => {
 
 export { Upload_Property_Images };
 
-export { uploadImageToCloudinary };
+export { upload_Profile_ImageToCloudinary };

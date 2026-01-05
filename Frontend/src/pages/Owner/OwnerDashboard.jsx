@@ -20,7 +20,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatCard from "../../components/StatCard.jsx";
 import { useSelector } from "react-redux";
-import { Get_Owner_Rooms } from "../../services/Rooms";
+import { Get_Owner_Rooms } from "../../services/Rooms.service.js";
 import { Get_All_Activities } from "../../services/RecentActivity.service.js";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;

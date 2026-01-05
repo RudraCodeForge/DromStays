@@ -4,7 +4,7 @@ import Footer from "../../components/Footer.jsx";
 import ReviewsSection from "../../components/ReviewSection.jsx";
 import HeroSection from "../../components/HeroSection.jsx";
 import { useEffect, useState } from "react";
-import { getReviews } from "../../services/reviews";
+import { getReviews } from "../../services/reviews.service.js";
 import HowItWorks from "../../components/HowItWorks.jsx";
 import { steps } from "../../data/steps.js";
 import { features } from "../../data/features.js";

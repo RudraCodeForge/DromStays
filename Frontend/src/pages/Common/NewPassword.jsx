@@ -2,7 +2,7 @@ import Styles from "../../styles/NewPassword.module.css";
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ErrorContainer from "../../components/ErrorContainer";
-import { Reset_Password } from "../../services/auth";
+import { Reset_Password } from "../../services/auth.service";
 
 const NewPassword = () => {
   const [searchParams] = useSearchParams();

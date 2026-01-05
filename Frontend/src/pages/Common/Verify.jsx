@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { VerifyAccount } from "../../services/auth";
+import { VerifyAccount } from "../../services/auth.service";
 import { fetchCurrentUser } from "../../redux/authThunks";
 
 const Verify = () => {

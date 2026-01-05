@@ -4,7 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import { Get_Owner_Property_Rooms } from "../../services/Rooms";
+import { Get_Owner_Property_Rooms } from "../../services/Rooms.service";
 
 const Rooms = () => {
   const navigate = useNavigate();

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { loginSuccess } from "../../redux/authSlice";
 import { fetchCurrentUser } from "../../redux/authThunks";
-import { Login as LoginService } from "../../services/auth";
+import { Login as LoginService } from "../../services/auth.service";
 import ErrorContainer from "../../components/ErrorContainer";
 
 const Login = () => {

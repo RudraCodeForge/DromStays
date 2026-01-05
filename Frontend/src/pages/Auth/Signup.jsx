@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Footer from "../../components/Footer.jsx";
 import { Link } from "react-router-dom";
-import { Signup as SignupService } from "../../services/auth.js";
+import { Signup as SignupService } from "../../services/auth.service.js";
 
 const Signup = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);

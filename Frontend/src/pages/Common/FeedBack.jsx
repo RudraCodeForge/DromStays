@@ -1,6 +1,6 @@
 import Styles from "../../styles/FeedBack.module.css";
 import { useState } from "react";
-import { submitReview } from "../../services/reviews.js";
+import { submitReview } from "../../services/reviews.service.js";
 
 const FeedBack = () => {
   const [rating, setRating] = useState(0);

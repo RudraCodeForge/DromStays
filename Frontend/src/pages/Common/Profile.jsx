@@ -3,11 +3,11 @@ import Navbar from "../../components/Navbar/Navbar.jsx";
 import Footer from "../../components/Footer";
 import { Navigate, NavLink } from "react-router-dom";
 import { logout } from "../../redux/authSlice.js";
-import { SendVerificationEmail } from "../../services/auth.js";
+import { SendVerificationEmail } from "../../services/auth.service.js";
 import Style from "../../styles/Profile.module.css";
 import { useState, useRef } from "react";
-import { uploadImageToCloudinary } from "../../services/Cloudinary.js";
-import { updateProfilePictureApi } from "../../services/user.js";
+import { upload_Profile_ImageToCloudinary } from "../../services/Cloudinary.service.js";
+import { updateProfilePictureApi } from "../../services/user.service.js";
 
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -53,7 +53,7 @@ const Profile = () => {
     try {
       setUploading(true);
 
-      const url = await uploadImageToCloudinary(file);
+      const url = await upload_Profile_ImageToCloudinary(file);
       setPreview(url); // optimistic UI
 
       await updateProfilePictureApi({ ProfilePicture: url });

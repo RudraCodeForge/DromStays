@@ -41,7 +41,7 @@ const RoomSchema = new mongoose.Schema(
 
     capacity: {
       type: Number,
-      required: true, // total persons allowed
+      required: true,
       min: 1,
     },
 
@@ -53,25 +53,13 @@ const RoomSchema = new mongoose.Schema(
       },
 
       singleOccupancy: {
-        dailyRent: {
-          type: Number,
-          min: 0,
-        },
-        monthlyRent: {
-          type: Number,
-          min: 0,
-        },
+        dailyRent: { type: Number, min: 0 },
+        monthlyRent: { type: Number, min: 0 },
       },
 
       sharing: {
-        perPersonDailyRent: {
-          type: Number,
-          min: 0,
-        },
-        perPersonMonthlyRent: {
-          type: Number,
-          min: 0,
-        },
+        perPersonDailyRent: { type: Number, min: 0 },
+        perPersonMonthlyRent: { type: Number, min: 0 },
       },
     },
 
@@ -105,7 +93,39 @@ const RoomSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-/* 🔒 Unique room number per property */
+/* 🔒 Unique room per property */
 RoomSchema.index({ property: 1, roomNumber: 1 }, { unique: true });
+
+/* 🧠 Virtuals */
+RoomSchema.virtual("occupancyMode").get(function () {
+  return this.tenants.length > 1 ? "sharing" : "single";
+});
+
+RoomSchema.virtual("rentPerTenant").get(function () {
+  const count = this.tenants.length || 1;
+
+  if (count > 1) {
+    return this.pricing.billingType === "daily"
+      ? this.pricing.sharing.perPersonDailyRent
+      : this.pricing.sharing.perPersonMonthlyRent;
+  }
+
+  return this.pricing.billingType === "daily"
+    ? this.pricing.singleOccupancy.dailyRent
+    : this.pricing.singleOccupancy.monthlyRent;
+});
+
+RoomSchema.virtual("currentOccupancy").get(function () {
+  return this.tenants.length;
+});
+
+/* 🔄 AUTO AVAILABILITY (SYNC HOOK — NO next) */
+RoomSchema.pre("save", function () {
+  this.isAvailable = this.tenants.length < this.capacity;
+});
+
+/* 📦 Enable virtuals */
+RoomSchema.set("toJSON", { virtuals: true });
+RoomSchema.set("toObject", { virtuals: true });
 
 module.exports = mongoose.model("Room", RoomSchema);

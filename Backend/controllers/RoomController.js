@@ -120,8 +120,7 @@ exports.updateRoomById = async (req, res) => {
       pricing,
     } = req.body;
 
-    /* ✅ SAFE FIELD UPDATES ONLY */
-
+    /* ✅ SAFE UPDATES */
     if (roomNumber !== undefined) room.roomNumber = roomNumber;
     if (roomType !== undefined) room.roomType = roomType;
     if (capacity !== undefined) room.capacity = capacity;
@@ -145,10 +144,7 @@ exports.updateRoomById = async (req, res) => {
       };
     }
 
-    /* 🔄 Availability auto-managed (DO NOT trust client) */
-    room.isAvailable = room.tenants.length < room.capacity;
-
-    await room.save();
+    await room.save(); // pre-save runs safely
 
     return res.status(200).json({
       success: true,

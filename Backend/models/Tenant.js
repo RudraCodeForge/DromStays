@@ -20,7 +20,7 @@ const TenantSchema = new mongoose.Schema(
       lowercase: true,
     },
 
-    // 🔑 Platform linking
+    // 🔑 Platform linking (if tenant registers later)
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -32,11 +32,13 @@ const TenantSchema = new mongoose.Schema(
       default: false,
     },
 
-    room: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Room",
-      required: true,
-    },
+    // 🏠 Tenant can have multiple rooms
+    rooms: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Room",
+      },
+    ],
 
     property: {
       type: mongoose.Schema.Types.ObjectId,
@@ -61,6 +63,31 @@ const TenantSchema = new mongoose.Schema(
     },
   },
   { timestamps: true }
+);
+
+//
+// 🔒 UNIQUE RULES (BEST & FUTURE-SAFE)
+//
+
+// 1️⃣ Same phone cannot be active twice in same property
+TenantSchema.index(
+  { phone: 1, property: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { isActive: true },
+  }
+);
+
+// 2️⃣ Same email cannot be active twice (email optional)
+TenantSchema.index(
+  { email: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      email: { $exists: true, $ne: null },
+      isActive: true,
+    },
+  }
 );
 
 module.exports = mongoose.model("Tenant", TenantSchema);

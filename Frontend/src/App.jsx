@@ -29,6 +29,7 @@ import Settings from "./pages/Common/Settings.jsx";
 import ManageServices from "./pages/Common/ManageServices.jsx";
 import ManageRequests from "./pages/Owner/ManageRequests.jsx";
 import EditRooms from "./pages/Owner/EditRooms.jsx";
+import AddTenant from "./pages/Owner/AddTanent.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -181,6 +182,15 @@ function App() {
         element={
           <ProtectedRoute>
             <EditRooms />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/Owner/add-tenant/:roomId"
+        element={
+          <ProtectedRoute>
+            <AddTenant />
           </ProtectedRoute>
         }
       />

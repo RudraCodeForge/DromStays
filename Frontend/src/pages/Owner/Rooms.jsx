@@ -112,13 +112,25 @@ const Rooms = () => {
                   {room.isAvailable ? "Available" : "Occupied"}
                 </span>
 
-                {/* ✏️ Edit */}
-                <button
-                  className={Styles.editButton}
-                  onClick={() => navigate(`/Owner/edit-room/${room._id}`)}
-                >
-                  Edit Room
-                </button>
+                <div className={Styles.cardActions}>
+                  <button
+                    className={Styles.editButton}
+                    onClick={() => navigate(`/Owner/edit-room/${room._id}`)}
+                  >
+                    Edit Room
+                  </button>
+
+                  {room.tenants.length < room.capacity ? (
+                    <button
+                      className={Styles.addTenantButton}
+                      onClick={() => navigate(`/Owner/add-tenant/${room._id}`)}
+                    >
+                      + Add Tenant
+                    </button>
+                  ) : (
+                    <span className={Styles.fullBadge}>Room Full</span>
+                  )}
+                </div>
               </div>
             ))}
           </div>

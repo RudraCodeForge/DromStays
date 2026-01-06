@@ -10,6 +10,7 @@ const SubscriptionRouter = require("./routes/SubscriptionRouter");
 const PropertyRouter = require("./routes/PropertyRouter");
 const RoomRouter = require("./routes/RoomRouter");
 const RecentRouter = require("./routes/RecentRouter");
+const TenantRouter = require("./routes/Tenant.route");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/reviews", ReviewRouter);
 app.use("/subscriptions", SubscriptionRouter);
 app.use("/rooms", RoomRouter);
 app.use("/activities", RecentRouter);
+app.use("/tenants", TenantRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

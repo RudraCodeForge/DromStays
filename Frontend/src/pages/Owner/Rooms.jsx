@@ -115,7 +115,7 @@ const Rooms = () => {
                 {/* ✏️ Edit */}
                 <button
                   className={Styles.editButton}
-                  onClick={() => navigate(`/edit-room/${room._id}`)}
+                  onClick={() => navigate(`/Owner/edit-room/${room._id}`)}
                 >
                   Edit Room
                 </button>

@@ -352,7 +352,10 @@ const OwnerDashboard = () => {
               </li>
 
               <li>
-                <NavLink to="/Owner/Requests" className={Styles.ActionLink}>
+                <NavLink
+                  to="/Owner/ManageRequests"
+                  className={Styles.ActionLink}
+                >
                   <span className={Styles.Left}>
                     <FontAwesomeIcon icon={faClock} /> Manage Requests
                   </span>

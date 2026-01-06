@@ -26,7 +26,9 @@ import Rooms from "./pages/Owner/Rooms.jsx";
 import EditProperty from "./pages/Owner/EditProperty.jsx";
 import Bookings from "./pages/Common/Bookings.jsx";
 import Settings from "./pages/Common/Settings.jsx";
-
+import ManageServices from "./pages/Common/ManageServices.jsx";
+import ManageRequests from "./pages/Owner/ManageRequests.jsx";
+import EditRooms from "./pages/Owner/EditRooms.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -154,6 +156,31 @@ function App() {
         element={
           <ProtectedRoute>
             <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Owner/ManageServices"
+        element={
+          <ProtectedRoute>
+            <ManageServices />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Owner/ManageRequests"
+        element={
+          <ProtectedRoute>
+            <ManageRequests />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/Owner/edit-room/:roomId"
+        element={
+          <ProtectedRoute>
+            <EditRooms />
           </ProtectedRoute>
         }
       />

@@ -24,3 +24,27 @@ export const Get_Owner_Rooms = async () => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const getRoomById = async (roomId) => {
+  try {
+    const response = await api.get(`/rooms/${roomId}`);
+    return response.data;
+  } catch (error) {
+    if (error.response?.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};
+
+export const updateRoomById = async (roomId, payload) => {
+  try {
+    const response = await api.put(`/rooms/${roomId}`, payload);
+    return response.data;
+  } catch (error) {
+    if (error.response?.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

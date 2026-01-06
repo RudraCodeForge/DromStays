@@ -1,0 +1,103 @@
+.container {
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: "Roboto Slab", serif;
+}
+
+h1 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+/* Stats */
+.stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stats div {
+  background: var(--card-bg);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* List */
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.4rem;
+}
+
+/* Card */
+.card {
+  background: var(--card-bg);
+  padding: 1.3rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.card h3 {
+  color: var(--text-dark);
+  margin-bottom: 0.4rem;
+}
+
+.card p {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin: 0.15rem 0;
+}
+
+/* Status */
+.status {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.7rem;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.pending {
+  background: var(--primary-transparant-color);
+  color: var(--primary-color);
+}
+
+.accepted {
+  background: #e6f9f0;
+  color: #0f9d58;
+}
+
+.rejected {
+  background: #fdecea;
+  color: #d93025;
+}
+
+/* Actions */
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.accept {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reject {
+  background: transparent;
+  border: 1.5px solid #d93025;
+  color: #d93025;
+  padding: 0.45rem 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+}

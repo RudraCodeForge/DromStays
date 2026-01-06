@@ -2,12 +2,12 @@ import styles from "../../styles/SubscriptionPlans.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useState, useEffect } from "react";
-import { getSubscriptionPlans } from "../../services/Subscription";
+import { getSubscriptionPlans } from "../../services/Subscription.service.js";
 import ErrorContainer from "../../components/ErrorContainer";
 import PageLoader from "../../components/PageLoader.jsx";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
-import { subscribeToPlan } from "../../services/Subscription";
+import { subscribeToPlan } from "../../services/Subscription.service.js";
 const SubscriptionPlans = () => {
   const [plans, setPlans] = useState([]);
   const [error, setError] = useState(null);

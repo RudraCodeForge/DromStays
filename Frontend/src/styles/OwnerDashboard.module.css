@@ -339,3 +339,17 @@
     font-size: 11px;
   }
 }
+.RightBox,
+.LeftBox {
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* only list scrolls */
+.ActivityList,
+.ActionList {
+  overflow-y: auto;
+  flex: 1;
+  margin-top: 12px;
+}

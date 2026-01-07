@@ -1,6 +1,8 @@
 const Tenant = require("../models/Tenant");
 const Room = require("../models/Room");
 const User = require("../models/User");
+const Property = require("../models/Property");
+const { logActivity } = require("../services/activity.service");
 
 exports.ADD_TENANT_TO_ROOM = async (req, res) => {
   try {
@@ -41,6 +43,13 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
+    const property = await Property.findById(room.property);
+    if (!property || property.owner.toString() !== ownerId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to add tenant to this room",
+      });
+    }
     /* 🚫 CAPACITY CHECK (HARD GUARD) */
     if (room.tenants.length >= room.capacity) {
       return res.status(400).json({
@@ -84,6 +93,14 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
 
       await tenant.save();
     }
+    await logActivity({
+      owner: ownerId,
+      entityType: "ROOM",
+      entityId: tenant._id,
+      action: "CREATED",
+      message: `New Tenant "${tenant.fullName}" was added to property "${property.name}" in room no "${room.roomNumber}".`,
+      meta: { tenantId: tenant._id, roomId: room._id },
+    });
 
     /* 🏠 ADD TENANT TO ROOM (SAFE PUSH) */
     if (!room.tenants.includes(tenant._id)) {
@@ -134,6 +151,16 @@ exports.DELETE_TENANT_BY_ID = async (req, res) => {
 
     /* 🏠 FIND ALL ROOMS WHERE TENANT EXISTS */
     const rooms = await Room.find({ tenants: tenant._id });
+    const property = await Property.findById(rooms[0].property);
+
+    await logActivity({
+      owner: ownerId,
+      entityType: "ROOM",
+      entityId: tenant._id,
+      action: "CREATED",
+      message: `New Tenant "${tenant.fullName}" was removed from property "${property.name}" in room no "${rooms[0].roomNumber}".`,
+      meta: { tenantId: tenant._id, roomId: rooms._id },
+    });
 
     for (const room of rooms) {
       room.tenants.pull(tenant._id);

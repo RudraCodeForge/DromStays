@@ -1,7 +1,10 @@
 import Styles from "../../styles/ViewTenant.module.css";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getTenantByRoomId } from "../../services/Tenant.service";
+import {
+  getTenantByRoomId,
+  deleteTenantById,
+} from "../../services/Tenant.service";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 
@@ -29,8 +32,6 @@ const ViewTenant = () => {
     fetchTenants();
   }, [roomId]);
 
-  console.log("Tenants:", tenants);
-
   if (loading) {
     return <p className={Styles.loading}>Loading tenants...</p>;
   }
@@ -38,6 +39,11 @@ const ViewTenant = () => {
   if (error) {
     return <p className={Styles.error}>{error}</p>;
   }
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this tenant?"))
+      deleteTenantById(id);
+  };
 
   return (
     <>
@@ -86,11 +92,10 @@ const ViewTenant = () => {
                 {/* <button>Remove</button> */}
 
                 <div className={Styles.actions}>
-                  <button
-                    onClick={() => navigate(`/owner/tenant/${tenant._id}`)}
-                  >
+                  <button onClick={() => handleDelete(tenant._id)}>
                     Delete Tenant
                   </button>
+
                   <button
                     onClick={() => navigate(`/owner/tenant/edit/${tenant._id}`)}
                   >

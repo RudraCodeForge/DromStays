@@ -17,3 +17,12 @@ export const getTenantByRoomId = async (roomId) => {
     throw error;
   }
 };
+
+export const deleteTenantById = async (tenantId) => {
+  try {
+    const response = await api.delete(`/tenants/${tenantId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

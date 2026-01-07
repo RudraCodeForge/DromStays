@@ -41,7 +41,7 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🚫 CAPACITY CHECK */
+    /* 🚫 CAPACITY CHECK (HARD GUARD) */
     if (room.tenants.length >= room.capacity) {
       return res.status(400).json({
         success: false,
@@ -49,11 +49,10 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🔍 CHECK EXISTING TENANT (phone + property) */
+    /* 🔍 FIND TENANT (ACTIVE OR INACTIVE) */
     let tenant = await Tenant.findOne({
       phone,
       property: room.property,
-      isActive: true,
     });
 
     if (!tenant) {
@@ -66,19 +65,30 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
         rooms: [room._id],
         property: room.property,
         owner: ownerId,
+        isActive: true,
       });
     } else {
-      /* 🔁 EXISTING TENANT → ADD NEW ROOM */
+      /* 🔁 EXISTING TENANT (RE-ACTIVATE IF NEEDED) */
+      if (!tenant.isActive) {
+        tenant.isActive = true;
+      }
+
+      // update basic details (safe overwrite)
+      tenant.fullName = fullName;
+      tenant.email = email;
+
+      // add room if not already linked
       if (!tenant.rooms.includes(room._id)) {
         tenant.rooms.push(room._id);
-        await tenant.save();
       }
+
+      await tenant.save();
     }
 
     /* 🏠 ADD TENANT TO ROOM (SAFE PUSH) */
     if (!room.tenants.includes(tenant._id)) {
       room.tenants.push(tenant._id);
-      await room.save(); // auto availability update
+      await room.save(); // 🔑 triggers pre("save") → availability sync
     }
 
     return res.status(201).json({
@@ -89,14 +99,57 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
   } catch (error) {
     console.error("ADD TENANT ERROR:", error);
 
-    // 🔒 Duplicate index error
+    // 🔒 Duplicate index error (if unique index exists)
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
-        message: "Tenant with same phone or email already exists",
+        message: "Tenant with same phone already exists for this property",
       });
     }
 
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.DELETE_TENANT_BY_ID = async (req, res) => {
+  try {
+    const { tenantId } = req.params;
+    const ownerId = req.user.id;
+
+    /* 👤 TENANT CHECK */
+    const tenant = await Tenant.findOne({ _id: tenantId, owner: ownerId });
+    if (!tenant) {
+      return res.status(404).json({
+        success: false,
+        message: "Tenant not found",
+      });
+    }
+
+    // soft delete
+    tenant.isActive = false;
+    await tenant.save();
+
+    /* 🏠 FIND ALL ROOMS WHERE TENANT EXISTS */
+    const rooms = await Room.find({ tenants: tenant._id });
+
+    for (const room of rooms) {
+      room.tenants.pull(tenant._id);
+
+      // 🔑 recompute availability
+      room.isAvailable = room.tenants.length < room.capacity;
+
+      await room.save(); // ✅ pre("save") runs
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Tenant deleted successfully",
+    });
+  } catch (error) {
+    console.error("DELETE TENANT ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

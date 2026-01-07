@@ -120,7 +120,7 @@ const Rooms = () => {
                     View Details
                   </button>
 
-                  {room.tenants.length < room.capacity && (
+                  {room.tenants.length >= room.capacity && (
                     <span className={Styles.fullBadge}>Room Full</span>
                   )}
                 </div>

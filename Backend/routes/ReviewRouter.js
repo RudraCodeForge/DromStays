@@ -1,6 +1,6 @@
 const express = require("express");
 const ReviewRouter = express.Router();
-const ReviewrController = require("../controllers/ReviewController");
+const ReviewrController = require("../controllers/Review.Controller");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 ReviewRouter.get("/Get_Reviews", ReviewrController.GET_REVIEWS);

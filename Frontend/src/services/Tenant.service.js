@@ -8,3 +8,12 @@ export const addTenantToRoom = async (tenantData) => {
     throw error;
   }
 };
+
+export const getTenantByRoomId = async (roomId) => {
+  try {
+    const response = await api.get(`/tenants/byRoomId/${roomId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

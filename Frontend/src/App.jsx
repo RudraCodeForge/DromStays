@@ -30,6 +30,8 @@ import ManageServices from "./pages/Common/ManageServices.jsx";
 import ManageRequests from "./pages/Owner/ManageRequests.jsx";
 import EditRooms from "./pages/Owner/EditRooms.jsx";
 import AddTenant from "./pages/Owner/AddTanent.jsx";
+import RoomDetails from "./pages/Common/RoomDetails.jsx";
+import ViewTenant from "./pages/Owner/ViewTenat.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -191,6 +193,23 @@ function App() {
         element={
           <ProtectedRoute>
             <AddTenant />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/view-details/:roomId"
+        element={
+          <ProtectedRoute>
+            <RoomDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rooms/:roomId/tenants"
+        element={
+          <ProtectedRoute>
+            <ViewTenant />
           </ProtectedRoute>
         }
       />

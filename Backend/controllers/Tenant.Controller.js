@@ -103,3 +103,30 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
     });
   }
 };
+
+exports.GET_TENANTS_BY_ROOM_ID = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const ownerId = req.user.id;
+    /* 🏠 ROOM CHECK */
+    const room = await Room.findOne({ _id: roomId, owner: ownerId }).populate(
+      "tenants"
+    );
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      tenants: room.tenants,
+    });
+  } catch (error) {
+    console.error("GET TENANTS BY ROOM ID ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

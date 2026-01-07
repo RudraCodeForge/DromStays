@@ -1,0 +1,261 @@
+/* 🌈 THEME */
+:root {
+  --primary: #2e126a;
+  --primary-soft: #2e126a1f;
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --dark: #111827;
+  --light: #6b7280;
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+/* 🌍 PAGE */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+  background: var(--bg);
+}
+
+/* 🧱 CARD BASE */
+.card {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.06);
+}
+
+/* 🏷️ HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+/* 🔵 STATUS */
+.statusBadge {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.available {
+  background: #dcfce7;
+  color: var(--success);
+}
+
+.full {
+  background: #fee2e2;
+  color: var(--danger);
+}
+
+/* 🖼️ HERO GALLERY */
+.gallery {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 10px 2px 18px;
+  margin-bottom: 28px;
+  scroll-snap-type: x mandatory;
+}
+
+.gallery::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gallery::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+.gallery img {
+  min-width: 320px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 22px;
+  scroll-snap-align: start;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* 📊 DETAILS GRID */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.detailItem {
+  background: var(--primary-soft);
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.detailItem span {
+  font-size: 12px;
+  color: var(--light);
+}
+
+.detailItem p {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--dark);
+  margin-top: 4px;
+}
+
+/* 🌿 AMENITIES */
+.amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.amenity {
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* 💰 PRICING */
+.priceCard {
+  border: 2px dashed var(--primary-soft);
+  text-align: center;
+}
+
+.price {
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.priceUnit {
+  font-size: 14px;
+  color: var(--light);
+}
+
+.muted {
+  font-size: 14px;
+  color: var(--light);
+  margin-top: 6px;
+}
+
+/* 🔘 ACTIONS */
+.actions {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(to top, var(--bg) 70%, transparent);
+  padding: 16px 0;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.primaryBtn {
+  flex: 1;
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 14px 22px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(46, 18, 106, 0.4);
+}
+
+.primaryBtn:disabled {
+  background: #c7c7c7;
+  cursor: not-allowed;
+}
+
+.secondaryBtn {
+  flex: 1;
+  background: white;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 14px 22px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ⏳ STATES */
+.loading,
+.error {
+  text-align: center;
+  margin-top: 80px;
+  font-size: 20px;
+  color: var(--light);
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+  .title {
+    font-size: 24px;
+  }
+
+  .gallery img {
+    min-width: 260px;
+    height: 180px;
+  }
+
+  .detailsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .price {
+    font-size: 28px;
+  }
+}
+/* 📜 Rules */
+.rulesList {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.ruleItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.ruleDot {
+  color: var(--primary);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* 🚫 Full note */
+.fullNote {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--danger);
+}

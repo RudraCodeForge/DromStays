@@ -115,19 +115,12 @@ const Rooms = () => {
                 <div className={Styles.cardActions}>
                   <button
                     className={Styles.editButton}
-                    onClick={() => navigate(`/Owner/edit-room/${room._id}`)}
+                    onClick={() => navigate(`/view-details/${room._id}`)}
                   >
-                    Edit Room
+                    View Details
                   </button>
 
-                  {room.tenants.length < room.capacity ? (
-                    <button
-                      className={Styles.addTenantButton}
-                      onClick={() => navigate(`/Owner/add-tenant/${room._id}`)}
-                    >
-                      + Add Tenant
-                    </button>
-                  ) : (
+                  {room.tenants.length < room.capacity && (
                     <span className={Styles.fullBadge}>Room Full</span>
                   )}
                 </div>

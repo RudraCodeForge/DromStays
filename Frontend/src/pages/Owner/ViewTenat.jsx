@@ -29,6 +29,8 @@ const ViewTenant = () => {
     fetchTenants();
   }, [roomId]);
 
+  console.log("Tenants:", tenants);
+
   if (loading) {
     return <p className={Styles.loading}>Loading tenants...</p>;
   }
@@ -82,6 +84,19 @@ const ViewTenant = () => {
 
                 {/* 🔜 Future buttons */}
                 {/* <button>Remove</button> */}
+
+                <div className={Styles.actions}>
+                  <button
+                    onClick={() => navigate(`/owner/tenant/${tenant._id}`)}
+                  >
+                    Delete Tenant
+                  </button>
+                  <button
+                    onClick={() => navigate(`/owner/tenant/edit/${tenant._id}`)}
+                  >
+                    Edit Tenant
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -22,6 +22,10 @@ import StatCard from "../../components/StatCard.jsx";
 import { useSelector } from "react-redux";
 import { Get_Owner_Rooms } from "../../services/Rooms.service.js";
 import { Get_All_Activities } from "../../services/RecentActivity.service.js";
+import {
+  Get_Advance_paymentsByOwnerId,
+  Expected_Advance_PaymentsByOwnerId,
+} from "../../services/Payment.service.js";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
@@ -35,6 +39,7 @@ const OwnerDashboard = () => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [advancePayments, setAdvancePayments] = useState([]);
 
   // 🔐 Auth + Role Guard (Role with capital R)
   useEffect(() => {
@@ -83,6 +88,54 @@ const OwnerDashboard = () => {
       isMounted = false;
     };
   }, []);
+
+  // Advance Payments
+
+  useEffect(() => {
+    const fetchAdvancePayments = async () => {
+      try {
+        if (user && user.id) {
+          const res = await Get_Advance_paymentsByOwnerId(user.id);
+
+          // ✅ yaha state set kar
+          setAdvancePayments(res.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching advance payments:", error);
+      }
+    };
+
+    fetchAdvancePayments();
+  }, [user]);
+
+  const totalAdvanceBalance = advancePayments.reduce(
+    (sum, payment) => sum + (payment.amount || 0),
+    0
+  );
+
+  // Expected Collections
+  const [expectedCollections, setExpectedCollections] = useState([]);
+  useEffect(() => {
+    const fetchExpectedCollections = async () => {
+      try {
+        if (user && user.id) {
+          const res = await Expected_Advance_PaymentsByOwnerId(user.id);
+          setExpectedCollections(res.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching expected collections:", error);
+      }
+    };
+
+    fetchExpectedCollections();
+  }, [user]);
+  const totalExpectedCollection = expectedCollections.reduce(
+    (sum, payment) => sum + (payment.amount || 0),
+    0
+  );
+
+  console.log("Expected Collections:", expectedCollections);
+  console.log("Total Expected Collection:", totalExpectedCollection);
 
   // 🏠 Rooms + 24hr Badge Logic (Frontend Only)
   useEffect(() => {
@@ -258,12 +311,16 @@ const OwnerDashboard = () => {
             value="₹5,500"
           />
 
-          <StatCard icon={faWallet} title="Advance Balance" value="₹8,000" />
+          <StatCard
+            icon={faWallet}
+            title="Advance Balance"
+            value={`₹${totalAdvanceBalance}`}
+          />
 
           <StatCard
             icon={faMoneyBills}
             title="Expected Collection"
-            value="₹42,000"
+            value={`₹${totalExpectedCollection}`}
             badge="This month"
             badgeType="success"
           />

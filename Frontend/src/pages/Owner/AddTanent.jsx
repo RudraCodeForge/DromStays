@@ -11,7 +11,8 @@ const AddTenant = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState([]); // ✅ array based
+  const [error, setError] = useState([]); // array based
+  const [hasAdvance, setHasAdvance] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,9 +25,12 @@ const AddTenant = () => {
       email: e.target.email.value || null,
       joiningDate: e.target.joiningDate.value,
       roomId,
+      advanceAmount: hasAdvance
+        ? Number(e.target.advanceAmount?.value || 0)
+        : 0,
     };
 
-    /* 🔍 Frontend validations (array errors) */
+    /* 🔍 Frontend validations */
     const errors = [];
 
     if (!payload.fullName) {
@@ -35,12 +39,16 @@ const AddTenant = () => {
 
     if (!payload.phone) {
       errors.push("Phone number is required");
-    } else if (payload.phone.length !== 10) {
+    } else if (!/^\d{10}$/.test(payload.phone)) {
       errors.push("Phone number must be exactly 10 digits");
     }
 
     if (!payload.joiningDate) {
       errors.push("Joining date is required");
+    }
+
+    if (hasAdvance && payload.advanceAmount <= 0) {
+      errors.push("Advance amount must be greater than 0");
     }
 
     if (errors.length > 0) {
@@ -76,7 +84,7 @@ const AddTenant = () => {
             Manually add a tenant who has joined this room.
           </p>
 
-          {/* ❌ ERROR CONTAINER */}
+          {/* ❌ ERRORS */}
           <ErrorContainer message={error} />
 
           <form className={Styles.form} onSubmit={handleSubmit}>
@@ -115,6 +123,28 @@ const AddTenant = () => {
                 defaultValue={new Date().toISOString().split("T")[0]}
               />
             </label>
+
+            {/* 🔥 Advance Payment (Optional) */}
+            <label className={Styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={hasAdvance}
+                onChange={(e) => setHasAdvance(e.target.checked)}
+              />
+              Advance payment received
+            </label>
+
+            {hasAdvance && (
+              <label>
+                Advance Amount
+                <input
+                  type="number"
+                  name="advanceAmount"
+                  placeholder="Enter advance amount"
+                  min="1"
+                />
+              </label>
+            )}
 
             {/* Actions */}
             <div className={Styles.actions}>

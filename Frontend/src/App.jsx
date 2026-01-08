@@ -32,6 +32,7 @@ import EditRooms from "./pages/Owner/EditRooms.jsx";
 import AddTenant from "./pages/Owner/AddTanent.jsx";
 import RoomDetails from "./pages/Common/RoomDetails.jsx";
 import ViewTenant from "./pages/Owner/ViewTenat.jsx";
+import Contact from "./pages/Support/Contact.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -62,6 +63,7 @@ function App() {
       <Route path="/reset-password" element={<NewPassword />} />
       <Route path="/about_us" element={<AboutUs />} />
       <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+      <Route path="/contact_support" element={<Contact />} />
 
       {/* 🔐 Protected Routes */}
       <Route

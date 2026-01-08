@@ -208,3 +208,61 @@ exports.SendPropertyCreationEmail = async (toEmail, propertyName) => {
     `,
   });
 };
+
+// send Contact Support Email
+exports.sendContactConfirmationEmail = async (userEmail, userName) => {
+  await sendMail({
+    to: userEmail, // ✅ USER EMAIL
+    subject: "We received your message – DormStays",
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#333;">
+        <h2 style="color:#2e126a;">Hi ${userName} 👋</h2>
+
+        <p>Thanks for contacting <strong>DormStays</strong>.</p>
+
+        <p>
+          We’ve received your message and our support team will get back to you
+          within <strong>24 hours</strong>.
+        </p>
+
+        <p>
+          If your issue is urgent, please check our Help Center for faster support.
+        </p>
+
+        <p style="margin-top:24px;">
+          Regards,<br/>
+          <strong>DormStays Team</strong>
+        </p>
+      </div>
+    `,
+  });
+};
+
+exports.sendContactSupportEmail = async (
+  adminEmail,
+  name,
+  userEmail,
+  message
+) => {
+  await sendMail({
+    to: adminEmail, // ✅ ADMIN EMAIL (support@dormstays.com)
+    subject: "📩 New Contact Support Message",
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#333;">
+        <h2 style="color:#2e126a;">New Contact Support Message</h2>
+
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${userEmail}</p>
+
+        <p><strong>Message:</strong></p>
+        <p style="white-space:pre-line;">${message}</p>
+
+        <hr />
+
+        <p style="font-size:12px;color:#777;">
+          Reply directly to this email to respond to the user.
+        </p>
+      </div>
+    `,
+  });
+};

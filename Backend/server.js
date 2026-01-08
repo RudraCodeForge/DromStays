@@ -12,6 +12,7 @@ const RoomRouter = require("./routes/RoomRouter");
 const RecentRouter = require("./routes/RecentRouter");
 const TenantRouter = require("./routes/Tenant.route");
 const PaymentRouter = require("./routes/PaymentRouter");
+const SupportRouter = require("./routes/Support.route");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -38,6 +39,7 @@ app.use("/rooms", RoomRouter);
 app.use("/activities", RecentRouter);
 app.use("/tenants", TenantRouter);
 app.use("/payments", PaymentRouter);
+app.use("/support", SupportRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

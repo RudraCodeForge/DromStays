@@ -1,44 +1,63 @@
 const Payment = require("../models/Payment");
 
-exports.getAdvancePaymentsByOwnerId = async (req, res) => {
-  try {
-    const { ownerId } = req.params;
-    const payments = await Payment.find({ owner: ownerId, type: "ADVANCE" });
-    res.status(200).json({ success: true, data: payments });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
-
-exports.getExpectedCollectionByOwnerId = async (req, res) => {
+exports.getOwnerDashboardPayments = async (req, res) => {
   try {
     const { ownerId } = req.params;
 
-    const payments = await Payment.find({
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 🔹 Advance Balance
+    const advancePayments = await Payment.find({
+      owner: ownerId,
+      type: "ADVANCE",
+    }).populate({
+      path: "tenant",
+      select: "isActive",
+      match: { isActive: true },
+    });
+
+    const advanceBalance = advancePayments
+      .filter((p) => p.tenant) // sirf active tenants
+      .reduce((sum, p) => sum + (p.amount || 0), 0);
+
+    // 🔹 Pending Rent (Active tenants only)
+    const pendingRents = await Payment.find({
       owner: ownerId,
       type: "RENT",
       status: "PENDING",
     }).populate({
       path: "tenant",
-      select: "isActive fullName phone",
-      match: { isActive: true }, // 🔥 ONLY ACTIVE TENANTS
+      select: "isActive",
+      match: { isActive: true },
     });
 
-    // ❌ Remove payments whose tenant is inactive/null
-    const activeTenantPayments = payments.filter((p) => p.tenant !== null);
+    let expectedCollection = 0;
+    let overdueAmount = 0;
 
-    const totalExpected = activeTenantPayments.reduce(
-      (sum, p) => sum + (p.amount || 0),
-      0
-    );
+    pendingRents.forEach((p) => {
+      if (!p.tenant || !p.dueDate) return;
+
+      const due = new Date(p.dueDate);
+      due.setHours(0, 0, 0, 0);
+
+      if (due < today) {
+        overdueAmount += p.amount || 0;
+      } else {
+        expectedCollection += p.amount || 0;
+      }
+    });
 
     res.status(200).json({
       success: true,
-      data: activeTenantPayments,
-      totalExpected,
+      data: {
+        advanceBalance,
+        expectedCollection,
+        overdueAmount,
+      },
     });
   } catch (error) {
-    console.error("Expected collection error:", error);
+    console.error("Dashboard payment error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",

@@ -1,109 +1,140 @@
 import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
 import Logo from "../Logo";
-import { Link } from "react-router-dom";
 import Styles from "../../styles/Navbar.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineBell } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
-
-  const { isAuthenticated, role } = useSelector((state) => state.auth);
+  const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  const closeMenu = () => setOpen(false);
 
   const handleLogout = () => {
     dispatch(logout());
-    setOpen(false);
+    closeMenu();
   };
 
   return (
     <>
-      {/* Hamburger Icon (Mobile) */}
+      {/* Hamburger */}
       <div className={Styles.Hamburger} onClick={() => setOpen(true)}>
         <GiHamburgerMenu size={26} />
       </div>
 
       {/* Mobile Menu */}
       <div className={`${Styles.MobileMenu} ${open ? Styles.ShowMenu : ""}`}>
+        {/* Header */}
         <div className={Styles.MobileHeader}>
-          <Logo fill="#2e126a" />
+          <Logo fill="#fff" />
           <AiOutlineClose
-            size={28}
-            onClick={() => setOpen(false)}
+            size={26}
+            onClick={closeMenu}
             className={Styles.CloseIcon}
           />
         </div>
 
         <ul className={Styles.MobileNavLinks}>
-          {/* NOT LOGGED IN */}
+          {/* NOT AUTHENTICATED */}
           {!isAuthenticated && (
             <>
-              <li>
-                <Link to="/Login" onClick={() => setOpen(false)}>
+              <li className={Styles.MobileLogin}>
+                <NavLink to="/Login" onClick={closeMenu}>
                   Login
-                </Link>
+                </NavLink>
               </li>
-              <li>
-                <Link to="/Signup" onClick={() => setOpen(false)}>
+              <li className={Styles.MobileSignup}>
+                <NavLink to="/Signup" onClick={closeMenu}>
                   Sign Up
-                </Link>
+                </NavLink>
               </li>
             </>
           )}
 
-          {/* ADMIN */}
-          {isAuthenticated && role === "admin" && (
+          {/* AUTHENTICATED USERS */}
+          {isAuthenticated && (
             <>
-              <li>
-                <Link to="/" onClick={() => setOpen(false)}>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/Contactus" onClick={() => setOpen(false)}>
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link to="/Aboutus" onClick={() => setOpen(false)}>
-                  About
-                </Link>
-              </li>
-              <li>
-                <button onClick={handleLogout} className={Styles.LogoutBtn}>
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
+              {/* PROFILE CARD (ONLY ONCE) */}
+              <li className={Styles.MobileProfile}>
+                <NavLink
+                  to="/Profile"
+                  onClick={closeMenu}
+                  className={Styles.MobileProfileCard}
+                >
+                  <img
+                    src={user?.ProfilePicture || "/profile.webp"}
+                    alt="profile"
+                    className={Styles.MobileAvatar}
+                  />
 
-          {/* OWNER */}
-          {isAuthenticated && role === "owner" && (
-            <>
-              <li>
-                <Link to="/owner/dashboard" onClick={() => setOpen(false)}>
-                  Owner Dashboard
-                </Link>
-              </li>
-              <li>
-                <button onClick={handleLogout} className={Styles.LogoutBtn}>
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
+                  <div className={Styles.MobileProfileInfo}>
+                    <p className={Styles.MobileName}>{user?.Name}</p>
+                    <span className={Styles.MobileRole}>{role}</span>
+                  </div>
 
-          {/* TENANT */}
-          {isAuthenticated && role === "tenant" && (
-            <>
-              <li>
-                <Link to="/tenant/dashboard" onClick={() => setOpen(false)}>
-                  Tenant Dashboard
-                </Link>
+                  <NavLink
+                    to="/notifications"
+                    onClick={closeMenu}
+                    className={Styles.NotificationIcon}
+                  >
+                    <AiOutlineBell size={20} />
+                  </NavLink>
+                </NavLink>
               </li>
-              <li>
+
+              {/* OWNER LINKS */}
+              {role === "owner" && (
+                <>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Owner/dashboard" onClick={closeMenu}>
+                      Dashboard
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Settings" onClick={closeMenu}>
+                      Settings
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/bookings" onClick={closeMenu}>
+                      Bookings
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Owner/properties" onClick={closeMenu}>
+                      Properties
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
+              {/* ADMIN LINKS */}
+              {role === "admin" && (
+                <>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/" onClick={closeMenu}>
+                      Home
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <Link to="/Contactus" onClick={closeMenu}>
+                      Contact Us
+                    </Link>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <Link to="/Aboutus" onClick={closeMenu}>
+                      About Us
+                    </Link>
+                  </li>
+                </>
+              )}
+
+              {/* LOGOUT (ONLY ONCE, BOTTOM) */}
+              <li className={Styles.MobileLogout}>
                 <button onClick={handleLogout} className={Styles.LogoutBtn}>
                   Logout
                 </button>

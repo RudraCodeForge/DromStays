@@ -1,16 +1,25 @@
-import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Styles from "../../styles/Support/CreateTicket.module.css";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const categoryRef = useRef(null);
   const subjectRef = useRef(null);
   const messageRef = useRef(null);
 
+  const preselectedCategory = searchParams.get("category");
+
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
+
+  useEffect(() => {
+    if (preselectedCategory && categoryRef.current) {
+      categoryRef.current.value = preselectedCategory;
+    }
+  }, [preselectedCategory]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,24 +31,19 @@ const CreateTicket = () => {
       message: messageRef.current.value,
     };
 
-    try {
-      console.log("Ticket Data:", ticketData);
+    console.log("Ticket Data:", ticketData);
 
-      setSuccess("✅ Ticket created successfully. Our team will contact you.");
+    setSuccess("✅ Ticket created successfully. Our team will contact you.");
 
-      categoryRef.current.value = "";
-      subjectRef.current.value = "";
-      messageRef.current.value = "";
-    } catch (error) {
-      console.error("Ticket creation failed", error);
-    } finally {
-      setLoading(false);
-    }
+    categoryRef.current.value = "";
+    subjectRef.current.value = "";
+    messageRef.current.value = "";
+
+    setLoading(false);
   };
 
   return (
     <div className={Styles.Container}>
-      {/* 🔙 Back Button */}
       <button
         type="button"
         className={Styles.BackBtn}
@@ -64,20 +68,10 @@ const CreateTicket = () => {
         </select>
 
         <label>Subject</label>
-        <input
-          type="text"
-          ref={subjectRef}
-          placeholder="Short title of your issue"
-          required
-        />
+        <input ref={subjectRef} required />
 
         <label>Describe your problem</label>
-        <textarea
-          ref={messageRef}
-          rows="5"
-          placeholder="Explain the issue in detail"
-          required
-        />
+        <textarea ref={messageRef} rows="5" required />
 
         <button type="submit" disabled={loading}>
           {loading ? "Submitting..." : "Submit Ticket"}

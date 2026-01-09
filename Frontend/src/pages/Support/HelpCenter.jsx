@@ -44,7 +44,10 @@ const HelpCenter = () => {
         {/* Bottom CTA */}
         <div className={Styles.BottomHelp}>
           <p>Still can’t find what you’re looking for?</p>
-          <Link to="/create_ticket" className={Styles.SupportBtn}>
+          <Link
+            to="/create_ticket?category=other"
+            className={Styles.SupportBtn}
+          >
             Raise a Support Ticket
           </Link>
         </div>

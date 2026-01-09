@@ -26,7 +26,10 @@ const TenantHelp = () => {
 
         <div className={Styles.Bottom}>
           <p>Need personal help?</p>
-          <Link to="/create_ticket" className={Styles.SupportBtn}>
+          <Link
+            to="/create_ticket?category=tenant"
+            className={Styles.SupportBtn}
+          >
             Raise Tenant Ticket →
           </Link>
         </div>

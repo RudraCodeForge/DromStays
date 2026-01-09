@@ -32,7 +32,10 @@ const BookingHelp = () => {
 
         <div className={Styles.Bottom}>
           <p>Still facing issues?</p>
-          <Link to="/create_ticket" className={Styles.SupportBtn}>
+          <Link
+            to="/create_ticket?category=booking"
+            className={Styles.SupportBtn}
+          >
             Raise Booking Ticket →
           </Link>
         </div>

@@ -24,7 +24,10 @@ const AccountHelp = () => {
         </div>
 
         <div className={Styles.Bottom}>
-          <Link to="/create_ticket" className={Styles.SupportBtn}>
+          <Link
+            to="/create_ticket?category=account"
+            className={Styles.SupportBtn}
+          >
             Raise Account Ticket →
           </Link>
         </div>

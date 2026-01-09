@@ -33,6 +33,13 @@ import AddTenant from "./pages/Owner/AddTanent.jsx";
 import RoomDetails from "./pages/Common/RoomDetails.jsx";
 import ViewTenant from "./pages/Owner/ViewTenat.jsx";
 import Contact from "./pages/Support/Contact.jsx";
+import SupportBot from "./components/SupportBot.jsx";
+import HelpCenter from "./pages/Support/HelpCenter.jsx";
+import CreateTicket from "./pages/Support/CreateTicket.jsx";
+import BookingHelp from "./pages/Support/BookingHelp.jsx";
+import PaymentHelp from "./pages/Support/PaymentHelp.jsx";
+import TenantHelp from "./pages/Support/TenantHelp.jsx";
+import AccountHelp from "./pages/Support/AccountHelp.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -53,173 +60,182 @@ function App() {
   }
 
   return (
-    <Routes>
-      {/* 🌍 Public Routes */}
-      <Route path="/" element={<Home />} />
-      <Route path="/Login" element={<Login />} />
-      <Route path="/Signup" element={<Signup />} />
-      <Route path="/verify" element={<Verify />} />
-      <Route path="/Forgot_password" element={<ResetPassword />} />
-      <Route path="/reset-password" element={<NewPassword />} />
-      <Route path="/about_us" element={<AboutUs />} />
-      <Route path="/privacy_policy" element={<PrivacyPolicy />} />
-      <Route path="/contact_support" element={<Contact />} />
+    <>
+      <Routes>
+        {/* 🌍 Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/Signup" element={<Signup />} />
+        <Route path="/verify" element={<Verify />} />
+        <Route path="/Forgot_password" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<NewPassword />} />
+        <Route path="/about_us" element={<AboutUs />} />
+        <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+        <Route path="/contact_support" element={<Contact />} />
+        <Route path="/help-center" element={<HelpCenter />} />
+        <Route path="/create_ticket" element={<CreateTicket />} />
+        <Route path="/help-center/booking-issues" element={<BookingHelp />} />
+        <Route path="/help-center/payment-issues" element={<PaymentHelp />} />
+        <Route path="/help-center/tenant-issues" element={<TenantHelp />} />
+        <Route path="/help-center/account-profile" element={<AccountHelp />} />
 
-      {/* 🔐 Protected Routes */}
-      <Route
-        path="/Profile"
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
+        {/* 🔐 Protected Routes */}
+        <Route
+          path="/Profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/Owner/dashboard"
-        element={
-          <ProtectedRoute>
-            <OwnerDashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/Owner/dashboard"
+          element={
+            <ProtectedRoute>
+              <OwnerDashboard />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/EditProfile"
-        element={
-          <ProtectedRoute>
-            <EditProfile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/ChangePassword"
-        element={
-          <ProtectedRoute>
-            <ChangePassword />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/Feedback"
-        element={
-          <ProtectedRoute>
-            <FeedBack />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/SubscriptionPlans"
-        element={
-          <ProtectedRoute>
-            <SubscriptionPlans />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/Owner/properties"
-        element={
-          <ProtectedRoute>
-            <Property />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="Owner/add-property"
-        element={
-          <ProtectedRoute>
-            <AddProperty />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/property/:propertyId/rooms"
-        element={
-          <ProtectedRoute>
-            <Rooms />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/property/:propertyId/editproperty"
-        element={
-          <ProtectedRoute>
-            <EditProperty />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/bookings"
-        element={
-          <ProtectedRoute>
-            <Bookings />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/Settings"
-        element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/Owner/ManageServices"
-        element={
-          <ProtectedRoute>
-            <ManageServices />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/Owner/ManageRequests"
-        element={
-          <ProtectedRoute>
-            <ManageRequests />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/EditProfile"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ChangePassword"
+          element={
+            <ProtectedRoute>
+              <ChangePassword />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Feedback"
+          element={
+            <ProtectedRoute>
+              <FeedBack />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/SubscriptionPlans"
+          element={
+            <ProtectedRoute>
+              <SubscriptionPlans />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Owner/properties"
+          element={
+            <ProtectedRoute>
+              <Property />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="Owner/add-property"
+          element={
+            <ProtectedRoute>
+              <AddProperty />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/property/:propertyId/rooms"
+          element={
+            <ProtectedRoute>
+              <Rooms />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/property/:propertyId/editproperty"
+          element={
+            <ProtectedRoute>
+              <EditProperty />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bookings"
+          element={
+            <ProtectedRoute>
+              <Bookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Owner/ManageServices"
+          element={
+            <ProtectedRoute>
+              <ManageServices />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Owner/ManageRequests"
+          element={
+            <ProtectedRoute>
+              <ManageRequests />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/Owner/edit-room/:roomId"
-        element={
-          <ProtectedRoute>
-            <EditRooms />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/Owner/edit-room/:roomId"
+          element={
+            <ProtectedRoute>
+              <EditRooms />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/Owner/add-tenant/:roomId"
-        element={
-          <ProtectedRoute>
-            <AddTenant />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/Owner/add-tenant/:roomId"
+          element={
+            <ProtectedRoute>
+              <AddTenant />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/view-details/:roomId"
-        element={
-          <ProtectedRoute>
-            <RoomDetails />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/rooms/:roomId/tenants"
-        element={
-          <ProtectedRoute>
-            <ViewTenant />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/view-details/:roomId"
+          element={
+            <ProtectedRoute>
+              <RoomDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rooms/:roomId/tenants"
+          element={
+            <ProtectedRoute>
+              <ViewTenant />
+            </ProtectedRoute>
+          }
+        />
 
-      {/* 404 Page Not Found */}
+        {/* 404 Page Not Found */}
 
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+      <SupportBot />
+    </>
   );
 }
 

@@ -1,0 +1,188 @@
+/* CreateTicket.module.css */
+
+.Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  padding: 20px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.Container h1 {
+  color: var(--text-dark);
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.Success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  animation: slideIn 0.5s ease-out;
+  border: 1px solid #c3e6cb;
+}
+
+.Form {
+  background-color: var(--card-bg);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px var(--primary-transparant-color);
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: slideUp 0.5s ease-out;
+}
+
+.Form label {
+  font-weight: bold;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+}
+
+.Form select,
+.Form input,
+.Form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.Form select:focus,
+.Form input:focus,
+.Form textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-transparant-color);
+}
+
+.Form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.Form button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.Form button:hover:not(:disabled) {
+  background-color: #1e0a4a;
+  transform: translateY(-2px);
+}
+
+.Form button:disabled {
+  background-color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .Container {
+    padding: 10px;
+  }
+
+  .Container h1 {
+    font-size: 1.5rem;
+  }
+
+  .Form {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .Form select,
+  .Form input,
+  .Form textarea {
+    font-size: 0.9rem;
+  }
+
+  .Form button {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .Container h1 {
+    font-size: 1.25rem;
+  }
+
+  .Form {
+    padding: 15px;
+  }
+
+  .Form label {
+    font-size: 0.9rem;
+  }
+
+  .Form select,
+  .Form input,
+  .Form textarea {
+    padding: 10px;
+  }
+
+  .Form button {
+    padding: 10px;
+  }
+}
+.BackBtn {
+  background: transparent;
+  border: none;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.BackBtn:hover {
+  text-decoration: underline;
+}

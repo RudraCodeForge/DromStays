@@ -59,7 +59,7 @@ const Footer = () => {
           <h3 className={Styles.footerHeading}>Support</h3>
           <ul className={Styles.footerList}>
             <li>
-              <a href="#">Help Center</a>
+              <NavLink to="/help-center">Help Center</NavLink>
             </li>
             <li>
               <a href="#">Booking Issues</a>

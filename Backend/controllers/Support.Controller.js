@@ -21,6 +21,7 @@ exports.contactSupport = async (req, res) => {
 
     // Send notification email to support team
     await sendContactSupportEmail(SupportEmail, name, email, message);
+
     return res.status(200).json({
       message:
         "Your message has been received. We will get back to you shortly.",

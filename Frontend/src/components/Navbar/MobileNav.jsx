@@ -55,27 +55,30 @@ const MobileNav = () => {
             </>
           )}
 
-          {/* AUTHENTICATED USERS */}
+          {/* AUTHENTICATED */}
           {isAuthenticated && (
             <>
-              {/* PROFILE CARD (ONLY ONCE) */}
+              {/* PROFILE ROW (NO NESTED LINKS) */}
               <li className={Styles.MobileProfile}>
-                <NavLink
-                  to="/Profile"
-                  onClick={closeMenu}
-                  className={Styles.MobileProfileCard}
-                >
-                  <img
-                    src={user?.ProfilePicture || "/profile.webp"}
-                    alt="profile"
-                    className={Styles.MobileAvatar}
-                  />
+                <div className={Styles.MobileProfileRow}>
+                  {/* Profile */}
+                  <NavLink
+                    to="/Profile"
+                    onClick={closeMenu}
+                    className={Styles.ProfileLink}
+                  >
+                    <img
+                      src={user?.ProfilePicture || "/profile.webp"}
+                      alt="profile"
+                      className={Styles.MobileAvatar}
+                    />
+                    <div className={Styles.MobileProfileInfo}>
+                      <p className={Styles.MobileName}>{user?.Name}</p>
+                      <span className={Styles.MobileRole}>{role}</span>
+                    </div>
+                  </NavLink>
 
-                  <div className={Styles.MobileProfileInfo}>
-                    <p className={Styles.MobileName}>{user?.Name}</p>
-                    <span className={Styles.MobileRole}>{role}</span>
-                  </div>
-
+                  {/* Notification */}
                   <NavLink
                     to="/notifications"
                     onClick={closeMenu}
@@ -83,7 +86,7 @@ const MobileNav = () => {
                   >
                     <AiOutlineBell size={20} />
                   </NavLink>
-                </NavLink>
+                </div>
               </li>
 
               {/* OWNER LINKS */}
@@ -133,7 +136,7 @@ const MobileNav = () => {
                 </>
               )}
 
-              {/* LOGOUT (ONLY ONCE, BOTTOM) */}
+              {/* LOGOUT */}
               <li className={Styles.MobileLogout}>
                 <button onClick={handleLogout} className={Styles.LogoutBtn}>
                   Logout

@@ -63,14 +63,14 @@ const QuickActions = () => {
           </NavLink>
         </li>
 
-        <li>
+        {/*<li>
           <NavLink to="/Owner/Support" className={Styles.ActionLink}>
             <span className={Styles.Left}>
               <FontAwesomeIcon icon={faHeadset} /> Support
             </span>
             <FontAwesomeIcon icon={faArrowRight} />
           </NavLink>
-        </li>
+        </li>*/}
       </ul>
     </div>
   );

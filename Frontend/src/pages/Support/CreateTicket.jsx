@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Styles from "../../styles/Support/CreateTicket.module.css";
+import { CreateTicket as CreateTicketService } from "../../services/Support.service";
 
 const CreateTicket = () => {
   const navigate = useNavigate();
@@ -33,7 +34,14 @@ const CreateTicket = () => {
 
     console.log("Ticket Data:", ticketData);
 
-    setSuccess("✅ Ticket created successfully. Our team will contact you.");
+    try {
+      const response = await CreateTicketService(ticketData);
+      console.log("Create Ticket Response:", response);
+      setSuccess(response.message);
+    } catch (error) {
+      console.error("Error creating ticket:", error);
+      setSuccess("Failed to create ticket. Please try again.");
+    }
 
     categoryRef.current.value = "";
     subjectRef.current.value = "";

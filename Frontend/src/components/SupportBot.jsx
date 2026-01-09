@@ -151,7 +151,7 @@ const SupportBot = () => {
 
             {stage === "fallback" && (
               <NavLink
-                to="/contact_support"
+                to="/help-center"
                 className={Styles.HelpBtn}
                 onClick={() => {
                   setOpen(false);

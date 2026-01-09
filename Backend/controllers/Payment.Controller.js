@@ -41,10 +41,14 @@ exports.getOwnerDashboardPayments = async (req, res) => {
       const due = new Date(p.dueDate);
       due.setHours(0, 0, 0, 0);
 
+      const amount = p.amount || 0;
+
+      // 🔹 Expected collection includes ALL pending rents
+      expectedCollection += amount;
+
+      // 🔹 Overdue is subset
       if (due < today) {
-        overdueAmount += p.amount || 0;
-      } else {
-        expectedCollection += p.amount || 0;
+        overdueAmount += amount;
       }
     });
 

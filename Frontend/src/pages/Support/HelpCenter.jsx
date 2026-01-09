@@ -1,9 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Styles from "../../styles/Support/HelpCenter.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer.jsx";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const HelpCenter = () => {
+  const { isAuthenticated, role, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/");
+    }
+  }, [isAuthenticated, role, navigate]);
+
   return (
     <>
       {" "}

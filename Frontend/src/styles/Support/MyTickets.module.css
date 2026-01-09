@@ -1,0 +1,313 @@
+/* ============================= */
+/* Animations */
+/* ============================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(46, 18, 106, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(46, 18, 106, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(46, 18, 106, 0);
+  }
+}
+
+/* ============================= */
+/* Container */
+/* ============================= */
+.Container {
+  min-height: 100vh;
+  padding: 24px;
+  background: linear-gradient(180deg, #f9fafb, #f1f5f9);
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ============================= */
+/* Header */
+/* ============================= */
+.Header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.Header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.4px;
+}
+
+/* ============================= */
+/* Back Button */
+/* ============================= */
+.BackBtn {
+  background: #ffffff;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  font-size: 15px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.BackBtn:hover {
+  background: var(--primary-color);
+  color: #ffffff;
+  transform: translateX(-4px);
+}
+
+/* ============================= */
+/* Filters */
+/* ============================= */
+.Filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.FilterBtn,
+.ActiveFilter {
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.FilterBtn {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.FilterBtn:hover {
+  background: rgba(46, 18, 106, 0.08);
+  border-color: var(--primary-color);
+}
+
+.ActiveFilter {
+  background: linear-gradient(135deg, var(--primary-color), #1e0a4a);
+  color: #ffffff;
+  border: none;
+  animation: pulse 1.6s infinite;
+}
+
+/* ============================= */
+/* List */
+/* ============================= */
+.List {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ============================= */
+/* Empty State */
+/* ============================= */
+.Empty {
+  text-align: center;
+  color: #6b7280;
+  font-size: 16px;
+  margin-top: 60px;
+}
+
+/* ============================= */
+/* Ticket Card */
+/* ============================= */
+.Card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px;
+  cursor: pointer;
+  animation: fadeUp 0.45s ease forwards;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.25s ease;
+}
+
+.Card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================= */
+/* Card Top */
+/* ============================= */
+.CardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.CardTop h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ============================= */
+/* Status Badge */
+/* ============================= */
+.Badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.Badge.OPEN {
+  background: rgba(255, 77, 79, 0.15);
+  color: #ff4d4f;
+}
+
+.Badge.IN_PROGRESS {
+  background: rgba(250, 173, 20, 0.18);
+  color: #d48806;
+}
+
+.Badge.RESOLVED {
+  background: rgba(82, 196, 26, 0.18);
+  color: #389e0d;
+}
+
+/* ============================= */
+/* Ticket Meta */
+/* ============================= */
+.TicketId {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 6px 0;
+}
+
+.Meta {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  color: #6b7280;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.Category {
+  text-transform: capitalize;
+}
+
+/* ============================= */
+/* Priority */
+/* ============================= */
+.Priority {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.Priority::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.Priority.HIGH {
+  color: #ff4d4f;
+}
+.Priority.HIGH::before {
+  background: #ff4d4f;
+}
+
+.Priority.MEDIUM {
+  color: #faad14;
+}
+.Priority.MEDIUM::before {
+  background: #faad14;
+}
+
+.Priority.LOW {
+  color: #52c41a;
+}
+.Priority.LOW::before {
+  background: #52c41a;
+}
+
+.Date {
+  margin-left: auto;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ============================= */
+/* Responsive */
+/* ============================= */
+@media (max-width: 768px) {
+  .Container {
+    padding: 16px;
+  }
+
+  .Header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .Header h1 {
+    font-size: 22px;
+  }
+
+  .Card {
+    padding: 18px;
+  }
+
+  .CardTop {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .Meta {
+    gap: 10px;
+  }
+
+  .Date {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .Filters {
+    flex-direction: column;
+  }
+
+  .FilterBtn,
+  .ActiveFilter {
+    width: 100%;
+    text-align: center;
+  }
+
+  .Card {
+    padding: 16px;
+  }
+
+  .CardTop h3 {
+    font-size: 16px;
+  }
+}

@@ -40,6 +40,8 @@ import BookingHelp from "./pages/Support/BookingHelp.jsx";
 import PaymentHelp from "./pages/Support/PaymentHelp.jsx";
 import TenantHelp from "./pages/Support/TenantHelp.jsx";
 import AccountHelp from "./pages/Support/AccountHelp.jsx";
+import MyTickets from "./pages/Support/MyTickets.jsx";
+import TicketDetails from "./pages/Support/TicketDetails.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -226,6 +228,22 @@ function App() {
           element={
             <ProtectedRoute>
               <ViewTenant />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets"
+          element={
+            <ProtectedRoute>
+              <MyTickets />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/:ticketId"
+          element={
+            <ProtectedRoute>
+              <TicketDetails />
             </ProtectedRoute>
           }
         />

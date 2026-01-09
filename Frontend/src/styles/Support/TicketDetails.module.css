@@ -1,0 +1,275 @@
+/* ========================= */
+/* Root Container */
+/* ========================= */
+.Container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f4f7fb, #eef2ff);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  animation: fadeIn 0.4s ease-in;
+}
+
+/* ========================= */
+/* Back Button */
+/* ========================= */
+.BackBtn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #4338ca;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: 0.25s;
+}
+
+.BackBtn:hover {
+  background-color: rgba(67, 56, 202, 0.1);
+  transform: translateX(-3px);
+}
+
+/* ========================= */
+/* Ticket Summary */
+/* ========================= */
+.SummaryCard {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.TopRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.TopRow h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #111827;
+  flex: 1;
+}
+
+/* ========================= */
+/* Status Badge */
+/* ========================= */
+.Status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.OPEN {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.IN_PROGRESS {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.RESOLVED {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* ========================= */
+/* Meta Info */
+/* ========================= */
+.Meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.Priority {
+  font-weight: 700;
+}
+
+.HIGH {
+  color: #dc2626;
+}
+.MEDIUM {
+  color: #d97706;
+}
+.LOW {
+  color: #16a34a;
+}
+
+/* ========================= */
+/* Chat Box */
+/* ========================= */
+.ChatBox {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px;
+  overflow-y: auto;
+  box-shadow: inset 0 0 0 1px #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========================= */
+/* Message Bubbles */
+/* ========================= */
+.UserMsg,
+.SupportMsg,
+.BotMsg {
+  max-width: 75%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.4;
+  animation: slideUp 0.25s ease;
+}
+
+.UserMsg {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #4338ca, #6366f1);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.UserMsg p {
+  color: #fff;
+}
+
+.SupportMsg {
+  align-self: flex-start;
+  background: #f1f5f9;
+  color: #111827;
+  border-bottom-left-radius: 4px;
+}
+
+.BotMsg {
+  align-self: flex-start;
+  background: #ecfeff;
+  color: #155e75;
+  border-left: 4px solid #06b6d4;
+}
+
+.UserMsg span,
+.SupportMsg span,
+.BotMsg span {
+  display: block;
+  margin-top: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* ========================= */
+/* Reply Box */
+/* ========================= */
+.ReplyBox {
+  display: flex;
+  gap: 10px;
+  background: #ffffff;
+  padding: 14px;
+  border-radius: 14px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
+}
+
+.ReplyBox textarea {
+  flex: 1;
+  resize: none;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+.ReplyBox textarea:focus {
+  border-color: #4338ca;
+}
+
+.ReplyBox button {
+  background: linear-gradient(135deg, #4338ca, #6366f1);
+  color: #ffffff;
+  border: none;
+  padding: 0 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.ReplyBox button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 18px rgba(67, 56, 202, 0.4);
+}
+
+/* ========================= */
+/* Closed Ticket */
+/* ========================= */
+.Closed {
+  text-align: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 700;
+}
+
+/* ========================= */
+/* Animations */
+/* ========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================= */
+/* Mobile */
+/* ========================= */
+@media (max-width: 768px) {
+  .TopRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .UserMsg,
+  .SupportMsg,
+  .BotMsg {
+    max-width: 90%;
+  }
+
+  .ReplyBox {
+    flex-direction: column;
+  }
+
+  .ReplyBox button {
+    height: 42px;
+  }
+}

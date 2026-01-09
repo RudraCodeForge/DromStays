@@ -32,6 +32,11 @@ const HelpCenter = () => {
             needed.
           </p>
         </div>
+        <div className={Styles.TopActions}>
+          <Link to="/tickets" className={Styles.MyTicketsBtn}>
+            📋 View My Tickets
+          </Link>
+        </div>
 
         {/* Categories */}
         <div className={Styles.Cards}>

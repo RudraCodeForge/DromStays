@@ -115,3 +115,89 @@ exports.createTicket = async (req, res) => {
     });
   }
 };
+
+exports.getTickets = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const tickets = await Ticket.find({ user: userId }).sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      data: tickets,
+    });
+  } catch (error) {
+    console.error("getTickets error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getTicketDetails = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { ticketId } = req.params;
+    const ticket = await Ticket.findOne({ _id: ticketId, user: userId });
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+    const messages = await TicketMessage.find({ ticket: ticket._id }).sort({
+      createdAt: 1,
+    });
+    return res.status(200).json({
+      success: true,
+      data: {
+        ticket,
+        messages,
+      },
+    });
+  } catch (error) {
+    console.error("getTicketDetails error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.sendTicketMessage = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { ticketId } = req.params;
+    const { message } = req.body;
+    const ticket = await Ticket.findOne({ _id: ticketId, user: userId });
+    if (!ticket) {
+      return res.status(404).json({
+        success: false,
+        message: "Ticket not found",
+      });
+    }
+    const newMessage = await TicketMessage.create({
+      ticket: ticket._id,
+      sender: "user",
+      message,
+    });
+    await logActivity({
+      owner: userId,
+      entityType: "SERVICE",
+      entityId: ticket._id,
+      action: "UPDATED",
+      message: `Added message to support ticket ${ticket.ticketId}`,
+      meta: { ticketId: ticket.ticketId },
+    });
+    return res.status(201).json({
+      success: true,
+      message: "Message sent successfully",
+      data: newMessage,
+    });
+  } catch (error) {
+    console.error("sendTicketMessage error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

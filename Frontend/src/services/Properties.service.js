@@ -62,3 +62,15 @@ export const Delete_Property = async (propertyId) => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const Get_All_Properties = async () => {
+  try {
+    const response = await api.get("/properties/all_properties");
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

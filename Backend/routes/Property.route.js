@@ -9,6 +9,7 @@ PropertyRouter.get(
   authMiddleware,
   PropertyController.getOwnerProperties
 );
+PropertyRouter.get("/all_properties", PropertyController.getAllProperties);
 PropertyRouter.get("/:id", authMiddleware, PropertyController.getPropertyById);
 PropertyRouter.put(
   "/update/:id",

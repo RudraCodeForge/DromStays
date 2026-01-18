@@ -5,7 +5,7 @@ import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
 import { Get_All_Properties } from "../../services/Properties.service";
 
-const Property = () => {
+const Public_Property = () => {
   const navigate = useNavigate();
 
   const [properties, setProperties] = useState([]);
@@ -104,4 +104,4 @@ const Property = () => {
   );
 };
 
-export default Property;
+export default Public_Property;

@@ -42,6 +42,7 @@ import TenantHelp from "./pages/Support/TenantHelp.jsx";
 import AccountHelp from "./pages/Support/AccountHelp.jsx";
 import MyTickets from "./pages/Support/MyTickets.jsx";
 import TicketDetails from "./pages/Support/TicketDetails.jsx";
+import Public_Property from "./pages/Common/Public_Property.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -80,6 +81,7 @@ function App() {
         <Route path="/help-center/payment-issues" element={<PaymentHelp />} />
         <Route path="/help-center/tenant-issues" element={<TenantHelp />} />
         <Route path="/help-center/account-profile" element={<AccountHelp />} />
+        <Route path="/explore_properties" element={<Public_Property />} />
 
         {/* 🔐 Protected Routes */}
         <Route

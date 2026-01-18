@@ -35,20 +35,18 @@ exports.getOwnerRooms = async (req, res) => {
 
 exports.getRoomById = async (req, res) => {
   try {
-    const ownerId = req.user?.id;
     const { roomId } = req.params;
 
-    if (!ownerId) {
-      return res.status(401).json({
+    // 🛡️ ObjectId validation
+    if (!mongoose.Types.ObjectId.isValid(roomId)) {
+      return res.status(400).json({
         success: false,
-        message: "Unauthorized",
+        message: "Invalid room ID",
       });
     }
 
-    let room = await Room.findOne({
-      _id: roomId,
-      owner: ownerId,
-    }).lean();
+    // 🌍 PUBLIC: no owner restriction
+    let room = await Room.findById(roomId).lean();
 
     if (!room) {
       return res.status(404).json({
@@ -57,7 +55,7 @@ exports.getRoomById = async (req, res) => {
       });
     }
 
-    /* ✅ PRICING NORMALIZATION (MOST IMPORTANT PART) */
+    /* ✅ PRICING NORMALIZATION */
     room.pricing = {
       billingType: room.pricing?.billingType || "monthly",
 

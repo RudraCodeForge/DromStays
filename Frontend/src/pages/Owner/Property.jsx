@@ -122,7 +122,9 @@ const Property = () => {
                 <div className={Styles.cardActions}>
                   <button
                     className={Styles.viewBtn}
-                    onClick={() => navigate(`/property/${property._id}/rooms`)}
+                    onClick={() =>
+                      navigate(`/Owner/property/${property._id}/rooms`)
+                    }
                   >
                     👀 View Rooms
                   </button>
@@ -131,7 +133,7 @@ const Property = () => {
                     <button
                       className={Styles.editBtn}
                       onClick={() =>
-                        navigate(`/property/${property._id}/editproperty`)
+                        navigate(`/Owner/property/${property._id}/editproperty`)
                       }
                     >
                       ✏️ Edit

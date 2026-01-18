@@ -151,7 +151,7 @@ function App() {
           }
         />
         <Route
-          path="/property/:propertyId/rooms"
+          path="/Owner/property/:propertyId/rooms"
           element={
             <ProtectedRoute>
               <Rooms />
@@ -159,7 +159,7 @@ function App() {
           }
         />
         <Route
-          path="/property/:propertyId/editproperty"
+          path="/Owner/property/:propertyId/editproperty"
           element={
             <ProtectedRoute>
               <EditProperty />

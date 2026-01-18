@@ -48,3 +48,20 @@ export const updateRoomById = async (roomId, payload) => {
     throw { success: false, message: "Server error" };
   }
 };
+
+export const Get_Property_Rooms = async (propertyId) => {
+  try {
+    if (!propertyId) {
+      throw { success: false, message: "Property ID is required" };
+    }
+
+    const response = await api.get(`/rooms/property/${propertyId}/rooms`);
+
+    return response.data;
+  } catch (error) {
+    if (error.response?.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};

@@ -159,3 +159,34 @@ exports.updateRoomById = async (req, res) => {
     });
   }
 };
+
+const mongoose = require("mongoose");
+
+exports.getPublicPropertyRooms = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(propertyId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid property ID",
+      });
+    }
+
+    const rooms = await Room.find({
+      property: propertyId,
+      isAvailable: true,
+    }).lean();
+
+    return res.status(200).json({
+      success: true,
+      rooms,
+    });
+  } catch (error) {
+    console.error("Get Public Property Rooms Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};

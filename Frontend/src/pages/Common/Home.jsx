@@ -26,7 +26,12 @@ const Home = () => {
       <Navbar />
       <div className={Style.Home_Con}>
         <HeroSection />
-        <FilterContainer />
+        <FilterContainer
+          onFilter={(filters) => {
+            console.log(filters);
+            // API call or frontend filtering
+          }}
+        />
       </div>
       <div className={Style.WhyUs_Con}>
         <h2>Why Choose Us?</h2>

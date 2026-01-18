@@ -109,7 +109,7 @@ const Profile = () => {
             <p>{user?.Role}</p>
 
             <p>
-              {user?.Subscription?.planName === null
+              {user?.Subscription?.planName === null && user?.Role === "owner"
                 ? "Not Active Subscription"
                 : user.Subscription.planName}
             </p>
@@ -154,9 +154,11 @@ const Profile = () => {
             Change Password
           </NavLink>
 
-          <NavLink to="/SubscriptionPlans" className={Style.EditLink}>
-            Subscriptions
-          </NavLink>
+          {user?.Role === "owner" && (
+            <NavLink to="/SubscriptionPlans" className={Style.EditLink}>
+              Subscriptions
+            </NavLink>
+          )}
 
           <button
             className={Style.LogoutBtn}

@@ -286,3 +286,52 @@
 .NotificationIcon:hover {
   background-color: #e0e7ff;
 }
+/* ============================= */
+/* Search Box (Navbar) */
+/* ============================= */
+
+.SearchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 420px;
+  margin: 0 20px;
+}
+.SearchBar {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  font-family: "Roboto Slab", serif;
+  outline: none;
+  background-color: #f9fafb;
+}
+
+.SearchBar:focus {
+  border-color: var(--primary-color);
+  background-color: #fff;
+}
+.NearMeBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.NearMeBtn:hover {
+  background-color: #1e0a4a;
+}
+@media (max-width: 768px) {
+  .SearchBox {
+    display: none;
+  }
+}

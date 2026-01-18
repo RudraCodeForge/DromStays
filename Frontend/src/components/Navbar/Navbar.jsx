@@ -1,56 +1,84 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import Styles from "../../styles/Navbar.module.css";
 import MobileNav from "./MobileNav";
 
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { useRef } from "react";
 
 const Navbar = () => {
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const searchRef = useRef(null);
 
+  /* 🔓 LOGOUT */
   const handleLogout = () => {
     dispatch(logout());
-    setOpen(false);
+    navigate("/");
+  };
+
+  /* 🔍 SEARCH (Enter key) */
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      const value = searchRef.current.value.trim();
+      if (!value) return;
+      navigate(`/search?location=${value}`);
+    }
+  };
+
+  /* 📍 NEAR ME */
+  const handleNearMe = () => {
+    navigate("/search?nearby=true");
   };
 
   return (
     <nav className={Styles.Navbar}>
-      {/* Logo */}
-      <img src="/logo.png" alt="DormStays Logo" className={Styles.Logo} />
+      {/* LOGO */}
+      <Link to="/">
+        <img src="/logo.png" alt="DormStays Logo" className={Styles.Logo} />
+      </Link>
 
-      {/* Desktop Menu */}
+      {/* SEARCH BAR (Only for Tenant / Guest) */}
+      {(role === "tenant" || !isAuthenticated) && (
+        <div className={Styles.SearchBox}>
+          <input
+            ref={searchRef}
+            type="text"
+            placeholder="Search location..."
+            className={Styles.SearchBar}
+            onKeyDown={handleSearch}
+          />
+          <button
+            type="button"
+            className={Styles.NearMeBtn}
+            onClick={handleNearMe}
+            title="Near Me"
+          >
+            📍
+          </button>
+        </div>
+      )}
+
+      {/* DESKTOP MENU */}
       <ul className={Styles.NavLinks}>
+        {/* GUEST */}
         {!isAuthenticated && (
           <>
-            <li className={Styles.Login}>
-              <NavLink
-                to="/Login"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Login
-              </NavLink>
+            <li>
+              <NavLink to="/Login">Login</NavLink>
             </li>
-            <li className={Styles.Signup}>
-              <NavLink
-                to="/Signup"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Sign Up
-              </NavLink>
+            <li>
+              <NavLink to="/Signup">Sign Up</NavLink>
             </li>
           </>
         )}
 
+        {/* ADMIN */}
         {isAuthenticated && role === "admin" && (
           <>
             <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Home
-              </NavLink>
+              <NavLink to="/">Home</NavLink>
             </li>
             <li>
               <Link to="/Contactus">Contact Us</Link>
@@ -66,62 +94,34 @@ const Navbar = () => {
           </>
         )}
 
+        {/* OWNER */}
         {isAuthenticated && role === "owner" && (
           <>
             <li>
-              <NavLink
-                to="/Owner/dashboard"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Dashboard
-              </NavLink>
+              <NavLink to="/Owner/dashboard">Dashboard</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Owner/properties">Properties</NavLink>
+            </li>
+            <li>
+              <NavLink to="/bookings">Bookings</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Settings">Settings</NavLink>
             </li>
 
             <li>
-              <NavLink
-                to="/Settings"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Settings
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/bookings"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Bookings
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/Owner/properties"
-                className={({ isActive }) => (isActive ? Styles.active : "")}
-              >
-                Properties
-              </NavLink>
-            </li>
-
-            <li>
-              <NavLink
-                to="/Profile"
-                className={({ isActive }) => (isActive ? Styles.Pactive : "")}
-              >
+              <NavLink to="/Profile">
                 <div className={Styles.OwnerProfile}>
                   <p>
-                    {user.Name}
+                    {user?.Name}
                     <br />
                     <span className={Styles.Role}>{role}</span>
                   </p>
-
                   <img
-                    src={user.ProfilePicture}
+                    src={user?.ProfilePicture}
                     alt="profile"
                     className={Styles.Profile}
-                    width="30"
-                    height="30"
                   />
                 </div>
               </NavLink>
@@ -129,29 +129,36 @@ const Navbar = () => {
           </>
         )}
 
+        {/* TENANT */}
         {isAuthenticated && role === "tenant" && (
           <>
-            <NavLink to="/Profile">
-              <div className={Styles.OwnerProfile}>
-                <p>
-                  {user.Name}
-                  <br />
-                  <span className={Styles.Role}>{role}</span>
-                </p>
-
-                <img
-                  src="/profile.webp"
-                  alt="profile"
-                  className={Styles.Profile}
-                  width="30"
-                  height="30"
-                />
-              </div>
-            </NavLink>
+            <li>
+              <NavLink to="/saved-properties">Saved</NavLink>
+            </li>
+            <li>
+              <NavLink to="/my-bookings">My Bookings</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Profile">
+                <div className={Styles.OwnerProfile}>
+                  <p>
+                    {user?.Name}
+                    <br />
+                    <span className={Styles.Role}>{role}</span>
+                  </p>
+                  <img
+                    src={user?.ProfilePicture}
+                    alt="profile"
+                    className={Styles.Profile}
+                  />
+                </div>
+              </NavLink>
+            </li>
           </>
         )}
       </ul>
 
+      {/* MOBILE NAV */}
       <MobileNav />
     </nav>
   );

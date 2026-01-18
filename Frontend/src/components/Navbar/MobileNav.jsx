@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import Logo from "../Logo";
 import Styles from "../../styles/Navbar.module.css";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -11,12 +11,20 @@ const MobileNav = () => {
   const [open, setOpen] = useState(false);
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const closeMenu = () => setOpen(false);
 
   const handleLogout = () => {
     dispatch(logout());
     closeMenu();
+    navigate("/");
+  };
+
+  /* 📍 Near Me (mobile) */
+  const handleNearMe = () => {
+    closeMenu();
+    navigate("/search?nearby=true");
   };
 
   return (
@@ -39,7 +47,7 @@ const MobileNav = () => {
         </div>
 
         <ul className={Styles.MobileNavLinks}>
-          {/* NOT AUTHENTICATED */}
+          {/* GUEST */}
           {!isAuthenticated && (
             <>
               <li className={Styles.MobileLogin}>
@@ -58,7 +66,7 @@ const MobileNav = () => {
           {/* AUTHENTICATED */}
           {isAuthenticated && (
             <>
-              {/* PROFILE ROW (NO NESTED LINKS) */}
+              {/* PROFILE ROW */}
               <li className={Styles.MobileProfile}>
                 <div className={Styles.MobileProfileRow}>
                   {/* Profile */}
@@ -78,7 +86,7 @@ const MobileNav = () => {
                     </div>
                   </NavLink>
 
-                  {/* Notification */}
+                  {/* Notifications */}
                   <NavLink
                     to="/notifications"
                     onClick={closeMenu}
@@ -89,6 +97,30 @@ const MobileNav = () => {
                 </div>
               </li>
 
+              {/* TENANT LINKS */}
+              {role === "tenant" && (
+                <>
+                  <li className={Styles.MobileLink}>
+                    <button
+                      onClick={handleNearMe}
+                      className={Styles.MobileActionBtn}
+                    >
+                      📍 Near Me
+                    </button>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/saved-properties" onClick={closeMenu}>
+                      Saved
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/my-bookings" onClick={closeMenu}>
+                      My Bookings
+                    </NavLink>
+                  </li>
+                </>
+              )}
+
               {/* OWNER LINKS */}
               {role === "owner" && (
                 <>
@@ -98,8 +130,8 @@ const MobileNav = () => {
                     </NavLink>
                   </li>
                   <li className={Styles.MobileLink}>
-                    <NavLink to="/Settings" onClick={closeMenu}>
-                      Settings
+                    <NavLink to="/Owner/properties" onClick={closeMenu}>
+                      Properties
                     </NavLink>
                   </li>
                   <li className={Styles.MobileLink}>
@@ -108,8 +140,8 @@ const MobileNav = () => {
                     </NavLink>
                   </li>
                   <li className={Styles.MobileLink}>
-                    <NavLink to="/Owner/properties" onClick={closeMenu}>
-                      Properties
+                    <NavLink to="/Settings" onClick={closeMenu}>
+                      Settings
                     </NavLink>
                   </li>
                 </>

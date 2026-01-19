@@ -312,15 +312,23 @@ exports.deleteProperty = async (req, res) => {
     });
   }
 };
+
 exports.searchProperties = async (req, res) => {
   try {
-    const { location, nearby, lat, lng, propertyType } = req.query;
+    const {
+      location,
+      nearby,
+      lat,
+      lng,
+      propertyType,
+      radius, // 👈 NEW (km)
+    } = req.query;
 
     let query = {
       isActive: true,
     };
 
-    /* 📍 LOCATION SEARCH (city / area) */
+    /* 📍 LOCATION SEARCH */
     if (location) {
       query.$or = [
         { "location.city": { $regex: location, $options: "i" } },
@@ -328,15 +336,19 @@ exports.searchProperties = async (req, res) => {
       ];
     }
 
-    /* 🏠 PROPERTY TYPE FILTER */
+    /* 🏠 PROPERTY TYPE */
     if (propertyType) {
       query.propertyType = propertyType;
     }
 
-    let properties;
+    let properties = [];
+    let message = "Properties fetched successfully";
 
-    /* 📍 NEARBY SEARCH (GeoSpatial) */
+    /* 📍 NEARBY SEARCH */
     if (nearby === "true" && lat && lng) {
+      const radiusInKm = radius ? Number(radius) : 5; // default 5km
+      const maxDistance = radiusInKm * 1000; // meters
+
       properties = await Property.find({
         ...query,
         "location.geo": {
@@ -345,18 +357,27 @@ exports.searchProperties = async (req, res) => {
               type: "Point",
               coordinates: [Number(lng), Number(lat)],
             },
-            $maxDistance: 5000, // 🔥 5 KM radius
+            $maxDistance: maxDistance,
           },
         },
       });
+
+      if (properties.length === 0) {
+        message = `No property found within ${radiusInKm} km`;
+      }
     } else {
-      // 🔥 Normal search / all properties
+      /* 🔎 NORMAL SEARCH / ALL */
       properties = await Property.find(query);
+
+      if (properties.length === 0) {
+        message = "No properties matched your search criteria";
+      }
     }
 
     return res.status(200).json({
       success: true,
       count: properties.length,
+      message,
       properties,
     });
   } catch (error) {

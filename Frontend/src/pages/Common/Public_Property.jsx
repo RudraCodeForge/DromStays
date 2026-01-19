@@ -7,7 +7,8 @@ import { Search_Properties } from "../../services/Properties.service";
 
 const Public_Property = () => {
   const navigate = useNavigate();
-  // Search Params
+
+  /* 🔎 QUERY PARAMS */
   const [searchParams] = useSearchParams();
   const city = searchParams.get("location");
   const nearby = searchParams.get("nearby");
@@ -16,10 +17,13 @@ const Public_Property = () => {
   const roomType = searchParams.get("roomType");
   const billingType = searchParams.get("billingType");
 
-  // States
+  /* 🎯 STATES */
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const [radius, setRadius] = useState(5); // 🔥 default 5 km
 
+  /* 📡 FETCH PROPERTIES */
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -34,11 +38,14 @@ const Public_Property = () => {
 
         let data;
 
-        if (hasSearch) {
-          const queryParams = {};
+        const queryParams = {};
 
+        if (hasSearch) {
           if (city) queryParams.location = city;
-          if (nearby === "true") queryParams.nearby = true;
+          if (nearby === "true") {
+            queryParams.nearby = true;
+            queryParams.radius = radius; // 👈 radius in km
+          }
           if (lat && lng) {
             queryParams.lat = lat;
             queryParams.lng = lng;
@@ -47,19 +54,24 @@ const Public_Property = () => {
           if (billingType) queryParams.billingType = billingType;
 
           data = await Search_Properties(queryParams);
+          setMessage(data?.message || "");
         } else {
+          // 🔥 No search → still call search API (acts as get all)
           data = await Search_Properties();
+          setMessage("");
         }
+
         setProperties(data?.properties || []);
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Fetch Properties Error:", error);
+        setMessage("Something went wrong. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchProperties();
-  }, [city, nearby, lat, lng, roomType, billingType]);
+  }, [city, nearby, lat, lng, roomType, billingType, radius]);
 
   /* 🖼️ PROPERTY IMAGE */
   const getPropertyImage = (property) =>
@@ -69,24 +81,49 @@ const Public_Property = () => {
     <>
       <Navbar />
 
-      {/* ⏳ LOADING STATE */}
+      {/* 🎚️ NEARBY RADIUS SELECTOR */}
+      {nearby === "true" && (
+        <div className={Styles.radiusWrapper}>
+          <div className={Styles.radiusHeader}>
+            <span>📍 Nearby Radius</span>
+            <strong>{radius} km</strong>
+          </div>
+
+          <input
+            type="range"
+            min="1"
+            max="15"
+            step="1"
+            value={radius}
+            onChange={(e) => setRadius(Number(e.target.value))}
+            className={Styles.radiusSlider}
+          />
+
+          <div className={Styles.radiusScale}>
+            <span>1 km</span>
+            <span>15 km</span>
+          </div>
+        </div>
+      )}
+
+      {/* ⏳ LOADING */}
       {loading ? (
         <div className={Styles.noProperties}>
           <h2>Loading properties...</h2>
         </div>
       ) : properties.length === 0 ? (
-        /* 🚫 NO PROPERTIES */
+        /* 🚫 NO RESULTS */
         <div className={Styles.noProperties}>
           <h2>No Properties Found</h2>
-          <p>Currently there are no properties available</p>
+          <p>{message || "Please adjust your search filters."}</p>
         </div>
       ) : (
-        /* ✅ PROPERTIES LIST */
+        /* ✅ PROPERTY LIST */
         <div className={Styles.container}>
           <div className={Styles.grid}>
             {properties.map((property) => (
               <div key={property._id} className={Styles.propertyCard}>
-                {/* 🖼️ IMAGE */}
+                {/* IMAGE */}
                 <div className={Styles.imageWrapper}>
                   <img
                     src={getPropertyImage(property)}
@@ -94,7 +131,7 @@ const Public_Property = () => {
                   />
                 </div>
 
-                {/* 📄 CONTENT */}
+                {/* CONTENT */}
                 <div className={Styles.cardContent}>
                   <div className={Styles.titleRow}>
                     <h2>{property?.name}</h2>
@@ -118,7 +155,7 @@ const Public_Property = () => {
                   </div>
                 </div>
 
-                {/* 👉 ACTION */}
+                {/* ACTION */}
                 <div className={Styles.cardActions}>
                   <button
                     className={Styles.viewBtn}

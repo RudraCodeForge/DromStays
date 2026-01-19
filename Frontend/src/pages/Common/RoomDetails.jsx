@@ -204,6 +204,7 @@ const RoomDetails = () => {
               </button>
 
               <button className={Styles.secondaryBtn}>Contact Owner</button>
+              <button ClassName={Styles.Favrouties}>Add to Favourates</button>
             </>
           )}
         </div>

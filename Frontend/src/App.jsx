@@ -40,6 +40,7 @@ import BookingHelp from "./pages/Support/BookingHelp.jsx";
 import PaymentHelp from "./pages/Support/PaymentHelp.jsx";
 import TenantHelp from "./pages/Support/TenantHelp.jsx";
 import AccountHelp from "./pages/Support/AccountHelp.jsx";
+import StayIssues from "./pages/Support/StaysHelp.jsx";
 import MyTickets from "./pages/Support/MyTickets.jsx";
 import TicketDetails from "./pages/Support/TicketDetails.jsx";
 import Public_Property from "./pages/Common/Public_Property.jsx";
@@ -82,6 +83,7 @@ function App() {
         <Route path="/help-center/payment-issues" element={<PaymentHelp />} />
         <Route path="/help-center/tenant-issues" element={<TenantHelp />} />
         <Route path="/help-center/account-profile" element={<AccountHelp />} />
+        <Route path="/help-center/stay-issues" element={<StayIssues />} />
         <Route path="/explore_properties" element={<Public_Property />} />
         <Route path="/property/:propertyId/rooms" element={<Public_Rooms />} />
 

@@ -29,7 +29,7 @@ const Profile = () => {
 
   /* ------------------ PROFILE IMAGE ------------------ */
   const [preview, setPreview] = useState(
-    user?.ProfilePicture || "/default-avatar.png"
+    user?.ProfilePicture || "/default-avatar.png",
   );
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
@@ -106,7 +106,7 @@ const Profile = () => {
 
           <div className={Style.ProfileInfo}>
             <h2>{user?.Name}</h2>
-            <p>{user?.Role}</p>
+            <p>{user?.Role.toUpperCase()}</p>
 
             <p>
               {user?.Subscription?.planName === null && user?.Role === "owner"

@@ -74,6 +74,7 @@ export const Get_All_Properties = async () => {
     throw { success: false, message: "Server error" };
   }
 };
+
 export const Search_Properties = async (queryParams) => {
   try {
     const response = await api.get("/properties/search", {

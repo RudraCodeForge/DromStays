@@ -37,7 +37,7 @@ const Footer = () => {
           <h3 className={Styles.footerHeading}>Quick Links</h3>
           <ul className={Styles.footerList}>
             <li>
-              <NavLink to="/rooms">Rooms</NavLink>
+              <NavLink to="/explore_properties">Properties</NavLink>
             </li>
             <li>
               <NavLink to="/about_us">About Us</NavLink>

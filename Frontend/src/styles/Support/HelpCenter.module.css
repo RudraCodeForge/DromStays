@@ -39,7 +39,10 @@
   text-decoration: none;
   color: #111827;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.3s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.3s ease;
   animation: fadeInUp 0.5s ease-out both;
   animation-delay: calc(var(--card-index, 0) * 0.1s);
 }
@@ -79,7 +82,9 @@
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.2s ease,
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease,
     box-shadow 0.3s ease;
   animation: bounceIn 0.5s ease-out 0.7s both;
 }
@@ -283,4 +288,10 @@
     justify-content: center;
     font-size: 15px;
   }
+}
+.RoleTitle {
+  margin: 24px 0 12px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
 }

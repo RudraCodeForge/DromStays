@@ -31,7 +31,6 @@ const Home = () => {
         <HeroSection />
         <FilterContainer
           onFilter={(filters) => {
-            console.log(filters);
             const queryParams = new URLSearchParams();
             if (filters.location) {
               queryParams.append("location", filters.location);

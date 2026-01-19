@@ -312,30 +312,52 @@ exports.deleteProperty = async (req, res) => {
     });
   }
 };
-
-exports.getAllProperties = async (req, res) => {
-  try {
-    const properties = await Property.find({}).lean();
-    return res.status(200).json({
-      success: true,
-      properties,
-    });
-  } catch (error) {
-    console.error("Get All Properties Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
-  }
-};
-
 exports.searchProperties = async (req, res) => {
   try {
-    const { location, nearby } = req.query;
+    const { location, nearby, lat, lng, propertyType } = req.query;
+
+    let query = {
+      isActive: true,
+    };
+
+    /* 📍 LOCATION SEARCH (city / area) */
+    if (location) {
+      query.$or = [
+        { "location.city": { $regex: location, $options: "i" } },
+        { "location.area": { $regex: location, $options: "i" } },
+      ];
+    }
+
+    /* 🏠 PROPERTY TYPE FILTER */
+    if (propertyType) {
+      query.propertyType = propertyType;
+    }
+
+    let properties;
+
+    /* 📍 NEARBY SEARCH (GeoSpatial) */
+    if (nearby === "true" && lat && lng) {
+      properties = await Property.find({
+        ...query,
+        "location.geo": {
+          $near: {
+            $geometry: {
+              type: "Point",
+              coordinates: [Number(lng), Number(lat)],
+            },
+            $maxDistance: 5000, // 🔥 5 KM radius
+          },
+        },
+      });
+    } else {
+      // 🔥 Normal search / all properties
+      properties = await Property.find(query);
+    }
+
     return res.status(200).json({
       success: true,
-      message: "Search not implemented yet",
-      properties: [],
+      count: properties.length,
+      properties,
     });
   } catch (error) {
     console.error("Search Properties Error:", error);

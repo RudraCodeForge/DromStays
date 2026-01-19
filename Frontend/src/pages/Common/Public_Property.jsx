@@ -3,10 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import {
-  Get_All_Properties,
-  Search_Properties,
-} from "../../services/Properties.service";
+import { Search_Properties } from "../../services/Properties.service";
 
 const Public_Property = () => {
   const navigate = useNavigate();
@@ -18,8 +15,6 @@ const Public_Property = () => {
   const lng = searchParams.get("lng");
   const roomType = searchParams.get("roomType");
   const billingType = searchParams.get("billingType");
-
-  console.log("Params:", city, nearby, lat, lng, roomType, billingType);
 
   // States
   const [properties, setProperties] = useState([]);
@@ -53,9 +48,8 @@ const Public_Property = () => {
 
           data = await Search_Properties(queryParams);
         } else {
-          data = await Get_All_Properties();
+          data = await Search_Properties();
         }
-
         setProperties(data?.properties || []);
       } catch (err) {
         console.error(err);

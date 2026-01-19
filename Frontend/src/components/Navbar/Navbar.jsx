@@ -23,13 +23,28 @@ const Navbar = () => {
     if (e.key === "Enter") {
       const value = searchRef.current.value.trim();
       if (!value) return;
-      navigate(`/search?location=${value}`);
+      navigate(`/explore_properties?location=${value}`);
     }
   };
 
   /* 📍 NEAR ME */
   const handleNearMe = () => {
-    navigate("/search?nearby=true");
+    if (!navigator.geolocation) {
+      alert("Geolocation not supported");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
+      },
+      () => {
+        alert("Location access denied");
+      },
+    );
   };
 
   return (
@@ -45,7 +60,7 @@ const Navbar = () => {
           <input
             ref={searchRef}
             type="text"
-            placeholder="Search location..."
+            placeholder="Enter City to Search..."
             className={Styles.SearchBar}
             onKeyDown={handleSearch}
           />

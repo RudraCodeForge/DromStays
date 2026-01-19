@@ -10,6 +10,7 @@ import { steps } from "../../data/steps.js";
 import { features } from "../../data/features.js";
 import FeatureSection from "../../components/FeatureSection.jsx";
 import FilterContainer from "../../components/FilterContainer.jsx";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const [reviews, setReviews] = useState([]);
 
@@ -21,6 +22,8 @@ const Home = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <Navbar />
@@ -29,7 +32,24 @@ const Home = () => {
         <FilterContainer
           onFilter={(filters) => {
             console.log(filters);
-            // API call or frontend filtering
+            const queryParams = new URLSearchParams();
+            if (filters.location) {
+              queryParams.append("location", filters.location);
+            }
+            if (filters.roomType) {
+              queryParams.append("roomType", filters.roomType);
+            }
+            if (filters.billingType) {
+              queryParams.append("billingType", filters.billingType);
+            }
+            if (filters.nearBy) {
+              queryParams.append("nearby", "true");
+              if (filters.coords) {
+                queryParams.append("lat", filters.coords.lat);
+                queryParams.append("lng", filters.coords.lng);
+              }
+            }
+            navigate(`/explore_properties?${queryParams.toString()}`);
           }}
         />
       </div>

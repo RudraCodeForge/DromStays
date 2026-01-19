@@ -1,13 +1,22 @@
 import Styles from "../../styles/Property.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import { Get_All_Properties } from "../../services/Properties.service";
+import {
+  Get_All_Properties,
+  Search_Properties,
+} from "../../services/Properties.service";
 
 const Public_Property = () => {
   const navigate = useNavigate();
+  // Search Params
+  const [searchParams] = useSearchParams();
+  const city = searchParams.get("location");
+  const nearby = searchParams.get("nearby");
+  console.log("Params:", city, nearby);
 
+  // States
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 

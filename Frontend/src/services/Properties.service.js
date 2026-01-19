@@ -40,7 +40,7 @@ export const Update_Property = async (propertyId, propertyData) => {
   try {
     const response = await api.put(
       `/properties/update/${propertyId}`,
-      propertyData
+      propertyData,
     );
     return response.data;
   } catch (error) {
@@ -66,6 +66,19 @@ export const Delete_Property = async (propertyId) => {
 export const Get_All_Properties = async () => {
   try {
     const response = await api.get("/properties/all_properties");
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      throw error.response.data;
+    }
+    throw { success: false, message: "Server error" };
+  }
+};
+export const Search_Properties = async (queryParams) => {
+  try {
+    const response = await api.get("/properties/search", {
+      params: queryParams,
+    });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {

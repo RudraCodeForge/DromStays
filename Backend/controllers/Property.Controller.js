@@ -328,3 +328,20 @@ exports.getAllProperties = async (req, res) => {
     });
   }
 };
+
+exports.searchProperties = async (req, res) => {
+  try {
+    const { location, nearby } = req.query;
+    return res.status(200).json({
+      success: true,
+      message: "Search not implemented yet",
+      properties: [],
+    });
+  } catch (error) {
+    console.error("Search Properties Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};

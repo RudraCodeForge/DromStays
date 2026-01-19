@@ -14,27 +14,58 @@ const Public_Property = () => {
   const [searchParams] = useSearchParams();
   const city = searchParams.get("location");
   const nearby = searchParams.get("nearby");
-  console.log("Params:", city, nearby);
+  const lat = searchParams.get("lat");
+  const lng = searchParams.get("lng");
+  const roomType = searchParams.get("roomType");
+  const billingType = searchParams.get("billingType");
+
+  console.log("Params:", city, nearby, lat, lng, roomType, billingType);
 
   // States
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  /* 📦 FETCH ALL PROPERTIES */
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const data = await Get_All_Properties();
+        setLoading(true);
+
+        const hasSearch =
+          (city && city.trim() !== "") ||
+          nearby === "true" ||
+          (lat && lng) ||
+          roomType ||
+          billingType;
+
+        let data;
+
+        if (hasSearch) {
+          const queryParams = {};
+
+          if (city) queryParams.location = city;
+          if (nearby === "true") queryParams.nearby = true;
+          if (lat && lng) {
+            queryParams.lat = lat;
+            queryParams.lng = lng;
+          }
+          if (roomType) queryParams.roomType = roomType;
+          if (billingType) queryParams.billingType = billingType;
+
+          data = await Search_Properties(queryParams);
+        } else {
+          data = await Get_All_Properties();
+        }
+
         setProperties(data?.properties || []);
-      } catch (error) {
-        console.error("Error fetching properties:", error);
+      } catch (err) {
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchProperties();
-  }, []);
+  }, [city, nearby, lat, lng, roomType, billingType]);
 
   /* 🖼️ PROPERTY IMAGE */
   const getPropertyImage = (property) =>

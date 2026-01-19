@@ -7,19 +7,20 @@ PropertyRouter.post("/add", authMiddleware, PropertyController.addProperty);
 PropertyRouter.get(
   "/owner_properties",
   authMiddleware,
-  PropertyController.getOwnerProperties
+  PropertyController.getOwnerProperties,
 );
 PropertyRouter.get("/all_properties", PropertyController.getAllProperties);
+PropertyRouter.get("/search", PropertyController.searchProperties);
 PropertyRouter.get("/:id", authMiddleware, PropertyController.getPropertyById);
 PropertyRouter.put(
   "/update/:id",
   authMiddleware,
-  PropertyController.updateProperty
+  PropertyController.updateProperty,
 );
 PropertyRouter.delete(
   "/delete/:id",
   authMiddleware,
-  PropertyController.deleteProperty
+  PropertyController.deleteProperty,
 );
 
 module.exports = PropertyRouter;

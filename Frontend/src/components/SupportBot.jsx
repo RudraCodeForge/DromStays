@@ -1,23 +1,59 @@
 import { useState, useEffect, useRef } from "react";
 import Styles from "../styles/Support/SupportBot.module.css";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const botAnswers = {
-  "How to add a property?":
-    "Go to Dashboard → Add Property → Fill details → Save.",
-  "How to add rooms?": "Open Property → Add Room → Enter room details.",
-  "Tenant not adding?": "Check room capacity. Tenants cannot exceed capacity.",
-  "Payment issue":
-    "If payment is deducted but booking failed, wait 24 hours for auto-refund.",
+/* ============================= */
+/* ROLE BASED ANSWERS */
+/* ============================= */
+const roleBasedAnswers = {
+  OWNER: {
+    "How to add a property?":
+      "Go to Dashboard → Add Property → Fill details → Save.",
+    "How to add rooms?": "Open Property → Add Room → Enter room details.",
+    "Tenant not adding?":
+      "Check room capacity. Tenants cannot exceed capacity.",
+    "How to manage bookings?": "Go to Dashboard → Bookings section.",
+  },
+
+  USER: {
+    "How to book a room?": "Open a property → View rooms → Select room → Book.",
+    "Payment issue":
+      "If payment is deducted but booking failed, wait 24 hours for auto-refund.",
+    "How to cancel booking?": "Go to My Bookings → Cancel booking.",
+  },
+
+  GUEST: {
+    "How to create account?": "Click on Signup → Fill details → Verify email.",
+    "Can I browse rooms without login?":
+      "Yes, you can browse properties and rooms without login.",
+    "How to contact support?": "Use Help Center or Contact Support page.",
+  },
 };
 
 const SupportBot = () => {
+  const { role, isAuthenticated } = useSelector((state) => state.auth);
+
+  /* ============================= */
+  /* ROLE DETECTION */
+  /* ============================= */
+  const userRole = isAuthenticated
+    ? role === "owner"
+      ? "OWNER"
+      : "USER"
+    : "GUEST";
+
+  const botAnswers = roleBasedAnswers[userRole];
+
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState("chat"); // chat | feedback | fallback
   const [typing, setTyping] = useState(false);
 
   const [messages, setMessages] = useState([
-    { from: "bot", text: "Hi 👋 I am Rudra,  How can I help you today?" },
+    {
+      from: "bot",
+      text: "Hi 👋 I am Rudra. How can I help you today?",
+    },
   ]);
 
   const bottomRef = useRef(null);
@@ -37,11 +73,16 @@ const SupportBot = () => {
       setTyping(false);
       setMessages((prev) => [
         ...prev,
-        { from: "bot", text: botAnswers[question] },
+        {
+          from: "bot",
+          text:
+            botAnswers[question] ||
+            "Sorry 😔 I don't have an answer for that yet.",
+        },
         { from: "bot", text: "Did this solve your problem?" },
       ]);
       setStage("feedback");
-    }, 1200); // ⏳ typing delay
+    }, 1200);
   };
 
   /* ============================= */
@@ -76,7 +117,7 @@ const SupportBot = () => {
         ...prev,
         {
           from: "bot",
-          text: "Sorry 😔 Please visit Help Center or Contact Support.",
+          text: "Sorry 😔 Please visit Help Center or Contact Support for more help.",
         },
       ]);
       setStage("fallback");
@@ -84,18 +125,21 @@ const SupportBot = () => {
   };
 
   /* ============================= */
-  /* RESET */
+  /* RESET BOT */
   /* ============================= */
   const resetBot = () => {
     setStage("chat");
     setMessages([
-      { from: "bot", text: "Hi 👋 I am Rudra,  How can I help you today?" },
+      {
+        from: "bot",
+        text: "Hi 👋 I am Rudra. How can I help you today?",
+      },
     ]);
   };
 
   return (
     <>
-      {/* Floating Button */}
+      {/* 💬 Floating Button */}
       <div className={Styles.BotButton} onClick={() => setOpen(!open)}>
         💬
       </div>
@@ -121,10 +165,9 @@ const SupportBot = () => {
               </div>
             ))}
 
-            {/* Typing Indicator */}
             {typing && (
               <div className={Styles.Typing}>
-                Support Bot is typing<span>.</span>
+                Rudra is typing<span>.</span>
                 <span>.</span>
                 <span>.</span>
               </div>

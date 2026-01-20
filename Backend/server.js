@@ -13,6 +13,7 @@ const RecentRouter = require("./routes/Recent.route");
 const TenantRouter = require("./routes/Tenant.route");
 const PaymentRouter = require("./routes/Payment.route");
 const SupportRouter = require("./routes/Support.route");
+const FavouriteRouter = require("./routes/Favourite.route");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -26,7 +27,7 @@ app.use(
     credentials: true, // ✅ allow cookies
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
 
 app.use(express.json());
@@ -40,6 +41,7 @@ app.use("/activities", RecentRouter);
 app.use("/tenants", TenantRouter);
 app.use("/payments", PaymentRouter);
 app.use("/support", SupportRouter);
+app.use("/favourites", FavouriteRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

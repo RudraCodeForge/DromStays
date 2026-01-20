@@ -1,28 +1,41 @@
 import Styles from "../../styles/RoomDetails.module.css";
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getRoomById } from "../../services/Rooms.service";
+import {
+  addRoomToFavourites,
+  checkFavourite,
+} from "../../services/Favourite.service";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
+import { toast } from "react-toastify";
+import { ClipLoader } from "react-spinners";
+import Slider from "react-slick";
 
 const RoomDetails = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { role } = useSelector((state) => state.auth);
+  const { role, isAuthenticated } = useSelector((state) => state.auth);
 
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [isFav, setIsFav] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
 
+  // ---------------- FETCH ROOM ----------------
   useEffect(() => {
     const fetchRoom = async () => {
       try {
+        setLoading(true);
         const res = await getRoomById(roomId);
+        if (!res?.room) throw new Error("Room not found");
         setRoom(res.room);
       } catch (err) {
-        console.error("ROOM DETAILS ERROR:", err);
-        setError("Failed to load room details");
+        setError(err.message || "Failed to load room");
+        toast.error(err.message || "Failed to load room");
       } finally {
         setLoading(false);
       }
@@ -31,10 +44,27 @@ const RoomDetails = () => {
     fetchRoom();
   }, [roomId]);
 
-  /* 💰 RENT CALCULATION (SAFE) */
-  const getRentPerTenant = (room) => {
-    const count = room.tenants?.length || 1;
+  // ---------------- CHECK FAV STATUS ----------------
+  useEffect(() => {
+    if (!isAuthenticated) return;
 
+    const fetchFavStatus = async () => {
+      try {
+        const res = await checkFavourite(roomId);
+        setIsFav(res.isFavourite);
+      } catch (err) {
+        console.error("Favourite check error", err);
+      }
+    };
+
+    fetchFavStatus();
+  }, [roomId, isAuthenticated]);
+
+  // ---------------- RENT CALCULATION ----------------
+  const rentPerTenant = useMemo(() => {
+    if (!room) return 0;
+
+    const count = room.tenants?.length || 1;
     if (count > 1) {
       return room.pricing.billingType === "monthly"
         ? room.pricing.sharing.perPersonMonthlyRent
@@ -44,26 +74,60 @@ const RoomDetails = () => {
     return room.pricing.billingType === "monthly"
       ? room.pricing.singleOccupancy.monthlyRent
       : room.pricing.singleOccupancy.dailyRent;
+  }, [room]);
+
+  // ---------------- TOGGLE FAV ----------------
+  const handleToggleFav = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to use favourites");
+      return navigate("/login");
+    }
+
+    try {
+      setFavLoading(true);
+      const res = await addRoomToFavourites(roomId);
+      setIsFav((prev) => !prev);
+      toast.success(res.message);
+    } catch (err) {
+      toast.error("Something went wrong");
+    } finally {
+      setFavLoading(false);
+    }
   };
 
-  if (loading) {
-    return <p className={Styles.loading}>Loading room details...</p>;
-  }
+  // ---------------- BOOK ----------------
+  const handleBook = () => {
+    if (!room.isAvailable) return;
+    navigate(`/book/${roomId}`);
+  };
 
-  if (error) {
-    return <p className={Styles.error}>{error}</p>;
-  }
+  // ---------------- SLIDER ----------------
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    adaptiveHeight: true,
+  };
 
-  if (!room) {
-    return <p className={Styles.error}>Room not found</p>;
-  }
+  // ---------------- STATES ----------------
+  if (loading)
+    return (
+      <div className={Styles.loading}>
+        <ClipLoader size={50} color="#2e126a" />
+        <p>Loading room details...</p>
+      </div>
+    );
+
+  if (error) return <p className={Styles.error}>{error}</p>;
+  if (!room) return <p className={Styles.error}>Room not found</p>;
 
   return (
     <>
       <Navbar />
-
       <div className={Styles.container}>
-        {/* 🏷️ HEADER */}
+        {/* HEADER */}
         <div className={Styles.header}>
           <h2 className={Styles.title}>Room {room.roomNumber}</h2>
           <span
@@ -75,46 +139,45 @@ const RoomDetails = () => {
           </span>
         </div>
 
-        {/* 🖼️ IMAGE GALLERY */}
+        {/* IMAGES */}
         <div className={Styles.gallery}>
-          {room.images?.length > 0 ? (
-            room.images.map((img, i) => (
-              <img key={i} src={img.url} alt="room" />
-            ))
+          {room.images?.length ? (
+            <Slider {...sliderSettings}>
+              {room.images.map((img, i) => (
+                <img key={i} src={img.url} alt={`Room ${i + 1}`} />
+              ))}
+            </Slider>
           ) : (
             <p className={Styles.muted}>No images available</p>
           )}
         </div>
 
-        {/* 📦 BASIC DETAILS */}
+        {/* DETAILS */}
         <div className={Styles.card}>
           <div className={Styles.detailsGrid}>
-            <div className={Styles.detailItem}>
+            <div>
               <span>Room Type</span>
               <p>{room.roomType}</p>
             </div>
-
-            <div className={Styles.detailItem}>
+            <div>
               <span>Floor</span>
               <p>{room.floor}</p>
             </div>
-
-            <div className={Styles.detailItem}>
+            <div>
               <span>Capacity</span>
               <p>{room.capacity}</p>
             </div>
-
-            <div className={Styles.detailItem}>
+            <div>
               <span>Occupied</span>
               <p>{room.tenants?.length || 0}</p>
             </div>
           </div>
         </div>
 
-        {/* 🌿 AMENITIES */}
+        {/* AMENITIES */}
         <div className={Styles.card}>
-          <h4 className={Styles.sectionTitle}>Amenities</h4>
-          {room.amenities?.length > 0 ? (
+          <h4>Amenities</h4>
+          {room.amenities?.length ? (
             <div className={Styles.amenities}>
               {room.amenities.map((a, i) => (
                 <span key={i} className={Styles.amenity}>
@@ -127,89 +190,54 @@ const RoomDetails = () => {
           )}
         </div>
 
-        {/* 📜 RULES */}
-        <div className={Styles.card}>
-          <h4 className={Styles.sectionTitle}>Room Rules</h4>
-          {room.rules?.length > 0 ? (
-            <ul className={Styles.rulesList}>
-              {room.rules.map((rule, i) => (
-                <li key={i} className={Styles.ruleItem}>
-                  <span className={Styles.ruleDot}>•</span>
-                  {rule}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className={Styles.muted}>No specific rules mentioned</p>
-          )}
-        </div>
-
-        {/* 💰 PRICING */}
+        {/* PRICING */}
         <div className={`${Styles.card} ${Styles.priceCard}`}>
-          <h4 className={Styles.sectionTitle}>Rent</h4>
+          <h4>Rent</h4>
           <p className={Styles.price}>
-            ₹{getRentPerTenant(room)}{" "}
-            <span className={Styles.priceUnit}>
-              / {room.pricing.billingType}
-            </span>
+            ₹{rentPerTenant} <span>/ {room.pricing.billingType}</span>
           </p>
-
-          <p className={Styles.muted}>
-            {room.tenants.length > 1
-              ? "Sharing price per tenant"
-              : "Single occupancy price"}
-          </p>
-
-          {!room.isAvailable && (
-            <p className={Styles.fullNote}>🚫 This room is currently full</p>
-          )}
         </div>
 
-        {/* 🔘 ACTION BUTTONS */}
-        <div className={Styles.actions}>
-          {/* 👑 OWNER */}
-          {role === "owner" && (
-            <>
-              <button
-                className={Styles.primaryBtn}
-                onClick={() => navigate(`/Owner/add-tenant/${roomId}`)}
-              >
-                ➕ Add Tenant
-              </button>
+        {/* ACTIONS */}
+        {role !== "owner" && (
+          <div className={Styles.actions}>
+            <button
+              className={Styles.primaryBtn}
+              disabled={!room.isAvailable}
+              onClick={handleBook}
+            >
+              {room.isAvailable ? "Book / Request Room" : "Not Available"}
+            </button>
 
-              <button
-                className={Styles.secondaryBtn}
-                onClick={() => navigate(`/Owner/edit-room/${roomId}`)}
-              >
-                ✏️ Edit Room
-              </button>
+            <button
+              className={Styles.secondaryBtn}
+              onClick={() => setShowContactModal(true)}
+            >
+              Contact Owner
+            </button>
 
-              <button
-                className={Styles.secondaryBtn}
-                onClick={() => navigate(`/rooms/${roomId}/tenants`)}
-              >
-                👀 View Tenants
-              </button>
-            </>
-          )}
+            <button
+              className={`${Styles.favBtn} ${isFav ? Styles.favActive : ""}`}
+              onClick={handleToggleFav}
+              disabled={favLoading}
+            >
+              {isFav ? "❤️ Added to Favourites" : "🤍 Add to Favourites"}
+            </button>
+          </div>
+        )}
 
-          {/* 🙋 TENANT / USER */}
-          {role !== "owner" && (
-            <>
-              <button
-                className={Styles.primaryBtn}
-                disabled={!room.isAvailable}
-              >
-                {room.isAvailable ? "Book / Request Room" : "Not Available"}
-              </button>
-
-              <button className={Styles.secondaryBtn}>Contact Owner</button>
-              <button ClassName={Styles.Favrouties}>Add to Favourates</button>
-            </>
-          )}
-        </div>
+        {/* CONTACT MODAL */}
+        {showContactModal && (
+          <div className={Styles.modal}>
+            <div className={Styles.modalContent}>
+              <h3>Contact Owner</h3>
+              <p>Email: {room.owner?.email || "N/A"}</p>
+              <p>Phone: {room.owner?.phone || "N/A"}</p>
+              <button onClick={() => setShowContactModal(false)}>Close</button>
+            </div>
+          </div>
+        )}
       </div>
-
       <Footer />
     </>
   );

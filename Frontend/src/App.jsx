@@ -253,6 +253,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/saved-rooms"
+          element={
+            <ProtectedRoute>
+              <Public_Rooms />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 Page Not Found */}
 

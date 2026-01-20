@@ -148,7 +148,7 @@ const Navbar = () => {
         {isAuthenticated && role === "tenant" && (
           <>
             <li>
-              <NavLink to="/saved-properties">Saved</NavLink>
+              <NavLink to="/saved-rooms">Saved</NavLink>
             </li>
             <li>
               <NavLink to="/my-bookings">My Bookings</NavLink>

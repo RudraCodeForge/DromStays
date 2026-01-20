@@ -123,7 +123,7 @@ const MobileNav = () => {
                     </button>
                   </li>
                   <li className={Styles.MobileLink}>
-                    <NavLink to="/saved-properties" onClick={closeMenu}>
+                    <NavLink to="/saved-rooms" onClick={closeMenu}>
                       Saved
                     </NavLink>
                   </li>

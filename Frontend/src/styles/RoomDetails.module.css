@@ -341,3 +341,26 @@ body {
     padding: 20px;
   }
 }
+/* ❤️ FAVOURITES BUTTON */
+.favBtn {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #ff4d6d;
+  background: #fff;
+  color: #ff4d6d;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.favBtn:hover {
+  background: #ff4d6d;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.favActive {
+  background: #ff4d6d;
+  color: #fff;
+  border-color: #ff4d6d;
+}

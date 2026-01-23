@@ -45,7 +45,6 @@ exports.makeRequest = async (req, res) => {
       });
     }
 
-    // ⏰ Slot end hours mapping
     const slotEndHours = {
       "10 AM - 11 AM": 11,
       "12 PM - 1 PM": 13,
@@ -53,14 +52,12 @@ exports.makeRequest = async (req, res) => {
       "6 PM - 7 PM": 19,
     };
 
-    // ❌ Invalid slot safety
     if (!slotEndHours[visitTimeSlot]) {
       return res.status(400).json({
         error: "Invalid time slot selected",
       });
     }
 
-    // ❌ Only TODAY → past slot check
     if (selectedDateStr === todayDateStr) {
       const currentHour = new Date().getHours();
 
@@ -71,10 +68,6 @@ exports.makeRequest = async (req, res) => {
       }
     }
 
-    /* =======================
-       ROOM & PROPERTY CHECK
-    ======================== */
-
     const room = await Room.findById(roomId);
     if (!room) {
       return res.status(404).json({ error: "Room not found" });
@@ -84,24 +77,6 @@ exports.makeRequest = async (req, res) => {
     if (!property) {
       return res.status(404).json({ error: "Property not found" });
     }
-
-    /* =======================
-       CREATE REQUEST
-    ======================== */
-
-    console.log("Creating request with:", {
-      requestType,
-      roomId,
-      userId,
-      userName: name,
-      ownerId: room.owner,
-      propertyName: property.name,
-      roomNo: room.roomNumber,
-      visitDate,
-      visitTimeSlot,
-      purposeOfVisit,
-      message,
-    });
 
     const newRequest = new Request({
       requestType,

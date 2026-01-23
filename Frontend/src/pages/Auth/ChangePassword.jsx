@@ -8,6 +8,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import ErrorContainer from "../../components/ErrorContainer.jsx";
 import { Update_Password } from "../../services/auth.service.js";
 import { logout } from "../../redux/authSlice";
+import { toast } from "react-toastify";
 
 const ChangePassword = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -66,8 +67,10 @@ const ChangePassword = () => {
       } else {
         setErrors([res?.message || "Password update failed"]);
       }
+      toast.success("Password updated successfully! Please log in again.");
     } catch (err) {
       setErrors([err.message]);
+      toast.error("Error updating password. Please try again.");
     } finally {
       setLoading(false);
     }

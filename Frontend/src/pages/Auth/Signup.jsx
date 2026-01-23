@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Footer from "../../components/Footer.jsx";
 import { Link } from "react-router-dom";
 import { Signup as SignupService } from "../../services/auth.service.js";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -84,11 +85,13 @@ const Signup = () => {
       e.target.reset();
       setRole("");
       setErrors([]);
+      toast.success(res.data.message || "Signup successful!");
       navigate("/Login");
     } catch (error) {
       setErrors([
         error.response?.data?.message || "An error occurred during signup.",
       ]);
+      toast.error("An error occurred during signup.");
     }
   };
 

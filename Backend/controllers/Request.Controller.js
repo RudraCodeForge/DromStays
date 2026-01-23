@@ -16,7 +16,6 @@ exports.makeRequest = async (req, res) => {
       message,
     } = req.body;
 
-    // 🔹 Basic validation
     if (
       !roomId ||
       !requestType ||
@@ -30,15 +29,9 @@ exports.makeRequest = async (req, res) => {
         .json({ error: "All required fields must be filled" });
     }
 
-    /* =======================
-       DATE & SLOT VALIDATION
-    ======================== */
-
-    // YYYY-MM-DD (timezone safe)
     const todayDateStr = new Date().toISOString().split("T")[0];
     const selectedDateStr = new Date(visitDate).toISOString().split("T")[0];
 
-    // ❌ Past date not allowed
     if (selectedDateStr < todayDateStr) {
       return res.status(400).json({
         error: "Past dates are not allowed",

@@ -2,7 +2,7 @@ import Styles from "../../styles/ResetPassword.module.css";
 import ErrorContainer from "../../components/ErrorContainer";
 import { useState } from "react";
 import { Forget_Password } from "../../services/auth.service";
-
+import { toast } from "react-toastify";
 const ResetPassword = () => {
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -19,9 +19,11 @@ const ResetPassword = () => {
     try {
       await Forget_Password(email);
       setSuccess("If the email exists, a reset link has been sent.");
+      toast.success("If the email exists, a reset link has been sent.");
       e.target.reset();
     } catch (error) {
       setErrors(error.message || "Something went wrong. Please try again.");
+      toast.error(error.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

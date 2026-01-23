@@ -11,6 +11,7 @@ import { loginSuccess } from "../../redux/authSlice";
 import { fetchCurrentUser } from "../../redux/authThunks";
 import { Login as LoginService } from "../../services/auth.service";
 import ErrorContainer from "../../components/ErrorContainer";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
@@ -57,7 +58,7 @@ const Login = () => {
         loginSuccess({
           user: res.user,
           token: res.accessToken,
-        })
+        }),
       );
 
       dispatch(fetchCurrentUser());
@@ -68,10 +69,13 @@ const Login = () => {
       } else {
         navigate("/");
       }
+
+      toast.success("Login successful!");
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.message || "Login failed. Please try again."
+        error.response?.data?.message || "Login failed. Please try again.",
       );
+      toast.error("Login failed. Please check your credentials and try again.");
     }
   };
 

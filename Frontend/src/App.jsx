@@ -46,6 +46,9 @@ import TicketDetails from "./pages/Support/TicketDetails.jsx";
 import Public_Property from "./pages/Common/Public_Property.jsx";
 import Public_Rooms from "./pages/Common/Public_Rooms.jsx";
 import RoomVisitRequestForm from "./pages/Common/RoomVisitRequestForm.jsx";
+// Import ToastContainer if using react-toastify
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -67,6 +70,16 @@ function App() {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
       <Routes>
         {/* 🌍 Public Routes */}
         <Route path="/" element={<Home />} />

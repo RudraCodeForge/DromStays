@@ -4,6 +4,8 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useParams } from "react-router-dom";
 import { makeRequest } from "../../services/Request.service";
+import { toast } from "react-toastify";
+
 const RoomVisitRequestForm = () => {
   const nameRef = useRef();
   const dateRef = useRef();
@@ -35,18 +37,15 @@ const RoomVisitRequestForm = () => {
       purposeOfVisit: purposeRef.current.value,
       message: messageRef.current.value,
     };
-
-    console.log("ROOM VISIT REQUEST DATA 👉", payload);
-
-    // fake delay (UI animation feel)
+    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
       const res = await makeRequest(payload);
-      alert("Request submitted successfully!");
+      toast.success("Room visit request sent successfully 🚀");
     } catch (error) {
       console.error("Request submission error:", error);
-      alert(error.message || "Failed to submit request");
+      toast.error(error.message || "Failed to submit request ❌");
     }
 
     setIsSubmitting(false);

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const requestSchema = new mongoose.Schema(
   {
@@ -35,25 +35,15 @@ const requestSchema = new mongoose.Schema(
       required: true,
     },
 
-    // 🔹 Common message
     message: {
       type: String,
       required: true,
       maxlength: 300,
     },
 
-    // 🔹 ONLY for room visit request
-    visitDate: {
-      type: Date,
-    },
-
-    visitTimeSlot: {
-      type: String, // "10:00 AM - 11:00 AM"
-    },
-
-    purposeOfVisit: {
-      type: String, // parents / guest / inspection
-    },
+    visitDate: Date,
+    visitTimeSlot: String,
+    purposeOfVisit: String,
 
     status: {
       type: String,
@@ -69,4 +59,4 @@ const requestSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export default mongoose.model("Request", requestSchema);
+module.exports = mongoose.model("Request", requestSchema);

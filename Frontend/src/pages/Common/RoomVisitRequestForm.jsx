@@ -3,7 +3,7 @@ import Styles from "../../styles/RoomVisitForm.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useParams } from "react-router-dom";
-
+import { makeRequest } from "../../services/Request.service";
 const RoomVisitRequestForm = () => {
   const nameRef = useRef();
   const dateRef = useRef();
@@ -40,6 +40,14 @@ const RoomVisitRequestForm = () => {
 
     // fake delay (UI animation feel)
     await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    try {
+      const res = await makeRequest(payload);
+      alert("Request submitted successfully!");
+    } catch (error) {
+      console.error("Request submission error:", error);
+      alert(error.message || "Failed to submit request");
+    }
 
     setIsSubmitting(false);
     e.target.reset();

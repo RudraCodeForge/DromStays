@@ -45,6 +45,7 @@ import MyTickets from "./pages/Support/MyTickets.jsx";
 import TicketDetails from "./pages/Support/TicketDetails.jsx";
 import Public_Property from "./pages/Common/Public_Property.jsx";
 import Public_Rooms from "./pages/Common/Public_Rooms.jsx";
+import RoomVisitRequestForm from "./pages/Common/RoomVisitRequestForm.jsx";
 function App() {
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.auth);
@@ -258,6 +259,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Public_Rooms />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/book/:roomId"
+          element={
+            <ProtectedRoute>
+              <RoomVisitRequestForm />
             </ProtectedRoute>
           }
         />

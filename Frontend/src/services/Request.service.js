@@ -17,3 +17,12 @@ export const getRequestsbyId = async () => {
     throw error.response ? error.response.data : new Error("Network Error");
   }
 };
+
+export const respondToRequest = async (payload) => {
+  try {
+    const response = await api.post("/requests/respond", payload);
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Network Error");
+  }
+};

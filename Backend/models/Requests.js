@@ -55,8 +55,14 @@ const requestSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    // 🔥 AUTO DELETE FIELD
+    deleteAfter: {
+      type: Date,
+      default: null,
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Request", requestSchema);

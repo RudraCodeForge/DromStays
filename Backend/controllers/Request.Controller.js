@@ -130,3 +130,72 @@ exports.Get_Requests = async (req, res) => {
     });
   }
 };
+
+exports.Respond_To_Request = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const { requestId, status, ownerResponse } = req.body;
+
+    // 🔹 Basic validation
+    if (!requestId || !status) {
+      return res.status(400).json({
+        error: "Request ID and status are required",
+      });
+    }
+
+    if (!["approved", "rejected"].includes(status)) {
+      return res.status(400).json({
+        error: "Invalid status value",
+      });
+    }
+
+    if (!ownerResponse || !ownerResponse.trim()) {
+      return res.status(400).json({
+        error: "Owner response is required",
+      });
+    }
+
+    const request = await Request.findById(requestId);
+
+    if (!request) {
+      return res.status(404).json({
+        error: "Request not found",
+      });
+    }
+
+    // 🔹 Owner authorization check
+    if (request.ownerId.toString() !== ownerId) {
+      return res.status(403).json({
+        error: "Unauthorized action",
+      });
+    }
+
+    // 🔹 Prevent double action
+    if (request.status !== "pending") {
+      return res.status(400).json({
+        error: "Request already processed",
+      });
+    }
+
+    // 🔥 Update request
+    request.status = status;
+    request.ownerResponse = ownerResponse;
+
+    // 🔥 TTL: Auto delete after 24 hours
+    request.deleteAfter = new Date(
+      Date.now() + 24 * 60 * 60 * 1000
+    );
+
+    await request.save();
+
+    res.status(200).json({
+      message: `Request ${status} successfully`,
+      request,
+    });
+  } catch (error) {
+    console.error("Error responding to request:", error);
+    res.status(500).json({
+      error: "Server error",
+    });
+  }
+};

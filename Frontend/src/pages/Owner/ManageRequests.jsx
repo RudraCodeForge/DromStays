@@ -3,13 +3,19 @@ import { useSelector } from "react-redux";
 import Styles from "../../styles/ManageRequests.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
-import { getRequestsbyId } from "../../services/Request.service";
+import { getRequestsbyId, respondToRequest } from "../../services/Request.service";
+import { toast } from "react-toastify";
 
 const ManageRequests = () => {
   const { user } = useSelector((state) => state.auth);
-  const role = user?.Role; // ✅ FIX
+  const role = user?.Role;
 
   const [requests, setRequests] = useState([]);
+
+  // 🔹 Owner response states
+  const [activeRequestId, setActiveRequestId] = useState(null);
+  const [actionType, setActionType] = useState(""); // approved | rejected
+  const [ownerResponse, setOwnerResponse] = useState("");
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -24,13 +30,53 @@ const ManageRequests = () => {
     fetchRequests();
   }, []);
 
-  const approveRequest = (id) => {
-    console.log("Approved:", id);
+  // 🔹 Open response box
+  const openResponseBox = (id, type) => {
+    setActiveRequestId(id);
+    setActionType(type);
+    setOwnerResponse("");
   };
 
-  const rejectRequest = (id) => {
-    console.log("Rejected:", id);
+  // 🔹 Submit owner response
+  const submitOwnerResponse = async () => {
+    if (!ownerResponse.trim()) {
+      toast.warning("Owner response is required");
+      return;
+    }
+
+    const payload = {
+      requestId: activeRequestId,
+      status: actionType,
+      ownerResponse: ownerResponse,
+    };
+
+    try {
+      await respondToRequest(payload);
+
+      // ✅ Optimistic UI update
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req._id === activeRequestId
+            ? { ...req, status: actionType, ownerResponse }
+            : req
+        )
+      );
+
+      if (actionType === "approved") {
+        toast.success("Request approved successfully");
+      } else {
+        toast.info("Request rejected");
+      }
+
+      setActiveRequestId(null);
+      setOwnerResponse("");
+    } catch (error) {
+      console.error("Error responding to request:", error);
+      toast.error("Failed to submit response");
+    }
   };
+
+
 
   const getRequestLabel = (type) => {
     switch (type) {
@@ -57,11 +103,10 @@ const ManageRequests = () => {
           <p>No requests found.</p>
         ) : (
           <div className={Styles.list}>
-            {requests.map((req) => (
-              <div key={req._id} className={Styles.card}>
+            {requests.map((req, index) => (
+              <div key={req._id} className={Styles.card} style={{ animationDelay: `${index * 0.1}s` }}>
                 <h3>{getRequestLabel(req.requestType)}</h3>
 
-                {/* Owner sees tenant name */}
                 {role === "owner" && (
                   <p>
                     <strong>User:</strong> {req.userName}
@@ -76,7 +121,6 @@ const ManageRequests = () => {
                   <strong>Room:</strong> {req.roomNo}
                 </p>
 
-                {/* Room visit extra details */}
                 {req.requestType === "room_visit" && (
                   <>
                     <p>
@@ -102,25 +146,30 @@ const ManageRequests = () => {
                   {req.status}
                 </span>
 
-                {/* Owner response visible to tenant */}
+                {/* Tenant sees owner response */}
                 {req.ownerResponse && role !== "owner" && (
                   <p className={Styles.ownerResponse}>
                     <strong>Owner Response:</strong> {req.ownerResponse}
                   </p>
                 )}
 
-                {/* Actions only for OWNER & PENDING */}
+                {/* Owner actions */}
                 {role === "owner" && req.status === "pending" && (
                   <div className={Styles.actions}>
                     <button
                       className={Styles.accept}
-                      onClick={() => approveRequest(req._id)}
+                      onClick={() =>
+                        openResponseBox(req._id, "approved")
+
+                      }
                     >
                       Approve
                     </button>
                     <button
                       className={Styles.reject}
-                      onClick={() => rejectRequest(req._id)}
+                      onClick={() =>
+                        openResponseBox(req._id, "rejected")
+                      }
                     >
                       Reject
                     </button>
@@ -128,9 +177,37 @@ const ManageRequests = () => {
                 )}
               </div>
             ))}
-          </div>
+          </div >
         )}
-      </div>
+
+        {/* 🔹 Owner Response Box */}
+        {
+          activeRequestId && (
+            <div className={Styles.responseBox}>
+              <div className={Styles.modalContent}>
+                <h3>
+                  {actionType === "approved"
+                    ? "Approve Request"
+                    : "Reject Request"}
+                </h3>
+
+                <textarea
+                  placeholder="Write owner response..."
+                  value={ownerResponse}
+                  onChange={(e) => setOwnerResponse(e.target.value)}
+                />
+
+                <div className={Styles.actions}>
+                  <button onClick={submitOwnerResponse}>Submit</button>
+                  <button onClick={() => setActiveRequestId(null)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        }
+      </div >
       <Footer />
     </>
   );

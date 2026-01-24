@@ -16,4 +16,10 @@ RequestRouter.get(
   RequestController.Get_Requests,
 );
 
+RequestRouter.post(
+  "/respond",
+  authMiddleware,
+  RequestController.Respond_To_Request,
+);
+
 module.exports = RequestRouter;

@@ -154,6 +154,9 @@ const Navbar = () => {
               <NavLink to="/my-bookings">My Bookings</NavLink>
             </li>
             <li>
+              <NavLink to="/my-requests">My Requests</NavLink>
+            </li>
+            <li>
               <NavLink to="/Profile">
                 <div className={Styles.OwnerProfile}>
                   <p>

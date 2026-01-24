@@ -218,6 +218,15 @@ function App() {
         />
 
         <Route
+          path="/my-requests"
+          element={
+            <ProtectedRoute>
+              <ManageRequests />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/Owner/edit-room/:roomId"
           element={
             <ProtectedRoute>

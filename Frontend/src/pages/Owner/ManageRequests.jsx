@@ -3,62 +3,26 @@ import { useSelector } from "react-redux";
 import Styles from "../../styles/ManageRequests.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
+import { getRequestsbyId } from "../../services/Request.service";
 
 const ManageRequests = () => {
   const { user } = useSelector((state) => state.auth);
-  const role = user?.Role;
+  const role = user?.Role; // ✅ FIX
 
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-    // 🔹 Unified Dummy Requests
-    const allRequests = [
-      {
-        id: 1,
-        requestType: "visit",
-        userId: "U1",
-        userName: "Rahul Sharma",
-        ownerId: "69578aba2fd82cdab3a087c4",
-        propertyName: "Shiv PG",
-        roomNo: "101",
-        visitDate: "06 Jan 2026",
-        visitTime: "03:00 PM",
-        message: "Room physically dekhna hai",
-        status: "pending",
-        ownerResponse: null,
-      },
-      {
-        id: 2,
-        requestType: "booking",
-        userId: "U1",
-        userName: "Rahul Sharma",
-        ownerId: "69578aba2fd82cdab3a087c4",
-        propertyName: "Shiv PG",
-        roomNo: "101",
-        message: "Room book karna hai",
-        status: "approved",
-        ownerResponse: "Room available hai",
-      },
-      {
-        id: 3,
-        requestType: "special",
-        userId: "U2",
-        userName: "Neha Gupta",
-        ownerId: "69578aba2fd82cdab3a087c4",
-        propertyName: "Shiv PG",
-        roomNo: "103",
-        message: "Motor subah 5 baje on kar dena",
-        status: "rejected",
-        ownerResponse: "Electricity rules allow nahi karte",
-      },
-    ];
+    const fetchRequests = async () => {
+      try {
+        const response = await getRequestsbyId();
+        setRequests(response.data || response);
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      }
+    };
 
-    if (role === "owner") {
-      setRequests(allRequests.filter((r) => r.ownerId === user.id));
-    } else {
-      setRequests(allRequests.filter((r) => r.userId === user.id));
-    }
-  }, [role, user]);
+    fetchRequests();
+  }, []);
 
   const approveRequest = (id) => {
     console.log("Approved:", id);
@@ -69,10 +33,18 @@ const ManageRequests = () => {
   };
 
   const getRequestLabel = (type) => {
-    if (type === "visit") return "Visit Request";
-    if (type === "booking") return "Booking Request";
-    if (type === "special") return "Special Request";
-    return "Request";
+    switch (type) {
+      case "room_visit":
+        return "Room Visit Request";
+      case "maintenance":
+        return "Maintenance Request";
+      case "complaint":
+        return "Complaint";
+      case "special":
+        return "Special Request";
+      default:
+        return "Request";
+    }
   };
 
   return (
@@ -86,9 +58,10 @@ const ManageRequests = () => {
         ) : (
           <div className={Styles.list}>
             {requests.map((req) => (
-              <div key={req.id} className={Styles.card}>
+              <div key={req._id} className={Styles.card}>
                 <h3>{getRequestLabel(req.requestType)}</h3>
 
+                {/* Owner sees tenant name */}
                 {role === "owner" && (
                   <p>
                     <strong>User:</strong> {req.userName}
@@ -98,17 +71,22 @@ const ManageRequests = () => {
                 <p>
                   <strong>Property:</strong> {req.propertyName}
                 </p>
+
                 <p>
                   <strong>Room:</strong> {req.roomNo}
                 </p>
 
-                {req.requestType === "visit" && (
+                {/* Room visit extra details */}
+                {req.requestType === "room_visit" && (
                   <>
                     <p>
-                      <strong>Date:</strong> {req.visitDate}
+                      <strong>Date:</strong>{" "}
+                      {req.visitDate
+                        ? new Date(req.visitDate).toLocaleDateString()
+                        : "N/A"}
                     </p>
                     <p>
-                      <strong>Time:</strong> {req.visitTime}
+                      <strong>Time Slot:</strong> {req.visitTimeSlot}
                     </p>
                   </>
                 )}
@@ -124,25 +102,25 @@ const ManageRequests = () => {
                   {req.status}
                 </span>
 
-                {/* Owner response visible to user */}
+                {/* Owner response visible to tenant */}
                 {req.ownerResponse && role !== "owner" && (
                   <p className={Styles.ownerResponse}>
                     <strong>Owner Response:</strong> {req.ownerResponse}
                   </p>
                 )}
 
-                {/* Actions only for owner & pending */}
+                {/* Actions only for OWNER & PENDING */}
                 {role === "owner" && req.status === "pending" && (
                   <div className={Styles.actions}>
                     <button
                       className={Styles.accept}
-                      onClick={() => approveRequest(req.id)}
+                      onClick={() => approveRequest(req._id)}
                     >
                       Approve
                     </button>
                     <button
                       className={Styles.reject}
-                      onClick={() => rejectRequest(req.id)}
+                      onClick={() => rejectRequest(req._id)}
                     >
                       Reject
                     </button>

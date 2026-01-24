@@ -8,3 +8,12 @@ export const makeRequest = async (payload) => {
     throw error.response ? error.response.data : new Error("Network Error");
   }
 };
+
+export const getRequestsbyId = async () => {
+  try {
+    const response = await api.get("/requests/Get_Requests");
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Network Error");
+  }
+};

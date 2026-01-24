@@ -10,4 +10,10 @@ RequestRouter.post(
   RequestController.makeRequest,
 );
 
+RequestRouter.get(
+  "/Get_Requests",
+  authMiddleware,
+  RequestController.Get_Requests,
+);
+
 module.exports = RequestRouter;

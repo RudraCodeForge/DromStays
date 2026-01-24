@@ -96,3 +96,37 @@ exports.makeRequest = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+exports.Get_Requests = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.Role;
+
+    let filter = {};
+
+    if (role === "tenant") {
+      filter.userId = userId;
+    } else if (role === "owner") {
+      filter.ownerId = userId;
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized role",
+      });
+    }
+
+    const requests = await Request.find(filter).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: requests.length,
+      data: requests,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch requests",
+      error: error.message,
+    });
+  }
+};

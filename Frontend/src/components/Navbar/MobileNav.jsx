@@ -132,6 +132,11 @@ const MobileNav = () => {
                       My Bookings
                     </NavLink>
                   </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/my-requests" onClick={closeMenu}>
+                      My Requests
+                    </NavLink>
+                  </li>
                 </>
               )}
 

@@ -8,6 +8,56 @@ const { createRoomsForProperty } = require("../services/room.service");
 
 const { logActivity } = require("../services/activity.service");
 
+
+const mongoose = require("mongoose");
+const Review = require("../models/Review");
+
+// 🔒 INTERNAL helper (NO ROUTE)
+const calculatePropertyRating = async (propertyId) => {
+  const result = await Review.aggregate([
+    {
+      $match: {
+        reviewType: "ROOM",
+        // production me true rakho
+        isApproved: false,
+      },
+    },
+    {
+      $lookup: {
+        from: "rooms",
+        localField: "referenceId", // roomId
+        foreignField: "_id",
+        as: "room",
+      },
+    },
+    { $unwind: "$room" },
+    {
+      $match: {
+        "room.property": new mongoose.Types.ObjectId(propertyId), // ✅ CORRECT
+      },
+    },
+    {
+      $group: {
+        _id: "$room.property",
+        avgRating: { $avg: "$rating" },
+        totalReviews: { $sum: 1 },
+      },
+    },
+  ]);
+
+  if (!result.length) {
+    return { avgRating: 0, totalReviews: 0 };
+  }
+
+  return {
+    avgRating: Number(result[0].avgRating.toFixed(1)),
+    totalReviews: result[0].totalReviews,
+  };
+};
+
+
+
+
 exports.addProperty = async (req, res) => {
   try {
     const ownerId = req.user?.id;
@@ -140,9 +190,18 @@ exports.getOwnerProperties = async (req, res) => {
       });
     }
     const properties = await Property.find({ owner: ownerId }).lean();
+    const propertiesWithRating = await Promise.all(
+      properties.map(async (property) => {
+        const rating = await calculatePropertyRating(property._id);
+        return {
+          ...property,
+          rating,
+        };
+      })
+    );
     return res.status(200).json({
       success: true,
-      properties,
+      properties: propertiesWithRating,
     });
   } catch (error) {
     console.error("Get Owner Properties Error:", error);
@@ -344,6 +403,7 @@ exports.searchProperties = async (req, res) => {
     let properties = [];
     let message = "Properties fetched successfully";
 
+
     /* 📍 NEARBY SEARCH */
     if (nearby === "true" && lat && lng) {
       const radiusInKm = radius ? Number(radius) : 5; // default 5km
@@ -373,6 +433,17 @@ exports.searchProperties = async (req, res) => {
         message = "No properties matched your search criteria";
       }
     }
+
+    // ⭐ Attach rating to each property
+    properties = await Promise.all(
+      properties.map(async (property) => {
+        const rating = await calculatePropertyRating(property._id);
+        return {
+          ...property.toObject?.() || property,
+          rating,
+        };
+      })
+    );
 
     return res.status(200).json({
       success: true,

@@ -23,6 +23,7 @@ const Property = () => {
       try {
         const data = await Get_Owner_Properties();
         setProperties(data.properties); // ✅ FIX 2
+        console.log("Fetched Properties:", data.properties);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }
@@ -96,8 +97,12 @@ const Property = () => {
                   <div className={Styles.titleRow}>
                     <h2>{property.name}</h2>
                     <div className={Styles.rating}>
-                      ⭐ {property.rating || 0}
+                      ⭐ {property.rating?.avgRating ?? 0}
+                      <span className={Styles.reviewCount}>
+                        ({property.rating?.totalReviews ?? 0})
+                      </span>
                     </div>
+
                   </div>
 
                   <div className={Styles.infoRow}>

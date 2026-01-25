@@ -5,10 +5,12 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { getRequestsbyId, respondToRequest } from "../../services/Request.service";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const ManageRequests = () => {
   const { user } = useSelector((state) => state.auth);
   const role = user?.Role;
+  const navigate = useNavigate();
 
   const [requests, setRequests] = useState([]);
 
@@ -22,6 +24,7 @@ const ManageRequests = () => {
       try {
         const response = await getRequestsbyId();
         setRequests(response.data || response);
+        console.log("Fetched requests:", response);
       } catch (error) {
         console.error("Error fetching requests:", error);
       }
@@ -150,6 +153,12 @@ const ManageRequests = () => {
                 {req.ownerResponse && role !== "owner" && (
                   <p className={Styles.ownerResponse}>
                     <strong>Owner Response:</strong> {req.ownerResponse}
+                  </p>
+                )}
+
+                {req.status === "approved" && role !== "owner" && (
+                  <p className={Styles.approvalNote}>
+                    Your request has been approved. Please follow any instructions provided by the owner.
                   </p>
                 )}
 

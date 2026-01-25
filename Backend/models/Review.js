@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema(
   {
+    // 🔹 Reviewer (userId se role nikal loge)
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -9,7 +10,7 @@ const reviewSchema = new mongoose.Schema(
       index: true,
     },
 
-    // ⭐ Title (role based / admin editable)
+    // ⭐ Optional title
     title: {
       type: String,
       trim: true,
@@ -17,6 +18,7 @@ const reviewSchema = new mongoose.Schema(
       default: null,
     },
 
+    // ⭐ Rating
     rating: {
       type: Number,
       required: true,
@@ -24,6 +26,7 @@ const reviewSchema = new mongoose.Schema(
       max: 5,
     },
 
+    // 📝 Review message
     message: {
       type: String,
       required: true,
@@ -32,17 +35,37 @@ const reviewSchema = new mongoose.Schema(
       maxlength: 500,
     },
 
+    // 🔹 Review target
     reviewType: {
       type: String,
       enum: ["PLATFORM", "ROOM", "OWNER", "SERVICE"],
       default: "PLATFORM",
     },
 
+    // 🔹 Reference (roomId / ownerId / serviceId)
     referenceId: {
       type: mongoose.Schema.Types.ObjectId,
       default: null,
     },
 
+    // 🔹 Related request (verification ke liye)
+    requestId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Request",
+      default: null,
+    },
+
+    // 🔹 Snapshot (request TTL ke baad bhi review safe rahe)
+    snapshot: {
+      propertyName: String,
+      roomNo: String,
+      ownerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    },
+
+    // 🔹 Admin moderation
     isApproved: {
       type: Boolean,
       default: false,
@@ -52,7 +75,7 @@ const reviewSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ Composite uniqueness
+// ✅ Same user same cheez ko dubara review nahi kar sakta
 reviewSchema.index(
   { user: 1, reviewType: 1, referenceId: 1 },
   { unique: true }

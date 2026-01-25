@@ -56,6 +56,17 @@ const requestSchema = new mongoose.Schema(
       default: "",
     },
 
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    reviewEligible: {
+      type: Boolean,
+      default: false,
+    },
+
+
     // 🔥 AUTO DELETE FIELD
     deleteAfter: {
       type: Date,

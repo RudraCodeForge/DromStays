@@ -62,13 +62,13 @@ const Footer = () => {
               <NavLink to="/help-center">Help Center</NavLink>
             </li>
             <li>
-              <a href="#">Booking Issues</a>
+              <a href="/help-center/booking-issues">Booking Issues</a>
             </li>
             <li>
-              <a href="#">Cancellation</a>
+              <a href="/help-center/stay-issues">Cancellation</a>
             </li>
             <li>
-              <a href="#">Report Problem</a>
+              <a href="/create_ticket?category=other&role=tenant">Report Problem</a>
             </li>
           </ul>
         </div>

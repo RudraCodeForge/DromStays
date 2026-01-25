@@ -8,6 +8,7 @@ import Style from "../../styles/Profile.module.css";
 import { useState, useRef } from "react";
 import { upload_Profile_ImageToCloudinary } from "../../services/Cloudinary.service.js";
 import { updateProfilePictureApi } from "../../services/user.service.js";
+import Swal from "sweetalert2";
 
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -69,15 +70,15 @@ const Profile = () => {
   const formattedAddress =
     user?.Address && Object.values(user.Address).some((v) => v)
       ? [
-          user.Address.houseNo,
-          user.Address.street,
-          user.Address.locality,
-          user.Address.city,
-          user.Address.state,
-          user.Address.pincode && `- ${user.Address.pincode}`,
-        ]
-          .filter(Boolean)
-          .join(", ")
+        user.Address.houseNo,
+        user.Address.street,
+        user.Address.locality,
+        user.Address.city,
+        user.Address.state,
+        user.Address.pincode && `- ${user.Address.pincode}`,
+      ]
+        .filter(Boolean)
+        .join(", ")
       : "N/A";
   return (
     <>
@@ -163,13 +164,23 @@ const Profile = () => {
           <button
             className={Style.LogoutBtn}
             onClick={() => {
-              if (window.confirm("Are you sure you want to logout?")) {
-                dispatch(logout());
-              }
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You want to logout!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Logout",
+                cancelButtonText: "Cancel",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  dispatch(logout());
+                }
+              });
             }}
           >
             Logout
           </button>
+
         </div>
       </div>
 

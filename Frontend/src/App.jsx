@@ -301,6 +301,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-bookings"
+          element={
+            <ProtectedRoute>
+              <Bookings />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 Page Not Found */}
 

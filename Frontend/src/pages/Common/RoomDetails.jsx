@@ -131,9 +131,8 @@ const RoomDetails = () => {
         <div className={Styles.header}>
           <h2 className={Styles.title}>Room {room.roomNumber}</h2>
           <span
-            className={`${Styles.statusBadge} ${
-              room.isAvailable ? Styles.available : Styles.full
-            }`}
+            className={`${Styles.statusBadge} ${room.isAvailable ? Styles.available : Styles.full
+              }`}
           >
             {room.isAvailable ? "Available" : "Full"}
           </span>
@@ -222,6 +221,32 @@ const RoomDetails = () => {
               disabled={favLoading}
             >
               {isFav ? "❤️ Added to Favourites" : "🤍 Add to Favourites"}
+            </button>
+          </div>
+        )}
+
+        {/* 👑 OWNER */}
+        {role === "owner" && (
+          <div className={Styles.actions}>
+            <button
+              className={Styles.primaryBtn}
+              onClick={() => navigate(`/Owner/add-tenant/${roomId}`)}
+            >
+              ➕ Add Tenant
+            </button>
+
+            <button
+              className={Styles.secondaryBtn}
+              onClick={() => navigate(`/Owner/edit-room/${roomId}`)}
+            >
+              ✏️ Edit Room
+            </button>
+
+            <button
+              className={Styles.secondaryBtn}
+              onClick={() => navigate(`/rooms/${roomId}/tenants`)}
+            >
+              👀 View Tenants
             </button>
           </div>
         )}

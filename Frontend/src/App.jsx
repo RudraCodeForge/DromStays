@@ -293,6 +293,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/review/:requestId"
+          element={
+            <ProtectedRoute>
+              <FeedBack />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 Page Not Found */}
 

@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const requestSchema = new mongoose.Schema(
   {
     requestType: {
@@ -25,15 +24,21 @@ const requestSchema = new mongoose.Schema(
       required: true,
     },
 
-    propertyName: {
-      type: String,
+    // 🔥 IMPORTANT IDS
+    roomId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room",
       required: true,
     },
 
-    roomNo: {
-      type: String,
+    propertyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Property",
       required: true,
     },
+
+    propertyName: String,
+    roomNo: String,
 
     message: {
       type: String,
@@ -66,8 +71,6 @@ const requestSchema = new mongoose.Schema(
       default: false,
     },
 
-
-    // 🔥 AUTO DELETE FIELD
     deleteAfter: {
       type: Date,
       default: null,
@@ -75,5 +78,4 @@ const requestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 module.exports = mongoose.model("Request", requestSchema);

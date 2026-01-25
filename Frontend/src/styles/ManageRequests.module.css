@@ -353,3 +353,90 @@ h1 {
     font-size: 0.65rem;
   }
 }
+
+/* 🔹 Mark as Completed Button */
+.Markcompleted {
+  margin-top: 12px;
+  padding: 10px 14px;
+  width: 100%;
+
+  background: linear-gradient(135deg,
+      #2e126a,
+      #3b1a85);
+  color: #fff;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* 🔹 Hover */
+.Markcompleted:hover {
+  background: linear-gradient(135deg,
+      #3b1a85,
+      #2e126a);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(46, 18, 106, 0.35);
+}
+
+/* 🔹 Active */
+.Markcompleted:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+/* 🔹 Disabled */
+.Markcompleted:disabled {
+  background: #b8b0d4;
+  color: #fff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 🔹 Hover effect */
+.Markcompleted:hover {
+  background: linear-gradient(135deg, #0b5ed7, #0a58ca);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(13, 110, 253, 0.35);
+}
+
+/* 🔹 Active (click) */
+.Markcompleted:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+/* 🔹 Disabled state (future safe) */
+.Markcompleted:disabled {
+  background: #adb5bd;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.reviewButton {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px;
+
+  background-color: var(--primary-color);
+  color: #fff;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reviewButton:hover {
+  opacity: 0.9;
+}

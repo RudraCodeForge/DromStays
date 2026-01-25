@@ -26,3 +26,12 @@ export const respondToRequest = async (payload) => {
     throw error.response ? error.response.data : new Error("Network Error");
   }
 };
+
+export const markCompleted = async (requestId) => {
+  try {
+    const response = await api.post("/requests/mark_completed", { requestId });
+    return response.data;
+  } catch (error) {
+    throw error.response ? error.response.data : new Error("Network Error");
+  }
+};

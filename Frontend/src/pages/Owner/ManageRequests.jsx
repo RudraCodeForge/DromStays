@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import Styles from "../../styles/ManageRequests.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
-import { getRequestsbyId, respondToRequest } from "../../services/Request.service";
+import { getRequestsbyId, respondToRequest, markCompleted } from "../../services/Request.service";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -96,6 +96,26 @@ const ManageRequests = () => {
     }
   };
 
+  const MarkDone = async (requestId) => {
+    try {
+      await markCompleted(requestId);
+
+      setRequests((prevRequests) =>
+        prevRequests.map((req) =>
+          req._id === requestId
+            ? { ...req, isCompleted: true, status: "completed" }
+            : req
+        )
+      );
+
+      toast.success("Request marked as completed");
+    } catch (error) {
+      console.error("Error marking request as completed:", error);
+      toast.error("Failed to mark as completed");
+    }
+  };
+
+
   return (
     <>
       <Navbar />
@@ -162,7 +182,47 @@ const ManageRequests = () => {
                   </p>
                 )}
 
+                {req.isCompleted && role !== "owner" && req.reviewEligible === false && (
+                  <>
+                    <button
+                      className={Styles.Markcompleted}
+                      onClick={() => MarkDone(req._id)}
+                    >
+                      Mark as Completed
+                    </button>
+                  </>
+                )}
+
+                {req.isCompleted && role !== "owner" && req.reviewEligible && (
+                  <>
+                    <p className={Styles.reviewNote}>
+                      You can now leave a review for this request.
+                    </p>
+
+                    <button
+                      className={Styles.reviewButton}
+                      onClick={() =>
+                        navigate(`/review/${req._id}`, {
+                          state: {
+                            requestType: req.requestType,
+                            roomNo: req.roomNo,
+                            propertyName: req.propertyName,
+                            referenceId: req.roomId,
+                          },
+                        })
+                      }
+                    >
+                      Leave a Review
+                    </button>
+
+                  </>
+                )}
+
+
+
+
                 {/* Owner actions */}
+
                 {role === "owner" && req.status === "pending" && (
                   <div className={Styles.actions}>
                     <button
@@ -183,6 +243,15 @@ const ManageRequests = () => {
                       Reject
                     </button>
                   </div>
+                )}
+
+                {role === "owner" && req.status === "approved" && req.isCompleted === false && (
+                  <button
+                    className={Styles.Markcompleted}
+                    onClick={() => MarkDone(req._id)}
+                  >
+                    Mark as Completed
+                  </button>
                 )}
               </div>
             ))}

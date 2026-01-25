@@ -22,4 +22,10 @@ RequestRouter.post(
   RequestController.Respond_To_Request,
 );
 
+RequestRouter.post(
+  "/mark_completed",
+  authMiddleware,
+  RequestController.Mark_Completed,
+);
+
 module.exports = RequestRouter;

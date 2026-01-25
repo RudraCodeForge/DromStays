@@ -75,6 +75,7 @@ exports.makeRequest = async (req, res) => {
       requestType,
       roomId,
       userId,
+      propertyId: property._id,
       userName: name,
       ownerId: room.owner,
       propertyName: property.name,
@@ -197,5 +198,82 @@ exports.Respond_To_Request = async (req, res) => {
     res.status(500).json({
       error: "Server error",
     });
+  }
+};
+
+exports.Mark_Completed = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.Role;
+    const { requestId } = req.body;
+
+    if (!requestId) {
+      return res.status(400).json({ error: "Request ID is required" });
+    }
+
+    const request = await Request.findById(requestId);
+
+    if (!request) {
+      return res.status(404).json({ error: "Request not found" });
+    }
+
+    // 🔹 OWNER FLOW
+    if (role === "owner") {
+      if (request.ownerId.toString() !== userId) {
+        return res.status(403).json({ error: "Unauthorized action" });
+      }
+
+      if (request.status !== "approved") {
+        return res
+          .status(400)
+          .json({ error: "Only approved requests can be completed" });
+      }
+
+      if (request.isCompleted) {
+        return res
+          .status(400)
+          .json({ error: "Request already marked as completed" });
+      }
+
+      request.isCompleted = true;
+      await request.save();
+
+      return res.status(200).json({
+        message: "Request marked as completed by owner",
+        request,
+      });
+    }
+
+    // 🔹 TENANT FLOW
+    if (role === "tenant") {
+      if (request.userId.toString() !== userId) {
+        return res.status(403).json({ error: "Unauthorized action" });
+      }
+
+      if (!request.isCompleted) {
+        return res.status(400).json({
+          error: "Request is not yet completed by owner",
+        });
+      }
+
+      if (request.reviewEligible) {
+        return res.status(400).json({
+          error: "Review already enabled for this request",
+        });
+      }
+
+      request.reviewEligible = true;
+      await request.save();
+
+      return res.status(200).json({
+        message: "Request marked as review eligible",
+        request,
+      });
+    }
+
+    return res.status(403).json({ error: "Unauthorized role" });
+  } catch (error) {
+    console.error("Error marking request as completed:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };

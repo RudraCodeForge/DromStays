@@ -1,13 +1,18 @@
 import api from "./api.service";
+import handleServerError from "../Helper/ServerErrorhelper";
+import handleAuthError from "../Helper/AuthErrorHelper";
 
+/* ================= DASHBOARD PAYMENTS ================= */
 export const DashboardPayments = async (ownerId) => {
   try {
-    const response = await api.get(`/payments/dashboard/owner/${ownerId}`);
-    return response.data;
+    const res = await api.get(`/payments/dashboard/owner/${ownerId}`);
+    return res.data;
   } catch (error) {
-    if (error.response?.data) {
-      throw error.response.data;
-    }
-    throw { message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw error.response?.data || {
+      message: "Failed to fetch dashboard payments",
+    };
   }
 };

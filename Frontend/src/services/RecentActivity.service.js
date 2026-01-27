@@ -1,13 +1,18 @@
 import api from "./api.service";
+import handleServerError from "../Helper/ServerErrorhelper";
+import handleAuthError from "../Helper/AuthErrorHelper";
 
+/* ================= GET ALL ACTIVITIES ================= */
 export const Get_All_Activities = async () => {
   try {
-    const response = await api.get("/activities/recent");
-    return response.data;
+    const res = await api.get("/activities/recent");
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw error.response?.data || {
+      message: "Failed to fetch activities",
+    };
   }
 };

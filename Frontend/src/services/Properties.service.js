@@ -1,90 +1,92 @@
 import api from "./api.service";
+import handleServerError from "../Helper/ServerErrorhelper";
+import handleAuthError from "../Helper/AuthErrorHelper";
 
+/* ================= ADD PROPERTY ================= */
 export const Add_Property = async (propertyData) => {
   try {
-    const response = await api.post("/properties/add", propertyData);
-    return response.data;
+    const res = await api.post("/properties/add", propertyData);
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= GET OWNER PROPERTIES ================= */
 export const Get_Owner_Properties = async () => {
   try {
-    const response = await api.get("/properties/owner_properties");
-    return response.data;
+    const res = await api.get("/properties/owner_properties");
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= GET PROPERTY BY ID ================= */
 export const Get_Property_By_Id = async (propertyId) => {
   try {
-    const response = await api.get(`/properties/${propertyId}`);
-    return response.data;
+    const res = await api.get(`/properties/${propertyId}`);
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= UPDATE PROPERTY ================= */
 export const Update_Property = async (propertyId, propertyData) => {
   try {
-    const response = await api.put(
+    const res = await api.put(
       `/properties/update/${propertyId}`,
-      propertyData,
+      propertyData
     );
-    return response.data;
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= DELETE PROPERTY ================= */
 export const Delete_Property = async (propertyId) => {
   try {
-    const response = await api.delete(`/properties/delete/${propertyId}`);
-    return response.data;
+    const res = await api.delete(`/properties/delete/${propertyId}`);
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= GET ALL PROPERTIES ================= */
 export const Get_All_Properties = async () => {
   try {
-    const response = await api.get("/properties/all_properties");
-    return response.data;
+    const res = await api.get("/properties/all_properties");
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };
 
+/* ================= SEARCH PROPERTIES ================= */
 export const Search_Properties = async (queryParams) => {
   try {
-    const response = await api.get("/properties/search", {
+    const res = await api.get("/properties/search", {
       params: queryParams,
     });
-    return response.data;
+    return res.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw error.response.data;
-    }
-    throw { success: false, message: "Server error" };
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data;
   }
 };

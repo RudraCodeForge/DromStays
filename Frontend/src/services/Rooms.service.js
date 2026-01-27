@@ -18,6 +18,20 @@ export const Get_Owner_Rooms = async () => {
     const response = await api.get("/rooms/owner_rooms");
     return response.data;
   } catch (error) {
+    const status = error.response?.status;
+    if (status === 401) {
+      window.location.href = "/login";
+      return;
+    }
+
+    if (status === 403) {
+      window.location.href = "/unauthorized";
+      return;
+    }
+    if (status >= 500) {
+      window.location.href = "/server-error";
+      return;
+    }
     if (error.response?.data) {
       throw error.response.data;
     }

@@ -47,6 +47,7 @@ import Public_Property from "./pages/Common/Public_Property.jsx";
 import Public_Rooms from "./pages/Common/Public_Rooms.jsx";
 import RoomVisitRequestForm from "./pages/Common/RoomVisitRequestForm.jsx";
 import Unauthorized from "./pages/Common/Unauthorized.jsx";
+import ServerError from "./pages/Errors/ServerError.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -102,6 +103,7 @@ function App() {
         <Route path="/explore_properties" element={<Public_Property />} />
         <Route path="/property/:propertyId/rooms" element={<Public_Rooms />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/server-error" element={<ServerError />} />
 
         {/* 🔐 Protected Routes */}
         <Route

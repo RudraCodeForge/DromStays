@@ -1,4 +1,5 @@
 const Room = require("../models/Room");
+const User = require("../models/User");
 
 exports.getOwnerRooms = async (req, res) => {
   try {
@@ -9,6 +10,22 @@ exports.getOwnerRooms = async (req, res) => {
       return res.status(401).json({
         success: false,
         message: "Unauthorized",
+      });
+    }
+
+    const owner = await User.findById(ownerId);
+
+    if (!owner) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found or session expired",
+      });
+    }
+
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to access this resource",
       });
     }
 

@@ -46,6 +46,7 @@ import TicketDetails from "./pages/Support/TicketDetails.jsx";
 import Public_Property from "./pages/Common/Public_Property.jsx";
 import Public_Rooms from "./pages/Common/Public_Rooms.jsx";
 import RoomVisitRequestForm from "./pages/Common/RoomVisitRequestForm.jsx";
+import Unauthorized from "./pages/Common/Unauthorized.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -100,6 +101,7 @@ function App() {
         <Route path="/help-center/stay-issues" element={<StayIssues />} />
         <Route path="/explore_properties" element={<Public_Property />} />
         <Route path="/property/:propertyId/rooms" element={<Public_Rooms />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* 🔐 Protected Routes */}
         <Route

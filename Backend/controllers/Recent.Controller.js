@@ -1,10 +1,11 @@
 const RecentActivity = require("../models/RecentActivity");
-
+const User = require("../models/User");
 exports.getRecentActivities = async (req, res) => {
   try {
     const ownerId = req.user?.id;
-    if (!ownerId) {
-      return res.status(401).json({
+    const owner = await User.findById(ownerId);
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
         success: false,
         message: "Unauthorized",
       });

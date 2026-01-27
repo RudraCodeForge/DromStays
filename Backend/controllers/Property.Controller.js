@@ -1,7 +1,8 @@
 const Property = require("../models/Property");
 const Room = require("../models/Room");
-const SendPropertyCreationEmail =
-  require("../utils/sendEmail").SendPropertyCreationEmail;
+const SendPropertyCreationEmail = require("../utils/sendEmail").SendPropertyCreationEmail;
+const User = require("../models/User");
+
 const { deleteFromCloudinary } = require("../utils/cloudinaryHelper");
 
 const { createRoomsForProperty } = require("../services/room.service");
@@ -62,10 +63,11 @@ exports.addProperty = async (req, res) => {
   try {
     const ownerId = req.user?.id;
 
-    if (!ownerId) {
-      return res.status(401).json({
+    const owner = await User.findById(ownerId);
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
         success: false,
-        message: "Unauthorized",
+        message: "Only owners can add properties",
       });
     }
 
@@ -183,8 +185,9 @@ exports.addProperty = async (req, res) => {
 exports.getOwnerProperties = async (req, res) => {
   try {
     const ownerId = req.user?.id;
-    if (!ownerId) {
-      return res.status(401).json({
+    const owner = await User.findById(ownerId);
+    if (!owner.Role === "owner") {
+      return res.status(403).json({
         success: false,
         message: "Unauthorized",
       });
@@ -217,13 +220,13 @@ exports.getPropertyById = async (req, res) => {
     const ownerId = req.user?.id;
     const { id: propertyId } = req.params;
 
-    if (!ownerId) {
-      return res.status(401).json({
+    const owner = await User.findById(ownerId);
+    if (!owner.Role === "owner") {
+      return res.status(403).json({
         success: false,
         message: "Unauthorized",
       });
     }
-
     const property = await Property.findOne({
       _id: propertyId,
       owner: ownerId,
@@ -253,6 +256,14 @@ exports.updateProperty = async (req, res) => {
   try {
     const ownerId = req.user.id;
     const propertyId = req.params.id;
+    const owner = await User.findById(ownerId);
+
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can update properties",
+      });
+    }
 
     const { name, propertyType, totalRooms, isActive, images } = req.body;
 
@@ -320,6 +331,14 @@ exports.deleteProperty = async (req, res) => {
   try {
     const ownerId = req.user.id;
     const propertyId = req.params.id;
+    const owner = await User.findById(ownerId);
+
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can delete properties",
+      });
+    }
 
     // 🔍 Find property
     const property = await Property.findOne({

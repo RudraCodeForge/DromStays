@@ -6,7 +6,14 @@ exports.addRoomToFavourites = async (req, res) => {
     const userId = req.user.id;
     const { roomId } = req.params;
 
-    // check if already favourited
+
+    if (!roomId) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
     const existing = await Favourite.findOne({ userId, roomId });
 
     if (existing) {
@@ -25,7 +32,6 @@ exports.addRoomToFavourites = async (req, res) => {
       message: "Room added to favourites",
     });
   } catch (error) {
-    console.error("Error in addRoomToFavourites:", error);
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -46,7 +52,6 @@ exports.checkFavouriteStatus = async (req, res) => {
       isFavourite: !!fav,
     });
   } catch (error) {
-    console.error("Error in checkFavouriteStatus:", error);
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -58,17 +63,17 @@ exports.checkFavouriteStatus = async (req, res) => {
 exports.getMyFavourites = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const favourites = await Favourite.find({ userId }).populate("roomId");
 
     const rooms = favourites
       .map((fav) => fav.roomId)
-      .filter((room) => room !== null); // filter out deleted rooms
+      .filter((room) => room !== null);
     res.status(200).json({
       success: true,
       rooms,
     });
   } catch (error) {
-    console.error("Error in getMyFavourites:", error);
     res.status(500).json({
       success: false,
       message: "Server Error",

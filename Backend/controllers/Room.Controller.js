@@ -5,22 +5,7 @@ exports.getOwnerRooms = async (req, res) => {
   try {
     const ownerId = req.user?.id;
     const { propertyId } = req.query;
-
-    if (!ownerId) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized",
-      });
-    }
-
     const owner = await User.findById(ownerId);
-
-    if (!owner) {
-      return res.status(401).json({
-        success: false,
-        message: "User not found or session expired",
-      });
-    }
 
     if (owner.Role !== "owner") {
       return res.status(403).json({
@@ -103,10 +88,11 @@ exports.getRoomById = async (req, res) => {
 exports.updateRoomById = async (req, res) => {
   try {
     const ownerId = req.user?.id;
+    const owner = await User.findById(ownerId);
     const { roomId } = req.params;
 
-    if (!ownerId) {
-      return res.status(401).json({
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
         success: false,
         message: "Unauthorized",
       });

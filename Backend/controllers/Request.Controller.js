@@ -1,7 +1,7 @@
 const Property = require("../models/Property");
 const Room = require("../models/Room");
 const Request = require("../models/Requests");
-
+const User = require("../models/User");
 exports.makeRequest = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -135,6 +135,14 @@ exports.Get_Requests = async (req, res) => {
 exports.Respond_To_Request = async (req, res) => {
   try {
     const ownerId = req.user.id;
+    const owner = await User.findById(ownerId);
+
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
+        error: "Only owners can respond to requests",
+      });
+    }
+
     const { requestId, status, ownerResponse } = req.body;
 
     // 🔹 Basic validation
@@ -204,7 +212,8 @@ exports.Respond_To_Request = async (req, res) => {
 exports.Mark_Completed = async (req, res) => {
   try {
     const userId = req.user.id;
-    const role = req.user.Role;
+    const user = await User.findById(userId);
+    const role = user.Role;
     const { requestId } = req.body;
 
     if (!requestId) {

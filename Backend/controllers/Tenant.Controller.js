@@ -11,6 +11,15 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       req.body;
 
     const ownerId = req.user.id;
+    const owner = await User.findById(ownerId);
+
+    const role = owner.Role;
+    if (role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
 
     /* 🔍 BASIC VALIDATION */
     if (!fullName || !phone || !roomId) {
@@ -161,6 +170,15 @@ exports.DELETE_TENANT_BY_ID = async (req, res) => {
     const { tenantId } = req.params;
     const ownerId = req.user.id;
 
+    const owner = await User.findById(ownerId);
+    const role = owner.Role;
+    if (role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
     /* 👤 TENANT CHECK */
     const tenant = await Tenant.findOne({ _id: tenantId, owner: ownerId });
     if (!tenant) {
@@ -218,6 +236,14 @@ exports.GET_TENANTS_BY_ROOM_ID = async (req, res) => {
   try {
     const { roomId } = req.params;
     const ownerId = req.user.id;
+    const owner = await User.findById(ownerId);
+    const role = owner.Role;
+    if (role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
     /* 🏠 ROOM CHECK */
     const room = await Room.findOne({ _id: roomId, owner: ownerId }).populate(
       "tenants"

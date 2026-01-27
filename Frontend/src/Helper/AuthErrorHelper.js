@@ -11,6 +11,10 @@ const handleAuthError = (error) => {
         return true;
     }
 
+    if (status === 404) {
+        window.location.href = "/not-found";
+        return true;
+    }
     return false;
 };
 

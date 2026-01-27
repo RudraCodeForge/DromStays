@@ -1,8 +1,19 @@
 const Payment = require("../models/Payment");
+const User = require("../models/User");
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
     const { ownerId } = req.params;
+
+    const owner = await User.findById(ownerId);
+
+    if (owner.Role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -61,7 +72,6 @@ exports.getOwnerDashboardPayments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Dashboard payment error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",

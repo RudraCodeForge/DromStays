@@ -24,9 +24,8 @@ const ManageRequests = () => {
       try {
         const response = await getRequestsbyId();
         setRequests(response.data || response);
-        console.log("Fetched requests:", response);
       } catch (error) {
-        console.error("Error fetching requests:", error);
+        toast.error("Failed to fetch requests");
       }
     };
 
@@ -74,7 +73,6 @@ const ManageRequests = () => {
       setActiveRequestId(null);
       setOwnerResponse("");
     } catch (error) {
-      console.error("Error responding to request:", error);
       toast.error("Failed to submit response");
     }
   };
@@ -110,7 +108,6 @@ const ManageRequests = () => {
 
       toast.success("Request marked as completed");
     } catch (error) {
-      console.error("Error marking request as completed:", error);
       toast.error("Failed to mark as completed");
     }
   };

@@ -157,7 +157,6 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       tenant,
     });
   } catch (error) {
-    console.error("ADD_TENANT_TO_ROOM ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -224,7 +223,6 @@ exports.DELETE_TENANT_BY_ID = async (req, res) => {
       message: "Tenant deleted successfully",
     });
   } catch (error) {
-    console.error("DELETE TENANT ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -259,7 +257,6 @@ exports.GET_TENANTS_BY_ROOM_ID = async (req, res) => {
       tenants: room.tenants,
     });
   } catch (error) {
-    console.error("GET TENANTS BY ROOM ID ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

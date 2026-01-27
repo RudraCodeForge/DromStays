@@ -63,7 +63,6 @@ const Public_Property = () => {
 
         setProperties(data?.properties || []);
       } catch (error) {
-        console.error("Fetch Properties Error:", error);
         setMessage("Something went wrong. Please try again.");
       } finally {
         setLoading(false);

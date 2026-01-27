@@ -62,7 +62,6 @@ exports.UPDATE_PROFILE = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
-    console.error("Update Profile Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -85,7 +84,6 @@ exports.UPDATE_PROFILE_PICTURE = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
-    console.error("Update Profile Picture Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

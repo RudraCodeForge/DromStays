@@ -10,6 +10,7 @@ import { steps } from "../../data/steps.js";
 import { features } from "../../data/features.js";
 import FeatureSection from "../../components/FeatureSection.jsx";
 import FilterContainer from "../../components/FilterContainer.jsx";
+import { toast } from "react-toastify"
 import { useNavigate } from "react-router-dom";
 const Home = () => {
   const [reviews, setReviews] = useState([]);
@@ -19,7 +20,7 @@ const Home = () => {
       .then((data) => {
         setReviews(data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => toast.error("Failed to fetch reviews"));
   }, []);
 
   const navigate = useNavigate();

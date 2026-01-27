@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { Get_Owner_Property_Rooms } from "../../services/Rooms.service";
 
@@ -26,7 +27,7 @@ const Rooms = () => {
         const data = await Get_Owner_Property_Rooms(propertyId);
         setRooms(data?.rooms || []);
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+        toast.error("Failed to fetch rooms. Please try again.");
       } finally {
         setLoading(false);
       }

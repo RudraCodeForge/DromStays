@@ -37,7 +37,7 @@ const Public_Rooms = () => {
           setRooms(data?.rooms || []);
         }
       } catch (error) {
-        console.error("Error fetching rooms:", error);
+
       } finally {
         setLoading(false);
       }

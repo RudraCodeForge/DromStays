@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer.jsx";
 import { ContactSupport } from "../../services/Support.service.js";
 import ErrorContainer from "../../components/ErrorContainer.jsx";
+import { toast } from "react-toastify";
 
 const Contact = () => {
   const nameRef = useRef(null);
@@ -37,10 +38,9 @@ const Contact = () => {
 
       setIsSubmitted(true); // ✅ only on success
     } catch (err) {
-      console.error("Contact form error:", err);
       setError(
         err?.response?.data?.message ||
-          "Something went wrong. Please try again later."
+        "Something went wrong. Please try again later."
       );
     } finally {
       setIsLoading(false);

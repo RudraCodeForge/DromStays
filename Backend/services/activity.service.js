@@ -18,6 +18,6 @@ exports.logActivity = async ({
       meta,
     });
   } catch (error) {
-    console.error("Activity Log Error:", error.message);
+    console.error("Log Activity Error:", error);
   }
 };

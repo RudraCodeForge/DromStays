@@ -5,6 +5,7 @@ import {
   GetTicketDetails,
   SendTicketMessage,
 } from "../../services/Support.service.js";
+import { toast } from "react-toastify";
 
 const TicketDetails = () => {
   const { ticketId } = useParams();
@@ -33,7 +34,7 @@ const TicketDetails = () => {
           );
         }
       } catch (error) {
-        console.error("Error fetching ticket details:", error);
+        toast.error("Failed to fetch ticket details");
       }
     };
 
@@ -64,7 +65,7 @@ const TicketDetails = () => {
     try {
       SendTicketMessage(ticketId, reply);
     } catch (error) {
-      console.error("Error sending message:", error);
+      toast.error("Failed to send message");
     }
   };
 
@@ -129,8 +130,8 @@ const TicketDetails = () => {
               msg.sender === "user"
                 ? Styles.UserMsg
                 : msg.sender === "bot"
-                ? Styles.BotMsg
-                : Styles.SupportMsg
+                  ? Styles.BotMsg
+                  : Styles.SupportMsg
             }
           >
             <p>{msg.message}</p>

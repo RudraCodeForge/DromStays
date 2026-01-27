@@ -19,7 +19,6 @@ exports.getRecentActivities = async (req, res) => {
       activities,
     });
   } catch (error) {
-    console.error("Get Recent Activities Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

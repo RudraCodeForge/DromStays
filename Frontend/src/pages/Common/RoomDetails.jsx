@@ -53,7 +53,8 @@ const RoomDetails = () => {
         const res = await checkFavourite(roomId);
         setIsFav(res.isFavourite);
       } catch (err) {
-        console.error("Favourite check error", err);
+        setError(err.message || "Failed to load room");
+        toast.error("Failed to fetch favourite status");
       }
     };
 

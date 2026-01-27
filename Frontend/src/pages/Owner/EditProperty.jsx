@@ -9,6 +9,7 @@ import styles from "../../styles/EditProperty.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const EditProperty = () => {
   // ✅ hooks ALWAYS inside component
@@ -53,7 +54,7 @@ const EditProperty = () => {
           public_id: property.images?.[0]?.public_id || "",
         });
       } catch (error) {
-        console.error("Error fetching property:", error);
+        toast.error("Error fetching property details");
       } finally {
         setLoading(false);
       }
@@ -72,7 +73,7 @@ const EditProperty = () => {
       const imageData = await Upload_Property_Images(file);
       setImage(imageData);
     } catch (err) {
-      console.error("Image upload failed:", err.message);
+      toast.error("Image upload failed. Please try again.");
     } finally {
       setImageUploading(false);
     }
@@ -92,14 +93,13 @@ const EditProperty = () => {
       images: [image],
     };
 
-    console.log("UPDATE PAYLOAD 👉", payload);
 
     try {
       const data = await Update_Property(propertyId, payload);
-      console.log("Property updated successfully:", data);
+      toast.success("Property updated successfully!");
       navigate("/owner/properties");
     } catch (error) {
-      console.error("Error updating property:", error);
+      toast.error("Property update failed. Please try again.");
     }
   };
 

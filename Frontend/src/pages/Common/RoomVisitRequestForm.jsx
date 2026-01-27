@@ -44,7 +44,6 @@ const RoomVisitRequestForm = () => {
       const res = await makeRequest(payload);
       toast.success("Room visit request sent successfully 🚀");
     } catch (error) {
-      console.error("Request submission error:", error);
       toast.error(error.message || "Failed to submit request ❌");
     }
 
@@ -144,9 +143,8 @@ const RoomVisitRequestForm = () => {
           {/* Submit */}
           <button
             type="submit"
-            className={`${Styles.button} ${
-              isSubmitting ? Styles.submitting : ""
-            }`}
+            className={`${Styles.button} ${isSubmitting ? Styles.submitting : ""
+              }`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Sending..." : "Send Request"}

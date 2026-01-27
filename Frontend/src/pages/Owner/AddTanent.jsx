@@ -59,14 +59,13 @@ const AddTenant = () => {
 
     try {
       const data = await addTenantToRoom(payload);
-      console.log("ADD TENANT RESPONSE 👉", data);
 
       alert("Tenant added successfully");
       navigate(-1);
     } catch (err) {
       setError(
         err?.response?.data?.errors ||
-          err?.response?.data?.message || ["Failed to add tenant"]
+        err?.response?.data?.message || ["Failed to add tenant"]
       );
     } finally {
       setLoading(false);

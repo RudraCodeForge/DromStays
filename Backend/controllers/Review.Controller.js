@@ -97,7 +97,6 @@ exports.SUBMIT_REVIEW = async (req, res) => {
       message: "Review submitted successfully",
     });
   } catch (error) {
-    console.error("Error submitting review:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

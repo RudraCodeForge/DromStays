@@ -60,7 +60,6 @@ const EditProfile = () => {
     try {
       // 🔜 backend later
       const data = await updateProfileApi(formData);
-      console.log("API Response:", data);
       //dispatch(updateUser(formData)); // Redux update
       alert("Profile updated successfully");
       navigate("/Profile");

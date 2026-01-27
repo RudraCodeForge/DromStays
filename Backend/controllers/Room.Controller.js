@@ -27,7 +27,6 @@ exports.getOwnerRooms = async (req, res) => {
       rooms,
     });
   } catch (error) {
-    console.error("Get Owner Rooms Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -77,7 +76,6 @@ exports.getRoomById = async (req, res) => {
       room,
     });
   } catch (error) {
-    console.error("Get Room By ID Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -153,7 +151,6 @@ exports.updateRoomById = async (req, res) => {
       room,
     });
   } catch (error) {
-    console.error("Update Room By ID Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -184,7 +181,6 @@ exports.getPublicPropertyRooms = async (req, res) => {
       rooms,
     });
   } catch (error) {
-    console.error("Get Public Property Rooms Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

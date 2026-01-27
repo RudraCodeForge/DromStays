@@ -174,7 +174,6 @@ exports.addProperty = async (req, res) => {
       roomsCreated: rooms.length,
     });
   } catch (error) {
-    console.error("Add Property Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -207,7 +206,6 @@ exports.getOwnerProperties = async (req, res) => {
       properties: propertiesWithRating,
     });
   } catch (error) {
-    console.error("Get Owner Properties Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -244,7 +242,6 @@ exports.getPropertyById = async (req, res) => {
       property,
     });
   } catch (error) {
-    console.error("Get Property By ID Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -319,7 +316,7 @@ exports.updateProperty = async (req, res) => {
       message: "Property updated successfully",
     });
   } catch (error) {
-    console.error("Update Property Error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -383,7 +380,6 @@ exports.deleteProperty = async (req, res) => {
       message: "Property and all its rooms deleted successfully",
     });
   } catch (error) {
-    console.error("Delete Property Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
@@ -471,7 +467,6 @@ exports.searchProperties = async (req, res) => {
       properties,
     });
   } catch (error) {
-    console.error("Search Properties Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

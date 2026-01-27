@@ -6,6 +6,7 @@ import { getSubscriptionPlans } from "../../services/Subscription.service.js";
 import ErrorContainer from "../../components/ErrorContainer";
 import PageLoader from "../../components/PageLoader.jsx";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import { subscribeToPlan } from "../../services/Subscription.service.js";
 const SubscriptionPlans = () => {
@@ -27,7 +28,6 @@ const SubscriptionPlans = () => {
         const data = await getSubscriptionPlans();
         setPlans(data);
       } catch (err) {
-        console.error(err);
         setError("Unable to load subscription plans. Please try again.");
       } finally {
         setLoading(false);
@@ -39,24 +39,19 @@ const SubscriptionPlans = () => {
 
   const Buy_Subscription = async (plan) => {
     if (currentPlan === plan.name) {
-      alert("You are already subscribed to this plan.");
+      toast.success("You are already subscribed to this plan.");
       return;
     }
     if (plan.pricing.amount !== 0) {
-      alert("Redirecting to payment gateway... (Not implemented)");
+      toast.warning("Payment gateway integration coming soon!");
       return;
     }
     try {
       const response = await subscribeToPlan(plan.name);
-      alert(`Subscription successful: ${response.message}`);
+      toast.success(`Subscribed to ${plan.name} successfully!`);
       // Optionally, refresh user data here to reflect new subscription
     } catch (err) {
-      console.error(err);
-      alert(
-        `Subscription failed: ${
-          err.response?.data?.message || "Please try again later."
-        }`
-      );
+
     }
   };
 
@@ -98,16 +93,15 @@ const SubscriptionPlans = () => {
 
               <button
                 onClick={() => Buy_Subscription(plan)}
-                className={`${styles.button} ${
-                  currentPlan === plan.name ? styles.activeBtn : ""
-                }`}
+                className={`${styles.button} ${currentPlan === plan.name ? styles.activeBtn : ""
+                  }`}
                 disabled={currentPlan === plan.name}
               >
                 {currentPlan === plan.name
                   ? "Active Plan"
                   : plan.price === "₹0"
-                  ? "Get Started"
-                  : "Subscribe Now"}
+                    ? "Get Started"
+                    : "Subscribe Now"}
               </button>
             </div>
           ))}

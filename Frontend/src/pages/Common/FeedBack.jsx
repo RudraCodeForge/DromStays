@@ -24,8 +24,6 @@ const FeedBack = () => {
       : "SERVICE"
     : "PLATFORM";
 
-  console.log("Review Type:", reviewType, requestType, roomNo, propertyName);
-
   const Handle_Submit = async (e) => {
     e.preventDefault();
 
@@ -50,8 +48,6 @@ const FeedBack = () => {
         : null,
     };
 
-    console.log("Submitting review:", reviewData);
-
     try {
       await submitReview(reviewData);
       toast.success("Thank you for your feedback!");
@@ -62,7 +58,6 @@ const FeedBack = () => {
       // 🔹 Redirect after submit
       navigate("/");
     } catch (err) {
-      console.error(err);
       toast.error("Error submitting feedback. Please try again later.");
     }
   };

@@ -48,7 +48,6 @@ exports.contactSupport = async (req, res) => {
         "Your message has been received. We will get back to you shortly.",
     });
   } catch (error) {
-    console.error("contactSupport error:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -108,7 +107,6 @@ exports.createTicket = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("createTicket error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -125,7 +123,6 @@ exports.getTickets = async (req, res) => {
       data: tickets,
     });
   } catch (error) {
-    console.error("getTickets error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -155,7 +152,6 @@ exports.getTicketDetails = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("getTicketDetails error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -194,7 +190,6 @@ exports.sendTicketMessage = async (req, res) => {
       data: newMessage,
     });
   } catch (error) {
-    console.error("sendTicketMessage error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

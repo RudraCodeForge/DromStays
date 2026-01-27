@@ -17,7 +17,6 @@ exports.GET_SUBSCRIPTIONS = async (req, res) => {
 
     return res.status(200).json({ plans: availablePlans });
   } catch (error) {
-    console.error("GET_SUBSCRIPTIONS error:", error);
     return res.status(500).json({ message: "Server Error" });
   }
 };
@@ -90,7 +89,6 @@ exports.SUBSCRIBE_TO_PLAN = async (req, res) => {
       subscription: user.Subscription,
     });
   } catch (error) {
-    console.error("Error subscribing to plan:", error);
     res.status(500).json({ message: "Server Error" });
   }
 };

@@ -22,7 +22,6 @@ const ViewTenant = () => {
         const res = await getTenantByRoomId(roomId);
         setTenants(res.tenants || []);
       } catch (err) {
-        console.error("VIEW TENANTS ERROR:", err);
         setError("Failed to load tenants");
       } finally {
         setLoading(false);
@@ -81,9 +80,8 @@ const ViewTenant = () => {
 
               <div className={Styles.actions}>
                 <span
-                  className={`${Styles.status} ${
-                    tenant.isActive ? Styles.active : Styles.inactive
-                  }`}
+                  className={`${Styles.status} ${tenant.isActive ? Styles.active : Styles.inactive
+                    }`}
                 >
                   {tenant.isActive ? "Active" : "Inactive"}
                 </span>

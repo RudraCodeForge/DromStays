@@ -23,9 +23,8 @@ const Property = () => {
       try {
         const data = await Get_Owner_Properties();
         setProperties(data.properties); // ✅ FIX 2
-        console.log("Fetched Properties:", data.properties);
       } catch (error) {
-        console.error("Error fetching properties:", error);
+        toast.error("Failed to fetch properties");
       }
     };
     fetchProperties();
@@ -50,8 +49,7 @@ const Property = () => {
 
       alert(res.message);
     } catch (error) {
-      console.error("Error deleting property:", error);
-      alert("Failed to delete property");
+      toast.error("Failed to delete property");
     }
   };
 

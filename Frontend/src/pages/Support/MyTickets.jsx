@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"; // Added useEffect for animation tr
 import { useNavigate } from "react-router-dom";
 import Styles from "../../styles/Support/MyTickets.module.css";
 import { GetTickets } from "../../services/Support.service.js";
+import { toast } from "react-toastify";
 const MyTickets = () => {
   const navigate = useNavigate();
   const [filter, setFilter] = useState("ALL");
@@ -21,7 +22,7 @@ const MyTickets = () => {
           setTickets(response.data);
         }
       } catch (error) {
-        console.error("Error fetching tickets:", error);
+        toast.error("Failed to fetch tickets. Please try again.");
       }
     };
 

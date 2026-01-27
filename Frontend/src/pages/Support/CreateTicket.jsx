@@ -32,14 +32,10 @@ const CreateTicket = () => {
       message: messageRef.current.value,
     };
 
-    console.log("Ticket Data:", ticketData);
-
     try {
       const response = await CreateTicketService(ticketData);
-      console.log("Create Ticket Response:", response);
       setSuccess(response.message);
     } catch (error) {
-      console.error("Error creating ticket:", error);
       setSuccess("Failed to create ticket. Please try again.");
     }
 

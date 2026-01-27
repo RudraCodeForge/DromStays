@@ -93,7 +93,6 @@ exports.makeRequest = async (req, res) => {
       request: newRequest,
     });
   } catch (error) {
-    console.error("Error creating request:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -202,7 +201,6 @@ exports.Respond_To_Request = async (req, res) => {
       request,
     });
   } catch (error) {
-    console.error("Error responding to request:", error);
     res.status(500).json({
       error: "Server error",
     });

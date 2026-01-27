@@ -6,6 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineClose, AiOutlineBell } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { toast } from "react-toastify";
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ const MobileNav = () => {
   /* 📍 Near Me (mobile) */
   const handleNearMe = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      toast.warning("Geolocation not supported");
       return;
     }
 
@@ -36,7 +37,7 @@ const MobileNav = () => {
         navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
       },
       () => {
-        alert("Location access denied");
+        toast.error("Location access denied");
       },
     );
   };

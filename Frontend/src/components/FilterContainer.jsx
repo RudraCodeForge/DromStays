@@ -1,4 +1,5 @@
 import Style from "../styles/Home.module.css";
+import { toast } from "react-toastify";
 import { useRef } from "react";
 
 const FilterContainer = ({ onFilter }) => {
@@ -22,7 +23,7 @@ const FilterContainer = ({ onFilter }) => {
 
   const handleNearMe = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      toast.warning("Geolocation not supported");
       return;
     }
 
@@ -42,7 +43,7 @@ const FilterContainer = ({ onFilter }) => {
         onFilter(filters);
       },
       () => {
-        alert("Location permission denied");
+        toast.error("Location access denied");
       }
     );
   };

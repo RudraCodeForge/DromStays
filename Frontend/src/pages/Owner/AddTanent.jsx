@@ -5,6 +5,7 @@ import ErrorContainer from "../../components/ErrorContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { addTenantToRoom } from "../../services/Tenant.service";
+import { toast } from "react-toastify";
 
 const AddTenant = () => {
   const { roomId } = useParams();
@@ -60,7 +61,7 @@ const AddTenant = () => {
     try {
       const data = await addTenantToRoom(payload);
 
-      alert("Tenant added successfully");
+      toast.success("Tenant added successfully");
       navigate(-1);
     } catch (err) {
       setError(

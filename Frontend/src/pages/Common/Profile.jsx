@@ -6,6 +6,7 @@ import { logout } from "../../redux/authSlice.js";
 import { SendVerificationEmail } from "../../services/auth.service.js";
 import Style from "../../styles/Profile.module.css";
 import { useState, useRef } from "react";
+import { toast } from "react-toastify";
 import { upload_Profile_ImageToCloudinary } from "../../services/Cloudinary.service.js";
 import { updateProfilePictureApi } from "../../services/user.service.js";
 import Swal from "sweetalert2";
@@ -22,9 +23,9 @@ const Profile = () => {
   const HandleVerify = async () => {
     try {
       const res = await SendVerificationEmail();
-      alert(res.message || "Verification email sent!");
+      toast.success(res.message);
     } catch (err) {
-      alert(err?.message || "Something went wrong");
+      toast.error(err?.message || "Something went wrong");
     }
   };
 
@@ -45,10 +46,10 @@ const Profile = () => {
 
     // ✅ validation
     if (!file.type.startsWith("image/")) {
-      return alert("Only image files are allowed");
+      return toast.info("Only image files are allowed");
     }
     if (file.size > 2 * 1024 * 1024) {
-      return alert("Image must be under 2MB");
+      return toast.info("Image must be under 2MB");
     }
 
     try {
@@ -58,9 +59,9 @@ const Profile = () => {
       setPreview(url); // optimistic UI
 
       await updateProfilePictureApi({ ProfilePicture: url });
-      alert("Profile picture updated successfully!");
+      toast.success("Profile picture updated successfully!");
     } catch (err) {
-      alert(err?.message || "Image upload failed");
+      toast.error(err?.message || "Image upload failed");
     } finally {
       setUploading(false);
     }

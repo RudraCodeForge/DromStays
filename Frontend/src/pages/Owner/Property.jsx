@@ -8,6 +8,7 @@ import {
   Get_Owner_Properties,
   Delete_Property,
 } from "../../services/Properties.service";
+import { toast } from "react-toastify";
 
 const Property = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const Property = () => {
         prev.filter((property) => property._id !== propertyId)
       );
 
-      alert(res.message);
+      toast.success("Property deleted successfully");
     } catch (error) {
       toast.error("Failed to delete property");
     }

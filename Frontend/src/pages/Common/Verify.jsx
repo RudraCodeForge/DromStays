@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { VerifyAccount } from "../../services/auth.service";
 import { fetchCurrentUser } from "../../redux/authThunks";
-
+import { toast } from "react-toastify";
 const Verify = () => {
   const [params] = useSearchParams();
   const token = params.get("token");
@@ -12,7 +12,7 @@ const Verify = () => {
 
   useEffect(() => {
     if (!token) {
-      alert("Verification token missing");
+      toast.warning("Verification token missing");
       navigate("/login");
       return;
     }
@@ -22,7 +22,7 @@ const Verify = () => {
         const res = await VerifyAccount(token);
 
         if (res.success) {
-          alert("Account verified successfully ✅");
+          toast.success("Account verified successfully ✅");
 
           // 🔥 REAL WORLD FIX
           // backend se fresh user lao
@@ -31,7 +31,7 @@ const Verify = () => {
           navigate("/profile");
         }
       } catch (err) {
-        alert("Verification failed or expired");
+        toast.error(err?.message || "Verification failed");
         navigate("/login");
       }
     };

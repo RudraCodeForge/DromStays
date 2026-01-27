@@ -1,7 +1,7 @@
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Styles from "../../styles/Navbar.module.css";
 import MobileNav from "./MobileNav";
-
+import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { useRef } from "react";
@@ -30,7 +30,7 @@ const Navbar = () => {
   /* 📍 NEAR ME */
   const handleNearMe = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation not supported");
+      toast.warning("Geolocation not supported");
       return;
     }
 
@@ -42,7 +42,7 @@ const Navbar = () => {
         navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
       },
       () => {
-        alert("Location access denied");
+        toast.error("Location access denied");
       },
     );
   };

@@ -4,6 +4,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import Style from "../../styles/EditProfile.module.css";
+import { toast } from "react-toastify";
 //import { updateUser } from "../../redux/authSlice";
 import { updateProfileApi } from "../../services/user.service"; // backend later
 
@@ -61,10 +62,10 @@ const EditProfile = () => {
       // 🔜 backend later
       const data = await updateProfileApi(formData);
       //dispatch(updateUser(formData)); // Redux update
-      alert("Profile updated successfully");
+      toast.success("Profile updated successfully");
       navigate("/Profile");
     } catch (err) {
-      alert("Profile update failed");
+      toast.error("Profile update failed");
     }
   };
 

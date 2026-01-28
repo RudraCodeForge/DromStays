@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const Session = require("../models/Session");
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -19,6 +20,18 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "User not found" });
     }
 
+    // 🔥 SESSION CHECK (MOST IMPORTANT)
+    const session = await Session.findOne({
+      userId: user._id,
+      refreshToken: req.cookies.refreshToken,
+    });
+
+    if (!session) {
+      return res.status(401).json({
+        message: "Session expired. Please login again.",
+      });
+    }
+
     // 🔐 LOGOUT FROM ALL DEVICES CHECK
     if (decoded.tokenVersion !== user.tokenVersion) {
       return res.status(401).json({
@@ -26,7 +39,7 @@ const authMiddleware = async (req, res, next) => {
       });
     }
 
-    // 🔴 BLOCK CHECK
+    // 🚫 BLOCK CHECK
     if (user.isBlocked) {
       return res.status(403).json({
         message: "Your account has been blocked. Please contact support.",

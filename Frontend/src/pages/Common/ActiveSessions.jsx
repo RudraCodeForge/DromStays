@@ -9,6 +9,8 @@ import {
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/Navbar/Navbar.jsx";
+import Footer from "../../components/Footer";
 
 const ActiveSessions = () => {
     const dispatch = useDispatch();
@@ -69,39 +71,43 @@ const ActiveSessions = () => {
     }
 
     return (
-        <div className={Styles.container}>
-            <div className={Styles.header}>
-                <h2>Active Sessions</h2>
+        <>
+            <Navbar />
+            <div className={Styles.container}>
+                <div className={Styles.header}>
+                    <h2>Active Sessions</h2>
 
-                {sessions.length > 1 && (
-                    <button
-                        className={Styles.logoutAllBtn}
-                        onClick={handleLogoutAll}
-                    >
-                        Logout from all devices
-                    </button>
+                    {sessions.length > 1 && (
+                        <button
+                            className={Styles.logoutAllBtn}
+                            onClick={handleLogoutAll}
+                        >
+                            Logout from all devices
+                        </button>
+                    )}
+                </div>
+
+                {sessions.length === 0 ? (
+                    <p className={Styles.empty}>No active sessions found</p>
+                ) : (
+                    <div className={Styles.sessionList}>
+                        {sessions.map((session) => (
+                            <Session
+                                key={session._id}
+                                session={session}
+                                onLogout={() =>
+                                    handleLogoutSession(
+                                        session._id,
+                                        session.isCurrent
+                                    )
+                                }
+                            />
+                        ))}
+                    </div>
                 )}
             </div>
-
-            {sessions.length === 0 ? (
-                <p className={Styles.empty}>No active sessions found</p>
-            ) : (
-                <div className={Styles.sessionList}>
-                    {sessions.map((session) => (
-                        <Session
-                            key={session._id}
-                            session={session}
-                            onLogout={() =>
-                                handleLogoutSession(
-                                    session._id,
-                                    session.isCurrent
-                                )
-                            }
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
+            <Footer />
+        </>
     );
 };
 

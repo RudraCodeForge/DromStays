@@ -7,16 +7,15 @@ import {
     Logout_All_Sessions,
 } from "../../services/Session.service";
 import { useDispatch } from "react-redux";
-import { logout } from "../../redux/authSlice.js";
-
+import { logout } from "../../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const ActiveSessions = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const currentRefreshToken = localStorage.getItem("refreshToken");
-    // agar refresh token cookie me hai, backend se "isCurrent" flag bhejna better hoga
 
     useEffect(() => {
         fetchSessions();
@@ -25,14 +24,8 @@ const ActiveSessions = () => {
     const fetchSessions = async () => {
         try {
             const res = await Get_Active_Sessions();
-
-            console.log("Fetched sessions:", res);
-            const updated = res.map((s) => ({
-                ...s,
-                isCurrent: s.refreshToken === currentRefreshToken,
-            }));
-
-            setSessions(updated);
+            // 🔥 backend se hi isCurrent aa raha hai
+            setSessions(res);
         } catch (error) {
             console.error("Error fetching sessions", error);
         } finally {
@@ -40,20 +33,32 @@ const ActiveSessions = () => {
         }
     };
 
-    const handleLogoutSession = async (sessionId) => {
+    // 🔐 Logout single session
+    const handleLogoutSession = async (sessionId, isCurrent) => {
         try {
             await Logout_Session(sessionId);
-            setSessions((prev) => prev.filter((s) => s._id !== sessionId));
-            dispatch(logout());
+
+            if (isCurrent) {
+                // 🔥 CURRENT DEVICE → FULL LOGOUT
+                dispatch(logout());
+                navigate("/login");
+            } else {
+                // ✅ OTHER DEVICE → ONLY REMOVE FROM LIST
+                setSessions((prev) =>
+                    prev.filter((s) => s._id !== sessionId)
+                );
+            }
         } catch (error) {
             console.error("Error logging out session", error);
         }
     };
 
+    // 🔥 Logout from all devices
     const handleLogoutAll = async () => {
         try {
             await Logout_All_Sessions();
-            setSessions([]);
+            dispatch(logout());
+            navigate("/login");
         } catch (error) {
             console.error("Error logging out all sessions", error);
         }
@@ -86,7 +91,12 @@ const ActiveSessions = () => {
                         <Session
                             key={session._id}
                             session={session}
-                            onLogout={handleLogoutSession}
+                            onLogout={() =>
+                                handleLogoutSession(
+                                    session._id,
+                                    session.isCurrent
+                                )
+                            }
                         />
                     ))}
                 </div>

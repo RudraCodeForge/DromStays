@@ -9,6 +9,7 @@ import ErrorContainer from "../../components/ErrorContainer.jsx";
 import { Update_Password } from "../../services/auth.service.js";
 import { logout } from "../../redux/authSlice";
 import { toast } from "react-toastify";
+import { Logout_All_Sessions } from "../../services/Session.service";
 
 const ChangePassword = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -62,6 +63,7 @@ const ChangePassword = () => {
 
       if (res?.success) {
         setSuccess("Password updated successfully 🎉");
+        await Logout_All_Sessions();
         e.target.reset();
         dispatch(logout());
       } else {

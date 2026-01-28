@@ -8,4 +8,10 @@ RecentRouter.get(
   authMiddleware,
   RecentController.getRecentActivities
 );
+
+RecentRouter.get(
+  "/login_activities",
+  authMiddleware,
+  RecentController.GET_LOGIN_ACTIVITY
+);
 module.exports = RecentRouter;

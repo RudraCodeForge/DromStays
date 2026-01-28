@@ -1,5 +1,6 @@
 const RecentActivity = require("../models/RecentActivity");
 const User = require("../models/User");
+const LoginActivity = require("../models/LoginActivity");
 exports.getRecentActivities = async (req, res) => {
   try {
     const ownerId = req.user?.id;
@@ -25,3 +26,14 @@ exports.getRecentActivities = async (req, res) => {
     });
   }
 };
+
+exports.GET_LOGIN_ACTIVITY = async (req, res) => {
+  const activity = await LoginActivity.find({
+    userId: req.user.id,
+  })
+    .sort({ createdAt: -1 })
+    .limit(10);
+
+  res.json(activity);
+};
+

@@ -8,6 +8,9 @@ const {
   sendResetPasswordEmail,
 } = require("../utils/sendEmail");
 
+const LoginActivity = require("../models/LoginActivity");
+
+
 /* ======================================================
    🔧 HELPER : format user (single source of truth)
 ====================================================== */
@@ -117,24 +120,49 @@ exports.POSTSIGNUP = [
 exports.POSTLOGIN = async (req, res) => {
   try {
     const { Email, Password } = req.body;
+    const userAgent = req.headers["user-agent"];
 
     const user = await User.findOne({ Email }).select("+Password");
 
+    // ❌ USER NOT FOUND
     if (!user || !user.Password) {
+      await LoginActivity.create({
+        ip: req.ip,
+        device: userAgent,
+        status: "FAILED",
+      });
+
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(Password, user.Password);
+
+    // ❌ PASSWORD WRONG
     if (!isMatch) {
+      await LoginActivity.create({
+        userId: user._id,
+        ip: req.ip,
+        device: userAgent,
+        status: "FAILED",
+      });
+
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // 🔥🔥 FINAL FIX — POORA USER OBJECT PASS KARO
+    // ✅ SUCCESS LOGIN
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
     user.RefreshToken = refreshToken;
     await user.save();
+
+    // ✅ LOGIN ACTIVITY SAVE
+    await LoginActivity.create({
+      userId: user._id,
+      ip: req.ip,
+      device: userAgent,
+      status: "SUCCESS",
+    });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -149,9 +177,11 @@ exports.POSTLOGIN = async (req, res) => {
       user: formatUser(user),
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 /* ======================================================
    🟢 SEND VERIFICATION EMAIL

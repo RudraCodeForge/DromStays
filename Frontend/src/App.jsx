@@ -49,6 +49,7 @@ import RoomVisitRequestForm from "./pages/Common/RoomVisitRequestForm.jsx";
 import Unauthorized from "./pages/Common/Unauthorized.jsx";
 import ServerError from "./pages/Errors/ServerError.jsx";
 import LoginActivity from "./pages/Common/LoginActivity.jsx";
+import ActiveSessions from "./pages/Common/ActiveSessions.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -319,6 +320,14 @@ function App() {
           element={
             <ProtectedRoute>
               <LoginActivity />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/sessions"
+          element={
+            <ProtectedRoute>
+              <ActiveSessions />
             </ProtectedRoute>
           }
         />

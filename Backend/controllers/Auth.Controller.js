@@ -9,6 +9,7 @@ const {
 } = require("../utils/sendEmail");
 
 const LoginActivity = require("../models/LoginActivity");
+const Session = require("../models/Session");
 
 
 /* ======================================================
@@ -121,66 +122,87 @@ exports.POSTLOGIN = async (req, res) => {
   try {
     const { Email, Password } = req.body;
     const userAgent = req.headers["user-agent"];
+    const ipAddress = req.ip;
 
+    // 🔍 Find user
     const user = await User.findOne({ Email }).select("+Password");
 
     // ❌ USER NOT FOUND
     if (!user || !user.Password) {
       await LoginActivity.create({
-        ip: req.ip,
+        ip: ipAddress,
         device: userAgent,
         status: "FAILED",
       });
 
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
     }
 
+    // 🔐 Compare password
     const isMatch = await bcrypt.compare(Password, user.Password);
 
-    // ❌ PASSWORD WRONG
+    // ❌ WRONG PASSWORD
     if (!isMatch) {
       await LoginActivity.create({
         userId: user._id,
-        ip: req.ip,
+        ip: ipAddress,
         device: userAgent,
         status: "FAILED",
       });
 
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({
+        message: "Invalid email or password",
+      });
     }
 
-    // ✅ SUCCESS LOGIN
+    // ✅ GENERATE TOKENS
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
+    // 💾 SAVE REFRESH TOKEN (optional – if you keep only one)
     user.RefreshToken = refreshToken;
     await user.save();
 
-    // ✅ LOGIN ACTIVITY SAVE
+    // 🟢 SAVE LOGIN ACTIVITY (SUCCESS)
     await LoginActivity.create({
       userId: user._id,
-      ip: req.ip,
+      ip: ipAddress,
       device: userAgent,
       status: "SUCCESS",
     });
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+    // 🟢 CREATE ACTIVE SESSION
+    await Session.create({
+      userId: user._id,
+      refreshToken,
+      ip: ipAddress,
+      device: userAgent,
     });
 
-    res.json({
+    // 🍪 SET REFRESH TOKEN COOKIE
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // true in production (HTTPS)
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // ✅ RESPONSE
+    res.status(200).json({
       message: "Login successful",
       accessToken,
       user: formatUser(user),
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("POSTLOGIN ERROR:", error);
+    res.status(500).json({
+      message: "Server error",
+    });
   }
 };
+
 
 
 /* ======================================================

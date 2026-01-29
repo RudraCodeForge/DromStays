@@ -108,13 +108,14 @@ const Invoices = () => {
 
                                         <td>
                                             <a
-                                                href={invoice.pdfUrl}
+                                                href={`${import.meta.env.VITE_API_URL}${invoice.pdfUrl}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className={Styles.downloadBtn}
                                             >
                                                 Download
                                             </a>
+
                                         </td>
                                     </tr>
                                 ))}

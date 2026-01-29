@@ -1,57 +1,30 @@
-const PDFDocument = require("pdfkit");
-const fs = require("fs");
+const puppeteer = require("puppeteer");
 const path = require("path");
+const fs = require("fs");
+const invoiceTemplate = require("./invoiceTemplate");
 
-const generateInvoicePDF = (invoice) => {
-    return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({ size: "A4", margin: 50 });
+const generateInvoicePdf = async (invoice) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
-        const fileName = `invoice-${invoice.invoiceNumber}.pdf`;
-        const filePath = path.join(
-            __dirname,
-            "../uploads/invoices",
-            fileName
-        );
+    const html = invoiceTemplate(invoice);
+    await page.setContent(html, { waitUntil: "networkidle0" });
 
-        const stream = fs.createWriteStream(filePath);
-        doc.pipe(stream);
+    const filePath = path.join(
+        __dirname,
+        "../uploads/invoices",
+        `invoice-${invoice.invoiceNumber}.pdf`
+    );
 
-        // 🧾 Header
-        doc
-            .fontSize(20)
-            .text("INVOICE", { align: "center" })
-            .moveDown();
-
-        doc.fontSize(12);
-        doc.text(`Invoice No: ${invoice.invoiceNumber}`);
-        doc.text(`Date: ${invoice.invoiceDate.toDateString()}`);
-        doc.text(`Status: ${invoice.paymentStatus}`);
-        doc.moveDown();
-
-        // 👤 Customer
-        doc.text(`Billed To: ${invoice.user}`);
-        doc.moveDown();
-
-        // 📦 Items
-        invoice.items.forEach((item, index) => {
-            doc.text(
-                `${index + 1}. ${item.title} | Qty: ${item.quantity} | ₹${item.price}`
-            );
-        });
-
-        doc.moveDown();
-        doc.text(`Subtotal: ₹${invoice.subtotal}`);
-        doc.text(`Tax: ₹${invoice.tax}`);
-        doc.fontSize(14).text(`Total: ₹${invoice.totalAmount}`);
-
-        doc.end();
-
-        stream.on("finish", () => {
-            resolve(`/uploads/invoices/${fileName}`);
-        });
-
-        stream.on("error", reject);
+    await page.pdf({
+        path: filePath,
+        format: "A4",
+        printBackground: true,
     });
+
+    await browser.close();
+
+    return `/uploads/invoices/invoice-${invoice.invoiceNumber}.pdf`;
 };
 
-module.exports = generateInvoicePDF;
+module.exports = generateInvoicePdf;

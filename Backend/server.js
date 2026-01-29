@@ -18,7 +18,7 @@ const RequestRouter = require("./routes/Request.route");
 const SessionRouter = require("./routes/Session.route");
 const InvoiceRouter = require("./routes/Invoices.route");
 const cookieParser = require("cookie-parser");
-
+const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -48,6 +48,10 @@ app.use("/favourites", FavouriteRouter);
 app.use("/requests", RequestRouter);
 app.use("/sessions", SessionRouter);
 app.use("/invoices", InvoiceRouter);
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

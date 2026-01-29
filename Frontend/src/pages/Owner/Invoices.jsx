@@ -7,7 +7,7 @@ import { fetchInvoices } from "../../services/Invoices.service";
 const Invoices = () => {
     const [invoices, setInvoices] = useState([]);
     const [statusFilter, setStatusFilter] = useState("All");
-    const [dateFilter, setDateFilter] = useState("");
+    const [monthFilter, setMonthFilter] = useState("");
 
     useEffect(() => {
         const getInvoices = async () => {
@@ -15,6 +15,9 @@ const Invoices = () => {
                 const data = await fetchInvoices();
                 console.log("Fetched Invoices:", data);
                 setInvoices(data?.invoices || []);
+
+                const currentMonth = new Date().toISOString().slice(0, 7);
+                setMonthFilter(currentMonth);
             } catch (error) {
                 console.error("Error fetching invoices:", error);
             }
@@ -23,17 +26,18 @@ const Invoices = () => {
         getInvoices();
     }, []);
 
-    // ✅ Filters (Status + Date)
+
+    // ✅ Month + Status Filter
     const filteredInvoices = invoices.filter((invoice) => {
         const statusMatch =
             statusFilter === "All" ||
             invoice.paymentStatus === statusFilter;
 
-        const dateMatch =
-            !dateFilter ||
-            invoice.invoiceDate?.slice(0, 10) === dateFilter;
+        const monthMatch =
+            !monthFilter ||
+            invoice.invoiceDate?.slice(0, 7) === monthFilter;
 
-        return statusMatch && dateMatch;
+        return statusMatch && monthMatch;
     });
 
     return (
@@ -54,10 +58,11 @@ const Invoices = () => {
                         <option value="Pending">Pending</option>
                     </select>
 
+                    {/* 🔁 Month Picker */}
                     <input
-                        type="date"
-                        value={dateFilter}
-                        onChange={(e) => setDateFilter(e.target.value)}
+                        type="month"
+                        value={monthFilter}
+                        onChange={(e) => setMonthFilter(e.target.value)}
                     />
                 </div>
 
@@ -93,8 +98,8 @@ const Invoices = () => {
                                         <td>
                                             <span
                                                 className={`${Styles.status} ${invoice.paymentStatus === "Paid"
-                                                        ? Styles.paid
-                                                        : Styles.pending
+                                                    ? Styles.paid
+                                                    : Styles.pending
                                                     }`}
                                             >
                                                 {invoice.paymentStatus}

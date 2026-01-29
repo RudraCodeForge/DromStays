@@ -284,3 +284,35 @@ exports.Mark_Completed = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+
+exports.Get_Pending_Requests_Count = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const role = req.user.Role;
+    let filter = { status: "pending" };
+
+    if (role === "tenant") {
+      filter.userId = userId;
+    } else if (role === "owner") {
+      filter.ownerId = userId;
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized role",
+      });
+    }
+    const pendingCount = await Request.countDocuments(filter);
+
+    res.status(200).json({
+      success: true,
+      pendingCount: pendingCount,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch pending requests count",
+      error: error.message,
+    });
+  }
+};

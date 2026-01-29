@@ -20,4 +20,10 @@ TenantRouter.delete(
   TenantController.DELETE_TENANT_BY_ID
 );
 
+TenantRouter.get(
+  "/count",
+  authMiddleware, // ✅ logged-in user
+  TenantController.GET_TENANT_COUNT
+);
+
 module.exports = TenantRouter;

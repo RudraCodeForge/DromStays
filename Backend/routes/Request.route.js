@@ -28,4 +28,6 @@ RequestRouter.post(
   RequestController.Mark_Completed,
 );
 
+RequestRouter.get("/pending_count", authMiddleware, RequestController.Get_Pending_Requests_Count);
+
 module.exports = RequestRouter;

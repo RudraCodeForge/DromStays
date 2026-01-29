@@ -61,3 +61,17 @@ export const markCompleted = async (requestId) => {
     };
   }
 };
+
+export const Get_Pending_Requests_Count = async () => {
+  try {
+    const res = await api.get("/requests/pending_count");
+    return res.data;
+  }
+  catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data || {
+      message: "Failed to fetch pending requests count",
+    };
+  }
+};

@@ -46,3 +46,16 @@ export const deleteTenantById = async (tenantId) => {
     };
   }
 };
+
+export const GetTenantCount = async () => {
+  try {
+    const res = await api.get("/tenants/count");
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data || {
+      message: "Failed to fetch tenant count",
+    };
+  }
+};

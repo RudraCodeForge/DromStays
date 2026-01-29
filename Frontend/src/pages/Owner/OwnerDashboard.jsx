@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useOwnerRooms } from "../../Custom/useOwnerRooms";
 import { useDashboardPayments } from "../../Custom/useDashboardPayments";
 import { useRecentActivities } from "../../Custom/useRecentActivities";
+import { useRequests } from "../../Custom/useRequests";
+import { useActiveBookings } from "../../Custom/useActiveBookings";
 
 const OwnerDashboard = () => {
   const { user } = useSelector((s) => s.auth);
@@ -18,6 +20,9 @@ const OwnerDashboard = () => {
   const { activities, loading } = useRecentActivities();
   const { advanceBalance, expectedCollection, overdueAmount } =
     useDashboardPayments(user.id);
+
+  const { pendingRequestsCount } = useRequests();
+  const { activeBookings } = useActiveBookings();
 
   return (
     <>
@@ -32,6 +37,8 @@ const OwnerDashboard = () => {
           advance={advanceBalance}
           expected={expectedCollection}
           overdue={overdueAmount}
+          pendingRequests={pendingRequestsCount}
+          activeBookings={activeBookings}
         />
 
         <div className={Styles.placeholderSection}>

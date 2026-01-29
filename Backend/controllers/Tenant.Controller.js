@@ -290,3 +290,34 @@ exports.GET_TENANTS_BY_ROOM_ID = async (req, res) => {
     });
   }
 };
+
+exports.GET_TENANT_COUNT = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+
+    // 🔐 Role check directly from token (faster & safe)
+    if (req.user.Role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    // ✅ Only ACTIVE tenants count
+    const tenantCount = await Tenant.countDocuments({
+      owner: ownerId,
+      isActive: true,
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: tenantCount,
+    });
+  } catch (error) {
+    console.error("Error fetching tenant count:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};

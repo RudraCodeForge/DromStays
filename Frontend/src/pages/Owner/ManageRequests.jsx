@@ -3,7 +3,13 @@ import { useSelector } from "react-redux";
 import Styles from "../../styles/ManageRequests.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
-import { getRequestsbyId, respondToRequest, markCompleted } from "../../services/Request.service";
+import { useSearchParams } from "react-router-dom";
+
+import {
+  getRequestsbyId,
+  respondToRequest,
+  markCompleted,
+} from "../../services/Request.service";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -12,11 +18,18 @@ const ManageRequests = () => {
   const role = user?.Role;
   const navigate = useNavigate();
 
+  const [searchParams] = useSearchParams();
+  const statusFromUrl = searchParams.get("status"); // pending
+
+
   const [requests, setRequests] = useState([]);
+
+  // 🔹 Status Filter
+  const [statusFilter, setStatusFilter] = useState("all"); // all | pending | approved | rejected
 
   // 🔹 Owner response states
   const [activeRequestId, setActiveRequestId] = useState(null);
-  const [actionType, setActionType] = useState(""); // approved | rejected
+  const [actionType, setActionType] = useState("");
   const [ownerResponse, setOwnerResponse] = useState("");
 
   useEffect(() => {
@@ -32,12 +45,25 @@ const ManageRequests = () => {
     fetchRequests();
   }, []);
 
+  // ✅ Derived filtered requests
+  const filteredRequests =
+    statusFilter === "all"
+      ? requests
+      : requests.filter((req) => req.status === statusFilter);
+
   // 🔹 Open response box
   const openResponseBox = (id, type) => {
     setActiveRequestId(id);
     setActionType(type);
     setOwnerResponse("");
   };
+
+  useEffect(() => {
+    if (statusFromUrl) {
+      setStatusFilter(statusFromUrl);
+    }
+  }, [statusFromUrl]);
+
 
   // 🔹 Submit owner response
   const submitOwnerResponse = async () => {
@@ -49,26 +75,25 @@ const ManageRequests = () => {
     const payload = {
       requestId: activeRequestId,
       status: actionType,
-      ownerResponse: ownerResponse,
+      ownerResponse,
     };
 
     try {
       await respondToRequest(payload);
 
-      // ✅ Optimistic UI update
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
+      setRequests((prev) =>
+        prev.map((req) =>
           req._id === activeRequestId
             ? { ...req, status: actionType, ownerResponse }
             : req
         )
       );
 
-      if (actionType === "approved") {
-        toast.success("Request approved successfully");
-      } else {
-        toast.info("Request rejected");
-      }
+      toast.success(
+        actionType === "approved"
+          ? "Request approved successfully"
+          : "Request rejected"
+      );
 
       setActiveRequestId(null);
       setOwnerResponse("");
@@ -76,8 +101,6 @@ const ManageRequests = () => {
       toast.error("Failed to submit response");
     }
   };
-
-
 
   const getRequestLabel = (type) => {
     switch (type) {
@@ -98,8 +121,8 @@ const ManageRequests = () => {
     try {
       await markCompleted(requestId);
 
-      setRequests((prevRequests) =>
-        prevRequests.map((req) =>
+      setRequests((prev) =>
+        prev.map((req) =>
           req._id === requestId
             ? { ...req, isCompleted: true, status: "completed" }
             : req
@@ -112,19 +135,37 @@ const ManageRequests = () => {
     }
   };
 
-
   return (
     <>
       <Navbar />
+
       <div className={Styles.container}>
         <h1>{role === "owner" ? "Incoming Requests" : "My Requests"}</h1>
 
-        {requests.length === 0 ? (
+        {/* 🔍 STATUS FILTER */}
+        <div className={Styles.filterBar}>
+          <label>Status:</label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+
+        {filteredRequests.length === 0 ? (
           <p>No requests found.</p>
         ) : (
           <div className={Styles.list}>
-            {requests.map((req, index) => (
-              <div key={req._id} className={Styles.card} style={{ animationDelay: `${index * 0.1}s` }}>
+            {filteredRequests.map((req, index) => (
+              <div
+                key={req._id}
+                className={Styles.card}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <h3>{getRequestLabel(req.requestType)}</h3>
 
                 {role === "owner" && (
@@ -166,123 +207,72 @@ const ManageRequests = () => {
                   {req.status}
                 </span>
 
-                {/* Tenant sees owner response */}
+                {/* Tenant View */}
                 {req.ownerResponse && role !== "owner" && (
                   <p className={Styles.ownerResponse}>
                     <strong>Owner Response:</strong> {req.ownerResponse}
                   </p>
                 )}
 
-                {req.status === "approved" && role !== "owner" && (
-                  <p className={Styles.approvalNote}>
-                    Your request has been approved. Please follow any instructions provided by the owner.
-                  </p>
-                )}
-
-                {req.isCompleted && role !== "owner" && req.reviewEligible === false && (
-                  <>
-                    <button
-                      className={Styles.Markcompleted}
-                      onClick={() => MarkDone(req._id)}
-                    >
-                      Mark as Completed
-                    </button>
-                  </>
-                )}
-
-                {req.isCompleted && role !== "owner" && req.reviewEligible && (
-                  <>
-                    <p className={Styles.reviewNote}>
-                      You can now leave a review for this request.
-                    </p>
-
-                    <button
-                      className={Styles.reviewButton}
-                      onClick={() =>
-                        navigate(`/review/${req._id}`, {
-                          state: {
-                            requestType: req.requestType,
-                            roomNo: req.roomNo,
-                            propertyName: req.propertyName,
-                            referenceId: req.roomId,
-                          },
-                        })
-                      }
-                    >
-                      Leave a Review
-                    </button>
-
-                  </>
-                )}
-
-
-
-
-                {/* Owner actions */}
-
                 {role === "owner" && req.status === "pending" && (
                   <div className={Styles.actions}>
                     <button
                       className={Styles.accept}
-                      onClick={() =>
-                        openResponseBox(req._id, "approved")
-
-                      }
+                      onClick={() => openResponseBox(req._id, "approved")}
                     >
                       Approve
                     </button>
                     <button
                       className={Styles.reject}
-                      onClick={() =>
-                        openResponseBox(req._id, "rejected")
-                      }
+                      onClick={() => openResponseBox(req._id, "rejected")}
                     >
                       Reject
                     </button>
                   </div>
                 )}
 
-                {role === "owner" && req.status === "approved" && req.isCompleted === false && (
-                  <button
-                    className={Styles.Markcompleted}
-                    onClick={() => MarkDone(req._id)}
-                  >
-                    Mark as Completed
-                  </button>
-                )}
+                {role === "owner" &&
+                  req.status === "approved" &&
+                  !req.isCompleted && (
+                    <button
+                      className={Styles.Markcompleted}
+                      onClick={() => MarkDone(req._id)}
+                    >
+                      Mark as Completed
+                    </button>
+                  )}
               </div>
             ))}
-          </div >
+          </div>
         )}
 
-        {/* 🔹 Owner Response Box */}
-        {
-          activeRequestId && (
-            <div className={Styles.responseBox}>
-              <div className={Styles.modalContent}>
-                <h3>
-                  {actionType === "approved"
-                    ? "Approve Request"
-                    : "Reject Request"}
-                </h3>
+        {/* 🔹 Owner Response Modal */}
+        {activeRequestId && (
+          <div className={Styles.responseBox}>
+            <div className={Styles.modalContent}>
+              <h3>
+                {actionType === "approved"
+                  ? "Approve Request"
+                  : "Reject Request"}
+              </h3>
 
-                <textarea
-                  placeholder="Write owner response..."
-                  value={ownerResponse}
-                  onChange={(e) => setOwnerResponse(e.target.value)}
-                />
+              <textarea
+                placeholder="Write owner response..."
+                value={ownerResponse}
+                onChange={(e) => setOwnerResponse(e.target.value)}
+              />
 
-                <div className={Styles.actions}>
-                  <button onClick={submitOwnerResponse}>Submit</button>
-                  <button onClick={() => setActiveRequestId(null)}>
-                    Cancel
-                  </button>
-                </div>
+              <div className={Styles.actions}>
+                <button onClick={submitOwnerResponse}>Submit</button>
+                <button onClick={() => setActiveRequestId(null)}>
+                  Cancel
+                </button>
               </div>
             </div>
-          )
-        }
-      </div >
+          </div>
+        )}
+      </div>
+
       <Footer />
     </>
   );

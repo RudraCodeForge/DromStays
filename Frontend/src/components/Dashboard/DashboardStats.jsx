@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StatCard from "../../components/StatCard";
 
-const DashboardStats = ({ rooms, newRooms, advance, expected, overdue }) => {
+const DashboardStats = ({ rooms, newRooms, advance, expected, overdue, pendingRequests, activeBookings }) => {
   const navigate = useNavigate(); // ✅ FIX
 
   return (
@@ -23,16 +23,17 @@ const DashboardStats = ({ rooms, newRooms, advance, expected, overdue }) => {
         badgeType="success"
       />
 
-      <StatCard icon={faCalendarCheck} title="Active Bookings" value="8" />
+      <StatCard icon={faCalendarCheck} title="Active Bookings" value={activeBookings} />
 
       <StatCard
         icon={faClock}
         title="Pending Requests"
-        value="3"
+        value={pendingRequests}
         badge="Needs action"
         badgeType="warning"
-        onClick={() => navigate("/Owner/Requests")}
+        onClick={() => navigate("/Owner/ManageRequests?status=pending")}
       />
+
 
       <StatCard
         icon={faTriangleExclamation}

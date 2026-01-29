@@ -51,6 +51,8 @@ import ServerError from "./pages/Errors/ServerError.jsx";
 import LoginActivity from "./pages/Common/LoginActivity.jsx";
 import ActiveSessions from "./pages/Common/ActiveSessions.jsx";
 import Invoices from "./pages/Owner/Invoices.jsx";
+import BankDetails from "./pages/Common/BankDetails.jsx";
+import PayoutPreference from "./pages/Common/PayoutPreference.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -337,6 +339,22 @@ function App() {
           element={
             <ProtectedRoute>
               <Invoices />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/bank-details"
+          element={
+            <ProtectedRoute>
+              <BankDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings/payouts"
+          element={
+            <ProtectedRoute>
+              <PayoutPreference />
             </ProtectedRoute>
           }
         />

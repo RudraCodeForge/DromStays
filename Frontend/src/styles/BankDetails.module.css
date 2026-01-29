@@ -1,0 +1,28 @@
+.container {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    max-width: 420px;
+}
+
+.comingSoon {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ff9800;
+    margin: 10px 0;
+}
+
+.subText {
+    font-size: 14px;
+    color: #666;
+    margin-top: 8px;
+}

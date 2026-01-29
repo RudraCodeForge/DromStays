@@ -56,7 +56,7 @@ const Settings = () => {
 
               <ul>
                 <li>
-                  <NavLink to="/settings/bank" className={Styles.link}>
+                  <NavLink to="/bank-details" className={Styles.link}>
                     Bank Account Details
                   </NavLink>
                 </li>

@@ -1,6 +1,7 @@
 # Environment files
 .env
 
+#node
 node_modules/
 
 # uploaded files

@@ -53,6 +53,7 @@ import ActiveSessions from "./pages/Common/ActiveSessions.jsx";
 import Invoices from "./pages/Owner/Invoices.jsx";
 import BankDetails from "./pages/Common/BankDetails.jsx";
 import PayoutPreference from "./pages/Common/PayoutPreference.jsx";
+import Notifications from "./pages/Common/Notifications.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -358,6 +359,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          }
+        />
+
 
         {/* 404 Page Not Found */}
 

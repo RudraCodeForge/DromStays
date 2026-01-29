@@ -1,0 +1,160 @@
+/* 🌈 GLOBAL THEME VARIABLES */
+:root {
+    --primary-color: #2e126a;
+    --primary-transparant-color: #2e126a2f;
+    --bg-color: #f7f8fc;
+    --card-bg: #ffffff;
+    --text-dark: #1f1f1f;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --radius: 12px;
+    --transition: 0.3s ease;
+}
+
+/* 📦 PAGE CONTAINER */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 16px;
+    background: var(--bg-color);
+    animation: fadeIn 0.6s ease;
+}
+
+/* 🧾 HEADING */
+.heading {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: var(--text-dark);
+}
+
+/* 📜 LIST */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 🔔 NOTIFICATION ITEM */
+.item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+    animation: slideUp 0.4s ease;
+}
+
+.item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(46, 18, 106, 0.15);
+}
+
+/* 🔵 UNREAD STATE */
+.unread {
+    background: var(--primary-transparant-color);
+    border-left: 4px solid var(--primary-color);
+}
+
+/* 📄 CONTENT */
+.content h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.content p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+/* ⏰ TIME */
+.time {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 4px;
+    align-self: flex-end;
+}
+
+/* 🚫 EMPTY STATE */
+.empty {
+    text-align: center;
+    color: var(--text-light);
+    margin-top: 60px;
+    font-size: 15px;
+    animation: fadeIn 0.5s ease;
+}
+
+/* 🔄 LOADING */
+.loading {
+    text-align: center;
+    color: var(--text-light);
+    margin-top: 40px;
+}
+
+/* ✨ ANIMATIONS */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+    .heading {
+        font-size: 22px;
+    }
+
+    .item {
+        padding: 14px;
+    }
+
+    .content h4 {
+        font-size: 15px;
+    }
+
+    .content p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 20px auto;
+    }
+
+    .heading {
+        text-align: center;
+    }
+
+    .time {
+        align-self: flex-start;
+    }
+}

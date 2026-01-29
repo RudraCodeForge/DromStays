@@ -2,6 +2,9 @@ const Property = require("../models/Property");
 const Room = require("../models/Room");
 const Request = require("../models/Requests");
 const User = require("../models/User");
+
+const Notification = require("../models/Notification");
+
 exports.makeRequest = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -86,6 +89,15 @@ exports.makeRequest = async (req, res) => {
       message,
     });
 
+    const ownerNotification = new Notification({
+      user: room.owner,
+      title: "New Room Visit Request",
+      message: `You have a new room visit request from ${name} for property "${property.name}".`,
+      type: "REQUEST",
+      data: { requestId: newRequest._id },
+      redirectUrl: `/owner/requests`,
+    });
+    await ownerNotification.save();
     await newRequest.save();
 
     res.status(201).json({
@@ -188,6 +200,16 @@ exports.Respond_To_Request = async (req, res) => {
     // 🔥 Update request
     request.status = status;
     request.ownerResponse = ownerResponse;
+
+    const tenantNotification = new Notification({
+      user: request.userId,
+      title: `Your Request has been ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+      message: `Your room visit request for property "${request.propertyName}" has been ${status} by the owner.`,
+      type: "REQUEST",
+      data: { requestId: request._id },
+      redirectUrl: `/my-requests`,
+    });
+    await tenantNotification.save();
 
     // 🔥 TTL: Auto delete after 24 hours
     request.deleteAfter = new Date(

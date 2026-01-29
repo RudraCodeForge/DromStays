@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import Logo from "../Logo";
 import Styles from "../../styles/Navbar.module.css";
@@ -6,13 +6,28 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineClose, AiOutlineBell } from "react-icons/ai";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
+import { loadUnreadCount } from "../../redux/notificationSlice";
 import { toast } from "react-toastify";
 
 const MobileNav = () => {
   const [open, setOpen] = useState(false);
+
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
+
+  // 🔔 unread notifications count
+  const unreadCount = useSelector(
+    (state) => state.notifications?.unreadCount || 0
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  /* 🔔 LOAD UNREAD COUNT */
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(loadUnreadCount());
+    }
+  }, [dispatch, isAuthenticated]);
 
   const closeMenu = () => setOpen(false);
 
@@ -33,23 +48,21 @@ const MobileNav = () => {
       (pos) => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-
         navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
+        closeMenu();
       },
-      () => {
-        toast.error("Location access denied");
-      },
+      () => toast.error("Location access denied")
     );
   };
 
   return (
     <>
-      {/* Hamburger */}
+      {/* 🍔 Hamburger */}
       <div className={Styles.Hamburger} onClick={() => setOpen(true)}>
         <GiHamburgerMenu size={26} />
       </div>
 
-      {/* Mobile Menu */}
+      {/* 📱 Mobile Menu */}
       <div className={`${Styles.MobileMenu} ${open ? Styles.ShowMenu : ""}`}>
         {/* Header */}
         <div className={Styles.MobileHeader}>
@@ -62,7 +75,7 @@ const MobileNav = () => {
         </div>
 
         <ul className={Styles.MobileNavLinks}>
-          {/* GUEST */}
+          {/* 👤 GUEST */}
           {!isAuthenticated && (
             <>
               <li className={Styles.MobileLogin}>
@@ -78,10 +91,10 @@ const MobileNav = () => {
             </>
           )}
 
-          {/* AUTHENTICATED */}
+          {/* 🔐 AUTHENTICATED */}
           {isAuthenticated && (
             <>
-              {/* PROFILE ROW */}
+              {/* PROFILE + 🔔 NOTIFICATION */}
               <li className={Styles.MobileProfile}>
                 <div className={Styles.MobileProfileRow}>
                   {/* Profile */}
@@ -101,28 +114,27 @@ const MobileNav = () => {
                     </div>
                   </NavLink>
 
-                  {/* Notifications */}
-                  <NavLink
-                    to="/notifications"
-                    onClick={closeMenu}
+                  {/* 🔔 Notification Bell */}
+                  <div
                     className={Styles.NotificationIcon}
+                    onClick={() => {
+                      navigate("/notifications");
+                      closeMenu();
+                    }}
                   >
                     <AiOutlineBell size={20} />
-                  </NavLink>
+                    {unreadCount > 0 && (
+                      <span className={Styles.NotificationBadge}>
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </li>
 
-              {/* TENANT LINKS */}
+              {/* 👨‍🎓 TENANT LINKS */}
               {role === "tenant" && (
                 <>
-                  <li className={Styles.MobileLink}>
-                    <button
-                      onClick={handleNearMe}
-                      className={Styles.MobileActionBtn}
-                    >
-                      📍 Near Me
-                    </button>
-                  </li>
                   <li className={Styles.MobileLink}>
                     <NavLink to="/saved-rooms" onClick={closeMenu}>
                       Saved
@@ -141,7 +153,7 @@ const MobileNav = () => {
                 </>
               )}
 
-              {/* OWNER LINKS */}
+              {/* 🏠 OWNER LINKS */}
               {role === "owner" && (
                 <>
                   <li className={Styles.MobileLink}>
@@ -167,7 +179,7 @@ const MobileNav = () => {
                 </>
               )}
 
-              {/* ADMIN LINKS */}
+              {/* 🛠 ADMIN LINKS */}
               {role === "admin" && (
                 <>
                   <li className={Styles.MobileLink}>
@@ -188,7 +200,7 @@ const MobileNav = () => {
                 </>
               )}
 
-              {/* LOGOUT */}
+              {/* 🚪 LOGOUT */}
               <li className={Styles.MobileLogout}>
                 <button onClick={handleLogout} className={Styles.LogoutBtn}>
                   Logout

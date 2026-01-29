@@ -17,6 +17,7 @@ const FavouriteRouter = require("./routes/Favourite.route");
 const RequestRouter = require("./routes/Request.route");
 const SessionRouter = require("./routes/Session.route");
 const InvoiceRouter = require("./routes/Invoices.route");
+const NotificationRouter = require("./routes/Notification.route");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const app = express();
@@ -48,6 +49,7 @@ app.use("/favourites", FavouriteRouter);
 app.use("/requests", RequestRouter);
 app.use("/sessions", SessionRouter);
 app.use("/invoices", InvoiceRouter);
+app.use("/notifications", NotificationRouter);
 app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"))

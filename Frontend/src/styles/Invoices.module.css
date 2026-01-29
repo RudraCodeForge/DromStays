@@ -1,0 +1,178 @@
+/* 📦 Container */
+.container {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    padding: 2rem 1.5rem;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* 🧾 Heading */
+.heading {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* 🔍 Filters */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filters select,
+.filters input {
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid var(--primary-transparant-color);
+    font-size: 0.95rem;
+    background-color: var(--card-bg);
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.filters select:focus,
+.filters input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-transparant-color);
+}
+
+/* 📄 Table Wrapper */
+.tableWrapper {
+    background: var(--card-bg);
+    border-radius: 14px;
+    overflow-x: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    animation: slideUp 0.5s ease;
+}
+
+/* 📊 Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.table th,
+.table td {
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.table tbody tr {
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: var(--primary-transparant-color);
+    transform: scale(1.01);
+}
+
+/* 💰 Status Badge */
+.status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+}
+
+.paid {
+    background-color: #e6f9f0;
+    color: #047857;
+}
+
+.pending {
+    background-color: #fff3cd;
+    color: #92400e;
+}
+
+/* ⬇ Download Button */
+.downloadBtn {
+    padding: 0.4rem 0.9rem;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: #fff;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.downloadBtn:hover {
+    background-color: #3b1b8a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(46, 18, 106, 0.3);
+}
+
+/* 😕 Empty State */
+.empty {
+    margin-top: 2rem;
+    color: var(--text-light);
+    font-size: 1rem;
+    text-align: center;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    .heading {
+        font-size: 1.6rem;
+    }
+
+    .filters {
+        flex-direction: column;
+    }
+
+    .table {
+        min-width: 600px;
+    }
+}
+
+/* ✨ Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

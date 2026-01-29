@@ -16,6 +16,7 @@ const SupportRouter = require("./routes/Support.route");
 const FavouriteRouter = require("./routes/Favourite.route");
 const RequestRouter = require("./routes/Request.route");
 const SessionRouter = require("./routes/Session.route");
+const InvoiceRouter = require("./routes/Invoices.route");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -46,6 +47,7 @@ app.use("/support", SupportRouter);
 app.use("/favourites", FavouriteRouter);
 app.use("/requests", RequestRouter);
 app.use("/sessions", SessionRouter);
+app.use("/invoices", InvoiceRouter);
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

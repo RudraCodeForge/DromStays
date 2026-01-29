@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Property = require("../models/Property");
 const Payment = require("../models/Payment");
 const { logActivity } = require("../services/activity.service");
+const createInvoiceWithPDF = require("../utils/createInvoiceWithPDF");
 
 exports.ADD_TENANT_TO_ROOM = async (req, res) => {
   try {
@@ -13,8 +14,7 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
     const ownerId = req.user.id;
     const owner = await User.findById(ownerId);
 
-    const role = owner.Role;
-    if (role !== "owner") {
+    if (!owner || owner.Role !== "owner") {
       return res.status(403).json({
         success: false,
         message: "Unauthorized",
@@ -32,24 +32,27 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
     /* 🏠 ROOM CHECK */
     const room = await Room.findById(roomId);
     if (!room) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Room not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
     }
 
     /* 🏢 PROPERTY + OWNER CHECK */
     const property = await Property.findById(room.property);
     if (!property || property.owner.toString() !== ownerId) {
-      return res
-        .status(403)
-        .json({ success: false, message: "Unauthorized access" });
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
     }
 
     /* 🚫 CAPACITY CHECK */
     if (room.tenants.length >= room.capacity) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Room capacity full" });
+      return res.status(400).json({
+        success: false,
+        message: "Room capacity full",
+      });
     }
 
     /* 👤 FIND OR CREATE TENANT */
@@ -81,13 +84,13 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       await tenant.save();
     }
 
-    /* 🔗 ADD TENANT TO ROOM (FIRST) */
+    /* 🔗 ADD TENANT TO ROOM */
     room.tenants.push(tenant._id);
     await room.save();
 
-    /* 💰 ADVANCE PAYMENT (OPTIONAL) */
+    /* 💰 ADVANCE PAYMENT + INVOICE */
     if (advanceAmount && Number(advanceAmount) > 0) {
-      await Payment.create({
+      const advancePayment = await Payment.create({
         tenant: tenant._id,
         room: room._id,
         property: room.property,
@@ -96,6 +99,17 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
         amount: Number(advanceAmount),
         status: "PAID",
         paidAt: new Date(),
+      });
+
+      await createInvoiceWithPDF({
+        tenant: tenant._id,
+        owner: ownerId,
+        property,
+        room,
+        payment: advancePayment,
+        type: "Advance",
+        amount: Number(advanceAmount),
+        status: "PAID",
       });
     }
 
@@ -123,8 +137,8 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🧾 AUTO RENT PAYMENT */
-    await Payment.create({
+    /* 🧾 RENT PAYMENT + INVOICE */
+    const rentPayment = await Payment.create({
       tenant: tenant._id,
       room: room._id,
       property: room.property,
@@ -134,6 +148,17 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       month: new Date().toISOString().slice(0, 7), // YYYY-MM
       status: "PENDING",
       dueDate: joiningDate || new Date(),
+    });
+
+    await createInvoiceWithPDF({
+      tenant: tenant._id,
+      owner: ownerId,
+      property,
+      room,
+      payment: rentPayment,
+      type: "Rent",
+      amount: rentAmount,
+      status: "PENDING",
     });
 
     /* 🧠 ACTIVITY LOG */
@@ -157,12 +182,14 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       tenant,
     });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 };
+
 
 exports.DELETE_TENANT_BY_ID = async (req, res) => {
   try {

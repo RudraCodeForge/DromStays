@@ -1,0 +1,127 @@
+import { useState, useEffect } from "react";
+import Styles from "../../styles/Invoices.module.css";
+import Navbar from "../../components/Navbar/Navbar";
+import Footer from "../../components/Footer";
+import { fetchInvoices } from "../../services/Invoices.service";
+
+const Invoices = () => {
+    const [invoices, setInvoices] = useState([]);
+    const [statusFilter, setStatusFilter] = useState("All");
+    const [dateFilter, setDateFilter] = useState("");
+
+    useEffect(() => {
+        const getInvoices = async () => {
+            try {
+                const data = await fetchInvoices();
+                console.log("Fetched Invoices:", data);
+                setInvoices(data?.invoices || []);
+            } catch (error) {
+                console.error("Error fetching invoices:", error);
+            }
+        };
+
+        getInvoices();
+    }, []);
+
+    // ✅ Filters (Status + Date)
+    const filteredInvoices = invoices.filter((invoice) => {
+        const statusMatch =
+            statusFilter === "All" ||
+            invoice.paymentStatus === statusFilter;
+
+        const dateMatch =
+            !dateFilter ||
+            invoice.invoiceDate?.slice(0, 10) === dateFilter;
+
+        return statusMatch && dateMatch;
+    });
+
+    return (
+        <>
+            <Navbar />
+
+            <div className={Styles.container}>
+                <h1 className={Styles.heading}>Invoices</h1>
+
+                {/* 🔍 Filters */}
+                <div className={Styles.filters}>
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                        <option value="All">All Status</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+
+                    <input
+                        type="date"
+                        value={dateFilter}
+                        onChange={(e) => setDateFilter(e.target.value)}
+                    />
+                </div>
+
+                {/* 📄 Table */}
+                {filteredInvoices.length === 0 ? (
+                    <p className={Styles.empty}>No invoices found.</p>
+                ) : (
+                    <div className={Styles.tableWrapper}>
+                        <table className={Styles.table}>
+                            <thead>
+                                <tr>
+                                    <th>Invoice No</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {filteredInvoices.map((invoice) => (
+                                    <tr key={invoice._id}>
+                                        <td>{invoice.invoiceNumber}</td>
+
+                                        <td>
+                                            {new Date(
+                                                invoice.invoiceDate
+                                            ).toLocaleDateString()}
+                                        </td>
+
+                                        <td>₹ {invoice.totalAmount}</td>
+
+                                        <td>
+                                            <span
+                                                className={`${Styles.status} ${invoice.paymentStatus === "Paid"
+                                                        ? Styles.paid
+                                                        : Styles.pending
+                                                    }`}
+                                            >
+                                                {invoice.paymentStatus}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <a
+                                                href={invoice.pdfUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={Styles.downloadBtn}
+                                            >
+                                                Download
+                                            </a>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </div>
+
+            <Footer />
+        </>
+    );
+};
+
+export default Invoices;

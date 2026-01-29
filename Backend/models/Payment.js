@@ -26,6 +26,11 @@ const PaymentSchema = new mongoose.Schema(
       required: true,
     },
 
+    invoice: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Invoice",
+    },
+
     type: {
       type: String,
       enum: ["ADVANCE", "RENT", "EXTRA", "REFUND"],
@@ -50,6 +55,12 @@ const PaymentSchema = new mongoose.Schema(
       default: "PENDING",
     },
 
+    paymentMethod: {
+      type: String,
+      enum: ["CASH", "UPI", "MANUAL"],
+      default: "MANUAL",
+    },
+
     paidAt: Date,
     dueDate: Date,
     notes: String,
@@ -57,5 +68,4 @@ const PaymentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ THIS LINE WAS MISSING
 module.exports = mongoose.model("Payment", PaymentSchema);

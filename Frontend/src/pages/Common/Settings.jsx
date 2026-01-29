@@ -43,7 +43,7 @@ const Settings = () => {
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/settings/invoices" className={Styles.link}>
+                  <NavLink to="/owner/invoices" className={Styles.link}>
                     Billing & Invoices
                   </NavLink>
                 </li>

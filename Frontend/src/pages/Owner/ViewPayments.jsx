@@ -5,11 +5,11 @@ import Footer from "../../components/Footer";
 import Styles from "../../styles/ViewPayments.module.css";
 import {
     getOwnerPayments,
-    // markPaymentAsPaid,
+    markPaymentAsPaid,
 } from "../../services/payment.service";
 import { toast } from "react-toastify";
 
-const GST_RATE = 0.18;
+const GST_RATE = 0.18; // 18% GST
 
 const ViewPayments = () => {
     const { user } = useSelector((state) => state.auth);
@@ -19,11 +19,12 @@ const ViewPayments = () => {
     const [loading, setLoading] = useState(true);
     const [selectedMonth, setSelectedMonth] = useState("all");
 
-    /* 🔹 MODAL STATE */
+    /* 🔹 Modal state */
     const [showModal, setShowModal] = useState(false);
     const [selectedPaymentId, setSelectedPaymentId] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState("CASH");
 
+    /* 🔹 Fetch payments */
     useEffect(() => {
         if (role !== "owner") {
             toast.error("Unauthorized access");
@@ -44,18 +45,19 @@ const ViewPayments = () => {
         fetchPayments();
     }, [role]);
 
-    /* 🔹 MONTHS */
+    /* 🔹 Available months */
     const availableMonths = useMemo(
         () => [...new Set(payments.map((p) => p.month).filter(Boolean))],
         [payments]
     );
 
+    /* 🔹 Month filter */
     const filteredPayments = useMemo(() => {
         if (selectedMonth === "all") return payments;
         return payments.filter((p) => p.month === selectedMonth);
     }, [payments, selectedMonth]);
 
-    /* 🔹 TOTALS */
+    /* 🔹 Totals */
     const totalPaidAmount = useMemo(
         () =>
             filteredPayments
@@ -91,20 +93,70 @@ const ViewPayments = () => {
         [filteredPayments]
     );
 
-    /* 🔹 OPEN MODAL */
+    /* 🔹 CSV DOWNLOAD */
+    const downloadCSV = () => {
+        if (filteredPayments.length === 0) {
+            toast.warning("No data to export");
+            return;
+        }
+
+        const headers = [
+            "Date",
+            "Tenant",
+            "Property",
+            "Room",
+            "Type",
+            "Status",
+            "Method",
+            "Amount",
+            "GST",
+        ];
+
+        const rows = filteredPayments.map((p) => [
+            new Date(p.createdAt).toLocaleDateString(),
+            p.tenant?.fullName || "",
+            p.property?.name || "",
+            p.room?.roomNumber || "",
+            p.type,
+            p.status,
+            p.paymentMethod,
+            p.amount,
+            p.type === "RENT" ? Math.round(p.amount * GST_RATE) : 0,
+        ]);
+
+        rows.push([]);
+        rows.push(["TOTAL RENT PAID", "", "", "", "", "", "", totalPaidAmount, ""]);
+        rows.push(["TOTAL ADVANCE", "", "", "", "", "", "", totalAdvanceAmount, ""]);
+        rows.push(["TOTAL PENDING", "", "", "", "", "", "", totalPendingAmount, ""]);
+        rows.push(["TOTAL GST", "", "", "", "", "", "", "", totalGST]);
+
+        const csvContent =
+            "data:text/csv;charset=utf-8," +
+            [headers, ...rows].map((r) => r.join(",")).join("\n");
+
+        const link = document.createElement("a");
+        link.href = encodeURI(csvContent);
+        link.download = `payments_${selectedMonth}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    /* 🔹 Open modal */
     const openMarkPaidModal = (paymentId) => {
         setSelectedPaymentId(paymentId);
         setPaymentMethod("CASH");
         setShowModal(true);
     };
 
-    /* 🔹 CONFIRM PAID */
+    /* 🔹 Confirm mark as paid */
     const confirmMarkPaid = async () => {
         try {
-            // await markPaymentAsPaid({
-            //   paymentId: selectedPaymentId,
-            //   paymentMethod,
-            // });
+            const payload = {
+                paymentId: selectedPaymentId,
+                paymentMethod,
+            };
+            await markPaymentAsPaid(payload);
 
             toast.success("Payment marked as PAID");
 
@@ -130,23 +182,29 @@ const ViewPayments = () => {
             <div className={Styles.container}>
                 <h1>Received Payments</h1>
 
-                {/* 🔹 FILTER */}
+                {/* 🔹 Filter Bar */}
                 <div className={Styles.filterBar}>
-                    <label>Month:</label>
-                    <select
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                    >
-                        <option value="all">All</option>
-                        {availableMonths.map((m) => (
-                            <option key={m} value={m}>
-                                {m}
-                            </option>
-                        ))}
-                    </select>
+                    <div className={Styles.filterLeft}>
+                        <label>Month:</label>
+                        <select
+                            value={selectedMonth}
+                            onChange={(e) => setSelectedMonth(e.target.value)}
+                        >
+                            <option value="all">All</option>
+                            {availableMonths.map((m) => (
+                                <option key={m} value={m}>
+                                    {m}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <button className={Styles.csvButton} onClick={downloadCSV}>
+                        ⬇ Download CSV
+                    </button>
                 </div>
 
-                {/* 🔹 SUMMARY */}
+                {/* 🔹 Summary */}
                 {!loading && (
                     <div className={Styles.summaryGrid}>
                         <div className={Styles.summaryCard}>
@@ -168,7 +226,7 @@ const ViewPayments = () => {
                     </div>
                 )}
 
-                {/* 🔹 TABLE */}
+                {/* 🔹 Table */}
                 {loading ? (
                     <p>Loading payments...</p>
                 ) : filteredPayments.length === 0 ? (
@@ -232,7 +290,7 @@ const ViewPayments = () => {
                 )}
             </div>
 
-            {/* 🔹 MODAL */}
+            {/* 🔹 Modal */}
             {showModal && (
                 <div className={Styles.modalOverlay}>
                     <div className={Styles.modal}>

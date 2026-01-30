@@ -1,5 +1,6 @@
 const Payment = require("../models/Payment");
 const User = require("../models/User");
+const Notification = require("../models/Notification");
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
@@ -117,6 +118,84 @@ exports.getOwnerPayments = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch owner payments",
+    });
+  }
+};
+
+
+exports.markPaymentAsPaid = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const role = req.user.Role;
+    const { paymentId, paymentMethod } = req.body;
+
+    if (role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can mark payments as paid",
+      });
+    }
+
+    if (!paymentId) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment ID is required",
+      });
+    }
+
+    const payment = await Payment.findById(paymentId)
+      .populate("property", "name");
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment not found",
+      });
+    }
+
+    if (payment.owner.toString() !== ownerId) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized payment access",
+      });
+    }
+
+    if (payment.status === "PAID") {
+      return res.status(400).json({
+        success: false,
+        message: "Payment already marked as PAID",
+      });
+    }
+
+    // 🔥 UPDATE PAYMENT
+    payment.status = "PAID";
+    payment.paymentMethod = paymentMethod || "MANUAL";
+    payment.paidAt = new Date();
+
+    await payment.save();
+
+    // 🔔 NOTIFICATION TO TENANT
+    await Notification.create({
+      user: payment.tenant,
+      title: "Payment Received",
+      message: `Your payment for ${payment.property?.name || "property"} has been marked as PAID.`,
+      type: "PAYMENT",
+      data: {
+        paymentId: payment._id,
+        amount: payment.amount,
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment marked as PAID successfully",
+      data: payment,
+    });
+  } catch (error) {
+    console.error("markPaymentAsPaid error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to mark payment as paid",
     });
   }
 };

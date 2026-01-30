@@ -30,3 +30,17 @@ export const getOwnerPayments = async () => {
     };
   }
 };
+
+export const markPaymentAsPaid = async (payload) => {
+  try {
+    const res = await api.put("/payments/mark-as-paid", payload);
+    return res.data;
+  }
+  catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw error.response?.data || {
+      message: "Failed to mark payment as paid",
+    };
+  }
+};

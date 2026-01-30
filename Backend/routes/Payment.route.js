@@ -11,5 +11,11 @@ PaymentRouter.get(
 
 PaymentRouter.get("/owner", authMiddleware, PaymentController.getOwnerPayments);
 
+PaymentRouter.put(
+  "/mark-as-paid",
+  authMiddleware,
+  PaymentController.markPaymentAsPaid
+);
+
 
 module.exports = PaymentRouter;

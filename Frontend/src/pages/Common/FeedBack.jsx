@@ -1,5 +1,5 @@
 import Styles from "../../styles/FeedBack.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { submitReview } from "../../services/reviews.service.js";
 import { toast } from "react-toastify";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
@@ -11,13 +11,23 @@ const FeedBack = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // 🔹 Route based check
   const isRequestReview = Boolean(requestId);
 
-  // 🔹 Data passed from previous page (safe destructuring)
-  const { requestType, roomNo, propertyName, referenceId } = location.state || {};
+  const {
+    requestType,
+    roomNo,
+    propertyName,
+    referenceId,
+  } = location.state || {};
 
-  // 🔹 Decide correct review type
+  // 🔐 SAFETY GUARD (important)
+  useEffect(() => {
+    if (isRequestReview && (!requestType || !referenceId)) {
+      toast.error("Invalid review access");
+      navigate("/");
+    }
+  }, [isRequestReview, requestType, referenceId, navigate]);
+
   const reviewType = isRequestReview
     ? requestType === "room_visit"
       ? "ROOM"
@@ -32,20 +42,25 @@ const FeedBack = () => {
       return;
     }
 
-    const message = e.target.message.value;
+    const message = e.target.message.value.trim();
+
+    if (!message) {
+      toast.warning("Please write a message");
+      return;
+    }
 
     const reviewData = {
       rating,
       message,
       reviewType,
-      requestId: isRequestReview ? requestId : null,
-      referenceId,
+      requestId: isRequestReview ? requestId : undefined,
+      referenceId: isRequestReview ? referenceId : undefined,
       snapshot: isRequestReview
         ? {
           roomNo,
           propertyName,
         }
-        : null,
+        : undefined,
     };
 
     try {
@@ -55,10 +70,11 @@ const FeedBack = () => {
       e.target.reset();
       setRating(0);
 
-      // 🔹 Redirect after submit
       navigate("/");
     } catch (err) {
-      toast.error("Error submitting feedback. Please try again later.");
+      toast.error(
+        err?.message || "Error submitting feedback. Please try again."
+      );
     }
   };
 

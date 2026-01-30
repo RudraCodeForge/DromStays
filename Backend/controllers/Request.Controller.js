@@ -95,7 +95,7 @@ exports.makeRequest = async (req, res) => {
       message: `You have a new room visit request from ${name} for property "${property.name}".`,
       type: "REQUEST",
       data: { requestId: newRequest._id },
-      redirectUrl: `/owner/requests`,
+      redirectUrl: `/Owner/ManageRequests`,
     });
     await ownerNotification.save();
     await newRequest.save();
@@ -232,8 +232,7 @@ exports.Respond_To_Request = async (req, res) => {
 exports.Mark_Completed = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId);
-    const role = user.Role;
+    const role = req.user.Role;
     const { requestId } = req.body;
 
     if (!requestId) {
@@ -241,71 +240,59 @@ exports.Mark_Completed = async (req, res) => {
     }
 
     const request = await Request.findById(requestId);
-
     if (!request) {
       return res.status(404).json({ error: "Request not found" });
     }
 
-    // 🔹 OWNER FLOW
-    if (role === "owner") {
-      if (request.ownerId.toString() !== userId) {
-        return res.status(403).json({ error: "Unauthorized action" });
-      }
-
-      if (request.status !== "approved") {
-        return res
-          .status(400)
-          .json({ error: "Only approved requests can be completed" });
-      }
-
-      if (request.isCompleted) {
-        return res
-          .status(400)
-          .json({ error: "Request already marked as completed" });
-      }
-
-      request.isCompleted = true;
-      await request.save();
-
-      return res.status(200).json({
-        message: "Request marked as completed by owner",
-        request,
+    // 🔹 ONLY OWNER CAN MARK COMPLETED
+    if (role !== "owner") {
+      return res.status(403).json({
+        error: "Only owner can mark request as completed",
       });
     }
 
-    // 🔹 TENANT FLOW
-    if (role === "tenant") {
-      if (request.userId.toString() !== userId) {
-        return res.status(403).json({ error: "Unauthorized action" });
-      }
+    if (request.ownerId.toString() !== userId) {
+      return res.status(403).json({ error: "Unauthorized action" });
+    }
 
-      if (!request.isCompleted) {
-        return res.status(400).json({
-          error: "Request is not yet completed by owner",
-        });
-      }
-
-      if (request.reviewEligible) {
-        return res.status(400).json({
-          error: "Review already enabled for this request",
-        });
-      }
-
-      request.reviewEligible = true;
-      await request.save();
-
-      return res.status(200).json({
-        message: "Request marked as review eligible",
-        request,
+    if (request.status !== "approved") {
+      return res.status(400).json({
+        error: "Only approved requests can be completed",
       });
     }
 
-    return res.status(403).json({ error: "Unauthorized role" });
+    if (request.isCompleted) {
+      return res.status(409).json({
+        error: "Request already marked as completed",
+      });
+    }
+
+    // 🔥 MAIN FIX
+    request.isCompleted = true;
+    request.reviewEligible = true;
+    request.completedAt = new Date();
+
+    await new Notification({
+      user: request.userId,
+      title: "Request Completed",
+      message: `Your request for property "${request.propertyName}" has been completed. You can now leave a review.`,
+      type: "REQUEST",
+      data: { requestId: request._id },
+      redirectUrl: "/my-requests",
+    }).save();
+
+    await request.save();
+
+    return res.status(200).json({
+      message: "Request marked as completed and review enabled",
+      request,
+    });
   } catch (error) {
     console.error("Error marking request as completed:", error);
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 
 exports.Get_Pending_Requests_Count = async (req, res) => {

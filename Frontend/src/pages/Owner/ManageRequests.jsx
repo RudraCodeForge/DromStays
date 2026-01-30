@@ -1,33 +1,24 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Styles from "../../styles/ManageRequests.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
-import { useSearchParams } from "react-router-dom";
-
 import {
   getRequestsbyId,
   respondToRequest,
   markCompleted,
 } from "../../services/Request.service";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 
 const ManageRequests = () => {
   const { user } = useSelector((state) => state.auth);
   const role = user?.Role;
   const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
-  const statusFromUrl = searchParams.get("status"); // pending
-
-
   const [requests, setRequests] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  // 🔹 Status Filter
-  const [statusFilter, setStatusFilter] = useState("all"); // all | pending | approved | rejected
-
-  // 🔹 Owner response states
   const [activeRequestId, setActiveRequestId] = useState(null);
   const [actionType, setActionType] = useState("");
   const [ownerResponse, setOwnerResponse] = useState("");
@@ -37,49 +28,36 @@ const ManageRequests = () => {
       try {
         const response = await getRequestsbyId();
         setRequests(response.data || response);
-      } catch (error) {
+      } catch {
         toast.error("Failed to fetch requests");
       }
     };
-
     fetchRequests();
   }, []);
 
-  // ✅ Derived filtered requests
   const filteredRequests =
     statusFilter === "all"
       ? requests
       : requests.filter((req) => req.status === statusFilter);
 
-  // 🔹 Open response box
   const openResponseBox = (id, type) => {
     setActiveRequestId(id);
     setActionType(type);
     setOwnerResponse("");
   };
 
-  useEffect(() => {
-    if (statusFromUrl) {
-      setStatusFilter(statusFromUrl);
-    }
-  }, [statusFromUrl]);
-
-
-  // 🔹 Submit owner response
   const submitOwnerResponse = async () => {
     if (!ownerResponse.trim()) {
       toast.warning("Owner response is required");
       return;
     }
 
-    const payload = {
-      requestId: activeRequestId,
-      status: actionType,
-      ownerResponse,
-    };
-
     try {
-      await respondToRequest(payload);
+      await respondToRequest({
+        requestId: activeRequestId,
+        status: actionType,
+        ownerResponse,
+      });
 
       setRequests((prev) =>
         prev.map((req) =>
@@ -91,14 +69,36 @@ const ManageRequests = () => {
 
       toast.success(
         actionType === "approved"
-          ? "Request approved successfully"
+          ? "Request approved"
           : "Request rejected"
       );
 
       setActiveRequestId(null);
       setOwnerResponse("");
-    } catch (error) {
+    } catch {
       toast.error("Failed to submit response");
+    }
+  };
+
+  const markAsCompletedByOwner = async (requestId) => {
+    try {
+      await markCompleted(requestId);
+
+      setRequests((prev) =>
+        prev.map((req) =>
+          req._id === requestId
+            ? {
+              ...req,
+              isCompleted: true,
+              reviewEligible: true,
+            }
+            : req
+        )
+      );
+
+      toast.success("Request marked as completed");
+    } catch {
+      toast.error("Failed to mark request as completed");
     }
   };
 
@@ -110,28 +110,8 @@ const ManageRequests = () => {
         return "Maintenance Request";
       case "complaint":
         return "Complaint";
-      case "special":
-        return "Special Request";
       default:
         return "Request";
-    }
-  };
-
-  const MarkDone = async (requestId) => {
-    try {
-      await markCompleted(requestId);
-
-      setRequests((prev) =>
-        prev.map((req) =>
-          req._id === requestId
-            ? { ...req, isCompleted: true, status: "completed" }
-            : req
-        )
-      );
-
-      toast.success("Request marked as completed");
-    } catch (error) {
-      toast.error("Failed to mark as completed");
     }
   };
 
@@ -142,7 +122,6 @@ const ManageRequests = () => {
       <div className={Styles.container}>
         <h1>{role === "owner" ? "Incoming Requests" : "My Requests"}</h1>
 
-        {/* 🔍 STATUS FILTER */}
         <div className={Styles.filterBar}>
           <label>Status:</label>
           <select
@@ -160,12 +139,8 @@ const ManageRequests = () => {
           <p>No requests found.</p>
         ) : (
           <div className={Styles.list}>
-            {filteredRequests.map((req, index) => (
-              <div
-                key={req._id}
-                className={Styles.card}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
+            {filteredRequests.map((req) => (
+              <div key={req._id} className={Styles.card}>
                 <h3>{getRequestLabel(req.requestType)}</h3>
 
                 {role === "owner" && (
@@ -182,38 +157,18 @@ const ManageRequests = () => {
                   <strong>Room:</strong> {req.roomNo}
                 </p>
 
-                {req.requestType === "room_visit" && (
-                  <>
-                    <p>
-                      <strong>Date:</strong>{" "}
-                      {req.visitDate
-                        ? new Date(req.visitDate).toLocaleDateString()
-                        : "N/A"}
-                    </p>
-                    <p>
-                      <strong>Time Slot:</strong> {req.visitTimeSlot}
-                    </p>
-                  </>
-                )}
-
-                {req.message && (
-                  <div className={Styles.messageBox}>
-                    <strong>Message:</strong>
-                    <p>{req.message}</p>
-                  </div>
-                )}
-
                 <span className={`${Styles.status} ${Styles[req.status]}`}>
                   {req.status}
                 </span>
 
-                {/* Tenant View */}
+                {/* Tenant: Owner response */}
                 {req.ownerResponse && role !== "owner" && (
                   <p className={Styles.ownerResponse}>
                     <strong>Owner Response:</strong> {req.ownerResponse}
                   </p>
                 )}
 
+                {/* OWNER ACTIONS */}
                 {role === "owner" && req.status === "pending" && (
                   <div className={Styles.actions}>
                     <button
@@ -236,9 +191,30 @@ const ManageRequests = () => {
                   !req.isCompleted && (
                     <button
                       className={Styles.Markcompleted}
-                      onClick={() => MarkDone(req._id)}
+                      onClick={() => markAsCompletedByOwner(req._id)}
                     >
                       Mark as Completed
+                    </button>
+                  )}
+
+                {/* TENANT REVIEW */}
+                {role !== "owner" &&
+                  req.isCompleted &&
+                  req.reviewEligible && (
+                    <button
+                      className={Styles.reviewButton}
+                      onClick={() =>
+                        navigate(`/review/${req._id}`, {
+                          state: {
+                            requestType: req.requestType,
+                            roomNo: req.roomNo,
+                            propertyName: req.propertyName,
+                            referenceId: req.roomId,
+                          },
+                        })
+                      }
+                    >
+                      Leave Review
                     </button>
                   )}
               </div>
@@ -246,7 +222,6 @@ const ManageRequests = () => {
           </div>
         )}
 
-        {/* 🔹 Owner Response Modal */}
         {activeRequestId && (
           <div className={Styles.responseBox}>
             <div className={Styles.modalContent}>
@@ -257,9 +232,9 @@ const ManageRequests = () => {
               </h3>
 
               <textarea
-                placeholder="Write owner response..."
                 value={ownerResponse}
                 onChange={(e) => setOwnerResponse(e.target.value)}
+                placeholder="Write owner response..."
               />
 
               <div className={Styles.actions}>

@@ -10,8 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import StatCard from "../../components/StatCard";
 
-const DashboardStats = ({ rooms, newRooms, advance, expected, overdue, pendingRequests, activeBookings }) => {
-  const navigate = useNavigate(); // ✅ FIX
+const DashboardStats = ({ rooms, newRooms, advance, expected, overdue, pendingRequests, activeBookings, month }) => {
+  const navigate = useNavigate();
 
   return (
     <div className={Styles.cardsContainer}>
@@ -49,7 +49,7 @@ const DashboardStats = ({ rooms, newRooms, advance, expected, overdue, pendingRe
         icon={faMoneyBills}
         title="Expected Collection"
         value={`₹${expected}`}
-        badge="This month"
+        badge={month}
         badgeType="success"
       />
     </div>

@@ -6,6 +6,7 @@ export const useDashboardPayments = (ownerId) => {
     advanceBalance: 0,
     expectedCollection: 0,
     overdueAmount: 0,
+    month: '',
   });
 
   useEffect(() => {
@@ -14,7 +15,7 @@ export const useDashboardPayments = (ownerId) => {
     DashboardPayments(ownerId)
       .then((res) => setData(res.data))
       .catch(console.error);
-  }, [ownerId]);
 
+  }, [ownerId]);
   return data;
 };

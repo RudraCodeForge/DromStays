@@ -17,7 +17,9 @@ exports.getOwnerDashboardPayments = async (req, res) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    /* 🔹 ADVANCE BALANCE (Active tenants only) */
+    const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    /* 🔹 ADVANCE BALANCE (same as before) */
     const advancePayments = await Payment.find({
       owner: ownerId,
       type: "ADVANCE",
@@ -32,11 +34,11 @@ exports.getOwnerDashboardPayments = async (req, res) => {
       .filter((p) => p.tenant)
       .reduce((sum, p) => sum + (p.amount || 0), 0);
 
-    /* 🔹 PENDING + PARTIAL RENT */
-    const pendingRents = await Payment.find({
+    /* 🔹 CURRENT MONTH RENT PAYMENTS (ALL STATUSES EXCEPT ADVANCE) */
+    const rentPayments = await Payment.find({
       owner: ownerId,
       type: "RENT",
-      status: { $in: ["PENDING", "PARTIAL"] },
+      month: currentMonth,
     }).populate({
       path: "tenant",
       select: "isActive",
@@ -46,17 +48,20 @@ exports.getOwnerDashboardPayments = async (req, res) => {
     let expectedCollection = 0;
     let overdueAmount = 0;
 
-    pendingRents.forEach((p) => {
+    rentPayments.forEach((p) => {
       if (!p.tenant) return;
 
       const amount = p.amount || 0;
+
+      // 🔥 Expected collection = ALL rent of current month
       expectedCollection += amount;
 
+      // 🔥 Overdue logic
       if (p.dueDate) {
         const due = new Date(p.dueDate);
         due.setHours(0, 0, 0, 0);
 
-        if (due < today) {
+        if (due < today && p.status !== "PAID") {
           overdueAmount += amount;
         }
       }
@@ -68,15 +73,18 @@ exports.getOwnerDashboardPayments = async (req, res) => {
         advanceBalance,
         expectedCollection,
         overdueAmount,
+        month: currentMonth,
       },
     });
   } catch (error) {
+    console.error("getOwnerDashboardPayments error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",
     });
   }
 };
+
 
 
 exports.getOwnerPayments = async (req, res) => {

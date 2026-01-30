@@ -18,7 +18,7 @@ const OwnerDashboard = () => {
 
   const { rooms, newRooms } = useOwnerRooms();
   const { activities, loading } = useRecentActivities();
-  const { advanceBalance, expectedCollection, overdueAmount } =
+  const { advanceBalance, expectedCollection, overdueAmount, month } =
     useDashboardPayments(user.id);
 
   const { pendingRequestsCount } = useRequests();
@@ -39,6 +39,7 @@ const OwnerDashboard = () => {
           overdue={overdueAmount}
           pendingRequests={pendingRequestsCount}
           activeBookings={activeBookings}
+          month={month}
         />
 
         <div className={Styles.placeholderSection}>

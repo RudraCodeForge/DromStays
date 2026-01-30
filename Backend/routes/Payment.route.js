@@ -9,4 +9,7 @@ PaymentRouter.get(
   PaymentController.getOwnerDashboardPayments
 );
 
+PaymentRouter.get("/owner", authMiddleware, PaymentController.getOwnerPayments);
+
+
 module.exports = PaymentRouter;

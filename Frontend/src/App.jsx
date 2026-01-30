@@ -54,6 +54,7 @@ import Invoices from "./pages/Owner/Invoices.jsx";
 import BankDetails from "./pages/Common/BankDetails.jsx";
 import PayoutPreference from "./pages/Common/PayoutPreference.jsx";
 import Notifications from "./pages/Common/Notifications.jsx";
+import ViewPayments from "./pages/Owner/ViewPayments.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -365,6 +366,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Notifications />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Owner/ViewPayments"
+          element={
+            <ProtectedRoute>
+              <ViewPayments />
             </ProtectedRoute>
           }
         />

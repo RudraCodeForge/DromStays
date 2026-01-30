@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
-    const { ownerId } = req.params;
+    const ownerId = req.user.id;
 
     const owner = await User.findById(ownerId);
     if (!owner || owner.Role !== "owner") {
@@ -73,6 +73,50 @@ exports.getOwnerDashboardPayments = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Server error",
+    });
+  }
+};
+
+
+exports.getOwnerPayments = async (req, res) => {
+  try {
+    const ownerId = req.user.id;
+    const role = req.user.Role;
+
+    if (role !== "owner") {
+      return res.status(403).json({
+        success: false,
+        message: "Only owners can view received payments",
+      });
+    }
+
+    const payments = await Payment.find({ owner: ownerId })
+      .populate({
+        path: "tenant",
+        select: "fullName",
+      })
+      .populate({
+        path: "property",
+        select: "name",
+      })
+      .populate({
+        path: "room",
+        select: "roomNumber",
+        options: { virtuals: false }, // ✅ extra safety
+      })
+      .sort({ createdAt: -1 })
+      .lean(); // 🔥 MAIN FIX
+
+    res.status(200).json({
+      success: true,
+      count: payments.length,
+      data: payments,
+    });
+  } catch (error) {
+    console.error("getOwnerPayments error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch owner payments",
     });
   }
 };

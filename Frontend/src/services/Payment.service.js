@@ -16,3 +16,17 @@ export const DashboardPayments = async (ownerId) => {
     };
   }
 };
+
+export const getOwnerPayments = async () => {
+  try {
+    const res = await api.get("/payments/owner");
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw error.response?.data || {
+      message: "Failed to fetch owner payments",
+    };
+  }
+};

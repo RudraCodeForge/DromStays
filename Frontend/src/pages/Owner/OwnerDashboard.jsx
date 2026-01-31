@@ -11,9 +11,10 @@ import { useDashboardPayments } from "../../Custom/useDashboardPayments";
 import { useRecentActivities } from "../../Custom/useRecentActivities";
 import { useRequests } from "../../Custom/useRequests";
 import { useActiveBookings } from "../../Custom/useActiveBookings";
+import { useEffect } from "react"
 
 const OwnerDashboard = () => {
-  const { isAuthenticated, role, } = useSelector((state) => state.auth);
+  const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {

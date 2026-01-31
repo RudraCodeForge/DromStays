@@ -1,6 +1,7 @@
 const Payment = require("../models/Payment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
+const Invoice = require("../models/Invoice");
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
@@ -137,6 +138,7 @@ exports.markPaymentAsPaid = async (req, res) => {
     const role = req.user.Role;
     const { paymentId, paymentMethod } = req.body;
 
+    /* 🔒 ROLE CHECK */
     if (role !== "owner") {
       return res.status(403).json({
         success: false,
@@ -151,8 +153,11 @@ exports.markPaymentAsPaid = async (req, res) => {
       });
     }
 
-    const payment = await Payment.findById(paymentId)
-      .populate("property", "name");
+    /* 🔍 FETCH PAYMENT */
+    const payment = await Payment.findById(paymentId).populate(
+      "property",
+      "name"
+    );
 
     if (!payment) {
       return res.status(404).json({
@@ -161,6 +166,7 @@ exports.markPaymentAsPaid = async (req, res) => {
       });
     }
 
+    /* 🔒 OWNER SECURITY */
     if (payment.owner.toString() !== ownerId) {
       return res.status(403).json({
         success: false,
@@ -175,25 +181,63 @@ exports.markPaymentAsPaid = async (req, res) => {
       });
     }
 
-    // 🔥 UPDATE PAYMENT
+    /* 🔥 UPDATE PAYMENT */
     payment.status = "PAID";
     payment.paymentMethod = paymentMethod || "MANUAL";
     payment.paidAt = new Date();
-
     await payment.save();
 
-    // 🔔 NOTIFICATION TO TENANT
+    /* 🔄 UPDATE INVOICE (IF LINKED) */
+    if (payment.invoice) {
+      const invoice = await Invoice.findById(payment.invoice);
+
+      if (invoice) {
+        /* 🔗 ENSURE PAYMENT IS LINKED IN INVOICE */
+        const alreadyLinked = invoice.payments?.some(
+          (pId) => pId.toString() === payment._id.toString()
+        );
+
+        if (!alreadyLinked) {
+          invoice.payments.push(payment._id);
+        }
+
+        /* 🔢 CALCULATE TOTAL PAID FOR THIS INVOICE */
+        const paidPayments = await Payment.find({
+          invoice: invoice._id,
+          status: "PAID",
+        });
+
+        const totalPaid = paidPayments.reduce(
+          (sum, p) => sum + (p.amount || 0),
+          0
+        );
+
+        /* 🧾 UPDATE INVOICE STATUS */
+        if (totalPaid >= invoice.totalAmount) {
+          invoice.paymentStatus = "Paid";
+        } else {
+          invoice.paymentStatus = "Partial";
+        }
+
+        await invoice.save();
+      }
+    }
+
+    /* 🔔 NOTIFICATION TO TENANT */
     await Notification.create({
-      user: payment.tenant,
+      user: payment.tenant, // ensure tenant → User mapping is correct
       title: "Payment Received",
-      message: `Your payment for ${payment.property?.name || "property"} has been marked as PAID.`,
+      message: `Your payment for ${payment.property?.name || "property"
+        } has been marked as PAID.`,
       type: "PAYMENT",
       data: {
         paymentId: payment._id,
         amount: payment.amount,
       },
+      redirectUrl: "/my-payments",
     });
 
+    /* ✅ RESPONSE */
     return res.status(200).json({
       success: true,
       message: "Payment marked as PAID successfully",

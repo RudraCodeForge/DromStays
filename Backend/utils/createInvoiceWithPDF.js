@@ -1,21 +1,6 @@
 const Invoice = require("../models/Invoice");
 const generateInvoicePDF = require("./generateInvoicePDF");
 
-const mapPaymentMethod = (method) => {
-    if (!method) return "Manual";
-
-    switch (method) {
-        case "MANUAL":
-            return "Manual";
-        case "CASH":
-            return "Cash";
-        case "UPI":
-            return "UPI";
-        default:
-            return "Manual";
-    }
-};
-
 const createInvoiceWithPDF = async ({
     tenant,
     owner,
@@ -26,15 +11,15 @@ const createInvoiceWithPDF = async ({
     amount,
     status,
 }) => {
-    // 🧾 Create Invoice
+    /* 🧾 CREATE INVOICE (PAYMENT ID INCLUDED) */
     const invoice = await Invoice.create({
         invoiceNumber: `INV-${Date.now()}`,
 
-        // 👤 Tenant
         user: tenant,
-
-        // 👑 Owner (IMPORTANT)
         owner: owner,
+
+        // 🔥 FIX: PAYMENT ID STORED IN INVOICE
+        payments: [payment._id],
 
         items: [
             {
@@ -50,17 +35,15 @@ const createInvoiceWithPDF = async ({
 
         paymentStatus: status === "PAID" ? "Paid" : "Pending",
 
-        paymentMethod: mapPaymentMethod(payment.paymentMethod),
-
         notes: `${type} invoice for ${property.name}`,
     });
 
-    // 📄 Generate PDF
+    /* 📄 GENERATE PDF */
     const pdfUrl = await generateInvoicePDF(invoice);
     invoice.pdfUrl = pdfUrl;
     await invoice.save();
 
-    // 🔗 Link Payment → Invoice
+    /* 🔗 LINK PAYMENT → INVOICE */
     payment.invoice = invoice._id;
     await payment.save();
 

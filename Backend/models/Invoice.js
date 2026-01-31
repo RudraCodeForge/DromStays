@@ -11,16 +11,24 @@ const invoiceSchema = new mongoose.Schema(
         // 👤 Tenant / Customer
         user: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "Tenant",
             required: true,
         },
 
-        // 👑 Owner (VERY IMPORTANT)
+        // 👑 Owner
         owner: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
+
+        // 🔗 RELATED PAYMENTS (VERY IMPORTANT)
+        payments: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Payment",
+            },
+        ],
 
         items: [
             {
@@ -30,24 +38,35 @@ const invoiceSchema = new mongoose.Schema(
             },
         ],
 
-        subtotal: { type: Number, required: true },
-        tax: { type: Number, default: 0 },
-        totalAmount: { type: Number, required: true },
+        subtotal: {
+            type: Number,
+            required: true,
+        },
 
+        tax: {
+            type: Number,
+            default: 0,
+        },
+
+        totalAmount: {
+            type: Number,
+            required: true,
+        },
+
+        // 🔥 BETTER STATUS
         paymentStatus: {
             type: String,
-            enum: ["Pending", "Paid"],
+            enum: ["Pending", "Partial", "Paid"],
             default: "Pending",
         },
 
-        paymentMethod: {
-            type: String,
-            enum: ["Manual", "Cash", "UPI"],
-            default: "Manual",
+        invoiceDate: {
+            type: Date,
+            default: Date.now,
         },
 
-        invoiceDate: { type: Date, default: Date.now },
         dueDate: Date,
+
         pdfUrl: String,
         notes: String,
     },

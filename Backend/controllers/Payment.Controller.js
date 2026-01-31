@@ -136,7 +136,13 @@ exports.markPaymentAsPaid = async (req, res) => {
   try {
     const ownerId = req.user.id;
     const role = req.user.Role;
-    const { paymentId, paymentMethod } = req.body;
+
+    const {
+      paymentId,
+      paymentMethod = "MANUAL",
+      paymentMode = "FULL", // FULL | PARTIAL
+      amount, // PARTIAL case me required
+    } = req.body;
 
     /* 🔒 ROLE CHECK */
     if (role !== "owner") {
@@ -181,27 +187,57 @@ exports.markPaymentAsPaid = async (req, res) => {
       });
     }
 
-    /* 🔥 UPDATE PAYMENT */
-    payment.status = "PAID";
-    payment.paymentMethod = paymentMethod || "MANUAL";
-    payment.paidAt = new Date();
-    await payment.save();
+    /* =========================
+       🔥 FULL PAYMENT
+    ========================== */
+    if (paymentMode === "FULL") {
+      payment.status = "PAID";
+      payment.paymentMethod = paymentMethod;
+      payment.paidAt = new Date();
+      await payment.save();
+    }
 
-    /* 🔄 UPDATE INVOICE (IF LINKED) */
+    /* =========================
+       🔥 PARTIAL PAYMENT (FIXED)
+    ========================== */
+    if (paymentMode === "PARTIAL") {
+      if (!amount || amount <= 0 || amount >= payment.amount) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid partial payment amount",
+        });
+      }
+
+      const remainingAmount = payment.amount - Number(amount);
+
+      /* 🔥 UPDATE OLD PAYMENT → REMAINING */
+      payment.amount = remainingAmount;
+      payment.status = remainingAmount === 0 ? "PAID" : "PARTIAL";
+      await payment.save();
+
+      /* 🔥 CREATE NEW PAID PAYMENT */
+      await Payment.create({
+        tenant: payment.tenant,
+        room: payment.room,
+        property: payment.property,
+        owner: ownerId,
+        invoice: payment.invoice,
+        type: payment.type,
+        month: payment.month,
+        amount: Number(amount),
+        status: "PAID",
+        paymentMethod,
+        paidAt: new Date(),
+      });
+    }
+
+    /* =========================
+       🔄 UPDATE INVOICE
+    ========================== */
     if (payment.invoice) {
       const invoice = await Invoice.findById(payment.invoice);
 
       if (invoice) {
-        /* 🔗 ENSURE PAYMENT IS LINKED IN INVOICE */
-        const alreadyLinked = invoice.payments?.some(
-          (pId) => pId.toString() === payment._id.toString()
-        );
-
-        if (!alreadyLinked) {
-          invoice.payments.push(payment._id);
-        }
-
-        /* 🔢 CALCULATE TOTAL PAID FOR THIS INVOICE */
         const paidPayments = await Payment.find({
           invoice: invoice._id,
           status: "PAID",
@@ -212,42 +248,50 @@ exports.markPaymentAsPaid = async (req, res) => {
           0
         );
 
-        /* 🧾 UPDATE INVOICE STATUS */
         if (totalPaid >= invoice.totalAmount) {
           invoice.paymentStatus = "Paid";
         } else {
           invoice.paymentStatus = "Partial";
         }
 
+        invoice.paymentMethod = paymentMethod;
         await invoice.save();
       }
     }
 
-    /* 🔔 NOTIFICATION TO TENANT */
+    /* =========================
+       🔔 NOTIFICATION
+    ========================== */
     await Notification.create({
-      user: payment.tenant, // ensure tenant → User mapping is correct
-      title: "Payment Received",
-      message: `Your payment for ${payment.property?.name || "property"
-        } has been marked as PAID.`,
+      user: payment.tenant,
+      title: "Payment Update",
+      message:
+        paymentMode === "FULL"
+          ? `Your payment for ${payment.property?.name || "property"
+          } has been marked as PAID.`
+          : `A partial payment has been received for ${payment.property?.name || "property"
+          }.`,
       type: "PAYMENT",
       data: {
         paymentId: payment._id,
-        amount: payment.amount,
+        mode: paymentMode,
+        amount: paymentMode === "PARTIAL" ? amount : payment.amount,
       },
       redirectUrl: "/my-payments",
     });
 
-    /* ✅ RESPONSE */
     return res.status(200).json({
       success: true,
-      message: "Payment marked as PAID successfully",
-      data: payment,
+      message:
+        paymentMode === "FULL"
+          ? "Payment marked as PAID successfully"
+          : "Partial payment recorded successfully",
     });
   } catch (error) {
     console.error("markPaymentAsPaid error:", error);
     return res.status(500).json({
       success: false,
-      message: "Failed to mark payment as paid",
+      message: "Failed to update payment",
     });
   }
 };

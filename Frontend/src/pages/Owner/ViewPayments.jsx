@@ -10,33 +10,36 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const GST_RATE = 0.18; // 18% GST
+const GST_RATE = 0.18;
 
 const ViewPayments = () => {
     const { user } = useSelector((state) => state.auth);
     const role = user?.Role;
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
+
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMonth, setSelectedMonth] = useState("all");
 
-    /* 🔹 Modal state */
+    /* 🔹 Modal */
     const [showModal, setShowModal] = useState(false);
     const [selectedPaymentId, setSelectedPaymentId] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState("CASH");
+    const [paymentMode, setPaymentMode] = useState("FULL");
+    const [partialAmount, setPartialAmount] = useState("");
 
     /* 🔹 Fetch payments */
     useEffect(() => {
         if (role !== "owner") {
             toast.error("Unauthorized access");
-            Navigate('/unauthorized')
+            navigate("/unauthorized");
             return;
         }
 
         const fetchPayments = async () => {
             try {
                 const res = await getOwnerPayments();
-                setPayments(res.data || res || []);
+                setPayments(res.data || []);
             } catch {
                 toast.error("Failed to load payments");
             } finally {
@@ -45,7 +48,7 @@ const ViewPayments = () => {
         };
 
         fetchPayments();
-    }, [role]);
+    }, [role, navigate]);
 
     /* 🔹 Available months */
     const availableMonths = useMemo(
@@ -59,7 +62,7 @@ const ViewPayments = () => {
         return payments.filter((p) => p.month === selectedMonth);
     }, [payments, selectedMonth]);
 
-    /* 🔹 Totals */
+    /* 🔹 TOTAL RENT PAID */
     const totalPaidAmount = useMemo(
         () =>
             filteredPayments
@@ -68,6 +71,7 @@ const ViewPayments = () => {
         [filteredPayments]
     );
 
+    /* 🔹 TOTAL ADVANCE */
     const totalAdvanceAmount = useMemo(
         () =>
             filteredPayments
@@ -76,14 +80,18 @@ const ViewPayments = () => {
         [filteredPayments]
     );
 
-    const totalPendingAmount = useMemo(
-        () =>
-            filteredPayments
-                .filter((p) => p.status === "PENDING")
-                .reduce((sum, p) => sum + (p.amount || 0), 0),
-        [filteredPayments]
-    );
+    /* 🔥 TOTAL PENDING (CORRECT LOGIC) */
+    const totalPendingAmount = useMemo(() => {
+        return filteredPayments.reduce((sum, p) => {
+            if (p.status === "PENDING" || p.status === "PARTIAL") {
+                return sum + (p.amount || 0);
+            }
+            return sum;
+        }, 0);
+    }, [filteredPayments]);
 
+
+    /* 🔹 TOTAL GST */
     const totalGST = useMemo(
         () =>
             filteredPayments
@@ -97,7 +105,7 @@ const ViewPayments = () => {
 
     /* 🔹 CSV DOWNLOAD */
     const downloadCSV = () => {
-        if (filteredPayments.length === 0) {
+        if (!filteredPayments.length) {
             toast.warning("No data to export");
             return;
         }
@@ -132,12 +140,12 @@ const ViewPayments = () => {
         rows.push(["TOTAL PENDING", "", "", "", "", "", "", totalPendingAmount, ""]);
         rows.push(["TOTAL GST", "", "", "", "", "", "", "", totalGST]);
 
-        const csvContent =
+        const csv =
             "data:text/csv;charset=utf-8," +
             [headers, ...rows].map((r) => r.join(",")).join("\n");
 
         const link = document.createElement("a");
-        link.href = encodeURI(csvContent);
+        link.href = encodeURI(csv);
         link.download = `payments_${selectedMonth}.csv`;
         document.body.appendChild(link);
         link.click();
@@ -148,30 +156,32 @@ const ViewPayments = () => {
     const openMarkPaidModal = (paymentId) => {
         setSelectedPaymentId(paymentId);
         setPaymentMethod("CASH");
+        setPaymentMode("FULL");
+        setPartialAmount("");
         setShowModal(true);
     };
 
-    /* 🔹 Confirm mark as paid */
+    /* 🔹 Confirm payment */
     const confirmMarkPaid = async () => {
+        if (paymentMode === "PARTIAL" && (!partialAmount || partialAmount <= 0)) {
+            toast.warning("Enter valid partial amount");
+            return;
+        }
+
         try {
-            const payload = {
+            await markPaymentAsPaid({
                 paymentId: selectedPaymentId,
                 paymentMethod,
-            };
-            await markPaymentAsPaid(payload);
+                paymentMode,
+                amount: paymentMode === "PARTIAL" ? Number(partialAmount) : undefined,
+            });
 
-            toast.success("Payment marked as PAID");
-
-            setPayments((prev) =>
-                prev.map((p) =>
-                    p._id === selectedPaymentId
-                        ? { ...p, status: "PAID", paymentMethod }
-                        : p
-                )
-            );
-
+            toast.success("Payment updated successfully");
             setShowModal(false);
             setSelectedPaymentId(null);
+
+            const res = await getOwnerPayments();
+            setPayments(res.data || []);
         } catch {
             toast.error("Failed to update payment");
         }
@@ -184,7 +194,7 @@ const ViewPayments = () => {
             <div className={Styles.container}>
                 <h1>Received Payments</h1>
 
-                {/* 🔹 Filter Bar */}
+                {/* 🔹 FILTER BAR */}
                 <div className={Styles.filterBar}>
                     <div className={Styles.filterLeft}>
                         <label>Month:</label>
@@ -206,7 +216,7 @@ const ViewPayments = () => {
                     </button>
                 </div>
 
-                {/* 🔹 Summary */}
+                {/* 🔹 SUMMARY */}
                 {!loading && (
                     <div className={Styles.summaryGrid}>
                         <div className={Styles.summaryCard}>
@@ -228,7 +238,7 @@ const ViewPayments = () => {
                     </div>
                 )}
 
-                {/* 🔹 Table */}
+                {/* 🔹 TABLE */}
                 {loading ? (
                     <p>Loading payments...</p>
                 ) : filteredPayments.length === 0 ? (
@@ -266,7 +276,7 @@ const ViewPayments = () => {
                                         <td>{pay.type}</td>
                                         <td>{pay.paymentMethod}</td>
                                         <td>
-                                            {pay.status === "PENDING" ? (
+                                            {pay.status === "PENDING" || pay.status === "PARTIAL" ? (
                                                 <button
                                                     className={Styles.markPaidBtn}
                                                     onClick={() => openMarkPaidModal(pay._id)}
@@ -281,9 +291,7 @@ const ViewPayments = () => {
                                                 </span>
                                             )}
                                         </td>
-                                        <td>
-                                            {new Date(pay.createdAt).toLocaleDateString()}
-                                        </td>
+                                        <td>{new Date(pay.createdAt).toLocaleDateString()}</td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -292,13 +300,43 @@ const ViewPayments = () => {
                 )}
             </div>
 
-            {/* 🔹 Modal */}
+            {/* 🔹 MODAL */}
             {showModal && (
                 <div className={Styles.modalOverlay}>
                     <div className={Styles.modal}>
                         <h3>Confirm Payment</h3>
-                        <p>Select payment method</p>
 
+                        <div className={Styles.methodGroup}>
+                            <label>
+                                <input
+                                    type="radio"
+                                    checked={paymentMode === "FULL"}
+                                    onChange={() => setPaymentMode("FULL")}
+                                />
+                                Full Payment
+                            </label>
+
+                            <label>
+                                <input
+                                    type="radio"
+                                    checked={paymentMode === "PARTIAL"}
+                                    onChange={() => setPaymentMode("PARTIAL")}
+                                />
+                                Partial Payment
+                            </label>
+                        </div>
+
+                        {paymentMode === "PARTIAL" && (
+                            <input
+                                type="number"
+                                className={Styles.input}
+                                placeholder="Enter partial amount"
+                                value={partialAmount}
+                                onChange={(e) => setPartialAmount(e.target.value)}
+                            />
+                        )}
+
+                        <p>Select payment method</p>
                         <div className={Styles.methodGroup}>
                             {["CASH", "UPI", "MANUAL"].map((m) => (
                                 <label key={m}>

@@ -27,7 +27,7 @@ import EditProperty from "./pages/Owner/EditProperty.jsx";
 import Bookings from "./pages/Common/Bookings.jsx";
 import Settings from "./pages/Common/Settings.jsx";
 import ManageServices from "./pages/Common/ManageServices.jsx";
-import ManageRequests from "./pages/Owner/ManageRequests.jsx";
+import ManageRequests from "./pages/Common/ManageRequests.jsx";
 import EditRooms from "./pages/Owner/EditRooms.jsx";
 import AddTenant from "./pages/Owner/AddTanent.jsx";
 import RoomDetails from "./pages/Common/RoomDetails.jsx";

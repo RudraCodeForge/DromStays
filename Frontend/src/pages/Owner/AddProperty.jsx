@@ -8,7 +8,7 @@ import { Add_Property } from "../../services/Properties.service";
 import { useSelector } from "react-redux";
 
 const AddProperty = () => {
-  const { isAuthenticated, role, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, role, } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   /* 🏢 FLOOR CONFIG (NEW – ONLY ADD) */
@@ -22,7 +22,7 @@ const AddProperty = () => {
       return;
     }
     if (role !== "owner") {
-      navigate("/");
+      navigate("/unauthorized");
     }
   }, [isAuthenticated, role, navigate]);
 

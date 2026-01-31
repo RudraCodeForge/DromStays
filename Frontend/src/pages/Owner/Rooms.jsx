@@ -15,10 +15,15 @@ const Rooms = () => {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔐 Auth Guard
-  if (!isAuthenticated || role !== "owner") {
-    return <Navigate to="/pagenotfound" />;
-  }
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/unauthorized");
+    }
+  }, [isAuthenticated, role, navigate]);
 
   // 📦 Fetch Rooms
   useEffect(() => {

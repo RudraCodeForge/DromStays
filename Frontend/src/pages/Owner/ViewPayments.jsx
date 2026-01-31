@@ -8,13 +8,14 @@ import {
     markPaymentAsPaid,
 } from "../../services/payment.service";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const GST_RATE = 0.18; // 18% GST
 
 const ViewPayments = () => {
     const { user } = useSelector((state) => state.auth);
     const role = user?.Role;
-
+    const Navigate = useNavigate();
     const [payments, setPayments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedMonth, setSelectedMonth] = useState("all");
@@ -28,6 +29,7 @@ const ViewPayments = () => {
     useEffect(() => {
         if (role !== "owner") {
             toast.error("Unauthorized access");
+            Navigate('/unauthorized')
             return;
         }
 

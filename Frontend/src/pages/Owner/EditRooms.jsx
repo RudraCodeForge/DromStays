@@ -4,10 +4,22 @@ import Footer from "../../components/Footer";
 import { getRoomById, updateRoomById } from "../../services/Rooms.service";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const EditRooms = () => {
+  const { isAuthenticated, role, } = useSelector((state) => state.auth);
   const { roomId } = useParams();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/unauthorized");
+    }
+  }, [isAuthenticated, role, navigate]);
 
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);

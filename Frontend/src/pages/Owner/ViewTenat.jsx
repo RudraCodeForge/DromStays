@@ -7,10 +7,21 @@ import {
 } from "../../services/Tenant.service";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
-
+import { useSelector } from "react-redux";
 const ViewTenant = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated, role, } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/unauthorized");
+    }
+  }, [isAuthenticated, role, navigate]);
 
   const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);

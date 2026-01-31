@@ -13,8 +13,18 @@ import { useRequests } from "../../Custom/useRequests";
 import { useActiveBookings } from "../../Custom/useActiveBookings";
 
 const OwnerDashboard = () => {
-  const { user } = useSelector((s) => s.auth);
+  const { isAuthenticated, role, } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (role !== "owner") {
+      navigate("/unauthorized");
+    }
+  }, [isAuthenticated, role, navigate]);
 
   const { rooms, newRooms } = useOwnerRooms();
   const { activities, loading } = useRecentActivities();

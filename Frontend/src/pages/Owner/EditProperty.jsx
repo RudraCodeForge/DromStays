@@ -31,7 +31,7 @@ const EditProperty = () => {
     if (!isAuthenticated) {
       navigate("/login");
     } else if (user?.Role !== "owner") {
-      navigate("/");
+      navigate("/unauthorized");
     }
   }, [isAuthenticated, user, navigate]);
 

@@ -3,11 +3,25 @@ import Styles from "../../styles/Invoices.module.css";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { fetchInvoices } from "../../services/Invoices.service";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Invoices = () => {
+    const { isAuthenticated, role, } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
     const [invoices, setInvoices] = useState([]);
     const [statusFilter, setStatusFilter] = useState("All");
     const [monthFilter, setMonthFilter] = useState("");
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/login");
+            return;
+        }
+        if (role !== "owner") {
+            navigate("/unauthorized");
+        }
+    }, [isAuthenticated, role, navigate]);
 
     useEffect(() => {
         const getInvoices = async () => {

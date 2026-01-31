@@ -6,10 +6,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { addTenantToRoom } from "../../services/Tenant.service";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const AddTenant = () => {
+  const { isAuthenticated, role, } = useSelector((state) => state.auth);
   const { roomId } = useParams();
   const navigate = useNavigate();
+
+  if (!isAuthenticated) {
+    navigate('/login')
+  } else if (role !== "owner") {
+    navigate('/unauthorized')
+  }
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState([]); // array based

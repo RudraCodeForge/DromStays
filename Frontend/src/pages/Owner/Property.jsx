@@ -1,6 +1,6 @@
 import Styles from "../../styles/Property.module.css";
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
@@ -9,13 +9,17 @@ import {
   Delete_Property,
 } from "../../services/Properties.service";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const Property = () => {
   const navigate = useNavigate();
-  const { role, isAuthenticated, user } = useSelector((state) => state.auth);
+  const { role, isAuthenticated, user } = useSelector(
+    (state) => state.auth
+  );
 
-  const [Properties, setProperties] = useState([]); // ✅ FIX 1
+  const [properties, setProperties] = useState([]);
 
+  /* 🔐 AUTH + ROLE CHECK */
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -26,11 +30,12 @@ const Property = () => {
     }
   }, [isAuthenticated, role, navigate]);
 
+  /* 📦 FETCH PROPERTIES */
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const data = await Get_Owner_Properties();
-        setProperties(data.properties); // ✅ FIX 2
+        setProperties(data.properties || []);
       } catch (error) {
         toast.error("Failed to fetch properties");
       }
@@ -41,16 +46,23 @@ const Property = () => {
   const getPropertyImage = (property) =>
     property.images?.[0]?.url || "/placeholder.jpg";
 
+  /* 🗑 DELETE PROPERTY */
   const handleDeleteProperty = async (propertyId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this property?"
-    );
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This property will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "Cancel",
+    });
 
-    if (!confirmDelete) return;
+    if (!result.isConfirmed) return;
 
     try {
-      const res = await Delete_Property(propertyId);
-      // 🟢 UI se property remove (without reload)
+      await Delete_Property(propertyId);
+
+      // ✅ UPDATE UI
       setProperties((prev) =>
         prev.filter((property) => property._id !== propertyId)
       );
@@ -65,7 +77,7 @@ const Property = () => {
     <>
       <Navbar />
 
-      {Properties.length === 0 ? (
+      {properties.length === 0 ? (
         /* 🚫 NO PROPERTIES */
         <div className={Styles.noProperties}>
           <h2>No Properties Found</h2>
@@ -91,11 +103,14 @@ const Property = () => {
           </div>
 
           <div className={Styles.grid}>
-            {Properties.map((property) => (
+            {properties.map((property) => (
               <div key={property._id} className={Styles.propertyCard}>
                 {/* IMAGE */}
                 <div className={Styles.imageWrapper}>
-                  <img src={getPropertyImage(property)} alt={property.name} />
+                  <img
+                    src={getPropertyImage(property)}
+                    alt={property.name}
+                  />
                 </div>
 
                 {/* CONTENT */}
@@ -108,7 +123,6 @@ const Property = () => {
                         ({property.rating?.totalReviews ?? 0})
                       </span>
                     </div>
-
                   </div>
 
                   <div className={Styles.infoRow}>
@@ -119,13 +133,16 @@ const Property = () => {
                   <div className={Styles.infoRow}>
                     <span className={Styles.label}>Location</span>
                     <span className={Styles.value}>
-                      {property.location?.city}, {property.location?.area}
+                      {property.location?.city},{" "}
+                      {property.location?.area}
                     </span>
                   </div>
 
                   <div className={Styles.infoRow}>
                     <span className={Styles.label}>Rooms</span>
-                    <span className={Styles.value}>{property.totalRooms}</span>
+                    <span className={Styles.value}>
+                      {property.totalRooms}
+                    </span>
                   </div>
                 </div>
 
@@ -144,14 +161,18 @@ const Property = () => {
                     <button
                       className={Styles.editBtn}
                       onClick={() =>
-                        navigate(`/Owner/property/${property._id}/editproperty`)
+                        navigate(
+                          `/Owner/property/${property._id}/editproperty`
+                        )
                       }
                     >
                       ✏️ Edit
                     </button>
                     <button
                       className={Styles.deleteBtn}
-                      onClick={() => handleDeleteProperty(property._id)}
+                      onClick={() =>
+                        handleDeleteProperty(property._id)
+                      }
                     >
                       🗑 Delete
                     </button>

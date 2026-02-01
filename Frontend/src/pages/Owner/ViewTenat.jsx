@@ -8,11 +8,19 @@ import {
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+
 const ViewTenant = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, role, } = useSelector((state) => state.auth);
+  const { isAuthenticated, role } = useSelector((state) => state.auth);
 
+  const [tenants, setTenants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  /* 🔐 AUTH CHECK */
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -23,10 +31,7 @@ const ViewTenant = () => {
     }
   }, [isAuthenticated, role, navigate]);
 
-  const [tenants, setTenants] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
+  /* 📦 FETCH TENANTS */
   useEffect(() => {
     const fetchTenants = async () => {
       try {
@@ -42,23 +47,55 @@ const ViewTenant = () => {
     fetchTenants();
   }, [roomId]);
 
+  /* 🗑 DELETE TENANT */
+  const handleDelete = async (tenantId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This tenant will be permanently removed from the room.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await deleteTenantById(tenantId);
+
+      // ✅ UPDATE UI
+      setTenants((prev) =>
+        prev.filter((tenant) => tenant._id !== tenantId)
+      );
+
+      toast.success("Tenant deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete tenant");
+    }
+  };
+
   if (loading) {
-    return <p className={Styles.loading}>Loading tenants...</p>;
+    return (
+      <>
+        <Navbar />
+        <p className={Styles.loading}>Loading tenants...</p>
+      </>
+    );
   }
 
   if (error) {
-    return <p className={Styles.error}>{error}</p>;
+    return (
+      <>
+        <Navbar />
+        <p className={Styles.error}>{error}</p>
+      </>
+    );
   }
-
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this tenant?"))
-      deleteTenantById(id);
-  };
 
   return (
     <>
-      {" "}
       <Navbar />
+
       <div className={Styles.container}>
         {/* 🔙 Header */}
         <div className={Styles.header}>
@@ -97,25 +134,27 @@ const ViewTenant = () => {
                   {tenant.isActive ? "Active" : "Inactive"}
                 </span>
 
-                {/* 🔜 Future buttons */}
-                {/* <button>Remove</button> */}
+                <button
+                  className={Styles.deleteBtn}
+                  onClick={() => handleDelete(tenant._id)}
+                >
+                  🗑 Delete
+                </button>
 
-                <div className={Styles.actions}>
-                  <button onClick={() => handleDelete(tenant._id)}>
-                    Delete Tenant
-                  </button>
-
-                  <button
-                    onClick={() => navigate(`/owner/tenant/edit/${tenant._id}`)}
-                  >
-                    Edit Tenant
-                  </button>
-                </div>
+                <button
+                  className={Styles.editBtn}
+                  onClick={() =>
+                    navigate(`/owner/tenant/edit/${tenant._id}`)
+                  }
+                >
+                  ✏️ Edit
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
+
       <Footer />
     </>
   );

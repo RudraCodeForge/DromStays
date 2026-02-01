@@ -160,6 +160,7 @@ const Navbar = () => {
             <li><NavLink to="/saved-rooms">Saved</NavLink></li>
             <li><NavLink to="/my-bookings">My Bookings</NavLink></li>
             <li><NavLink to="/my-requests">My Requests</NavLink></li>
+            <li><NavLink to="/Settings">Settings</NavLink></li>
 
             {/* 🔔 NOTIFICATION */}
             <li>

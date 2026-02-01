@@ -150,6 +150,11 @@ const MobileNav = () => {
                       My Requests
                     </NavLink>
                   </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Settings" onClick={closeMenu}>
+                      Settings
+                    </NavLink>
+                  </li>
                 </>
               )}
 

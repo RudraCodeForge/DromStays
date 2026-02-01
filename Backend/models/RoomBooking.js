@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const RoomBookingSchema = new mongoose.Schema(
   {
     room: {
@@ -8,7 +9,7 @@ const RoomBookingSchema = new mongoose.Schema(
 
     tenant: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Tenant",
       required: true,
     },
 
@@ -67,6 +68,14 @@ const RoomBookingSchema = new mongoose.Schema(
       enum: ["active", "ended"],
       default: "active",
     },
+
+    agreementPdf: {
+      type: String,
+    },
+
+    agreementGeneratedAt: {
+      type: Date,
+    }
   },
   { timestamps: true }
 );

@@ -3,17 +3,26 @@ const Room = require("../models/Room");
 const User = require("../models/User");
 const Property = require("../models/Property");
 const Payment = require("../models/Payment");
+const RoomBooking = require("../models/RoomBooking");
 const { logActivity } = require("../services/activity.service");
 const createInvoiceWithPDF = require("../utils/createInvoiceWithPDF");
+const generateAgreementPDF = require("../utils/generateAgreementPDF");
 
 exports.ADD_TENANT_TO_ROOM = async (req, res) => {
   try {
-    const { fullName, phone, email, joiningDate, roomId, advanceAmount } =
-      req.body;
+    const {
+      fullName,
+      phone,
+      email,
+      joiningDate,
+      roomId,
+      advanceAmount,
+    } = req.body;
 
     const ownerId = req.user.id;
-    const owner = await User.findById(ownerId);
 
+    /* 🔐 OWNER CHECK */
+    const owner = await User.findById(ownerId);
     if (!owner || owner.Role !== "owner") {
       return res.status(403).json({
         success: false,
@@ -21,7 +30,7 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🔍 BASIC VALIDATION */
+    /* 🧾 BASIC VALIDATION */
     if (!fullName || !phone || !roomId) {
       return res.status(400).json({
         success: false,
@@ -38,16 +47,16 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🏢 PROPERTY + OWNER CHECK */
+    /* 🏢 PROPERTY + OWNER VALIDATION */
     const property = await Property.findById(room.property);
     if (!property || property.owner.toString() !== ownerId) {
       return res.status(403).json({
         success: false,
-        message: "Unauthorized access",
+        message: "Unauthorized property access",
       });
     }
 
-    /* 🚫 CAPACITY CHECK */
+    /* 🚫 ROOM CAPACITY CHECK */
     if (room.tenants.length >= room.capacity) {
       return res.status(400).json({
         success: false,
@@ -62,10 +71,16 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
     });
 
     if (!tenant) {
+      const user = email
+        ? await User.findOne({ Email: email })
+        : null;
+
       tenant = await Tenant.create({
-        fullName,
-        phone,
+        fullName: user ? user.Name : fullName,
+        phone: user ? user.Phone : phone,
         email,
+        user: user ? user._id : null,
+        isRegistered: !!user,
         joinedAt: joiningDate || new Date(),
         rooms: [room._id],
         property: room.property,
@@ -84,11 +99,57 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       await tenant.save();
     }
 
+    /* 🧮 RENT CALCULATION */
+    const tenantCount = room.tenants.length + 1;
+    const pricing = room.pricing;
+
+    let rentAmount;
+    let billingType;
+
+    if (pricing.billingType === "monthly") {
+      billingType = "monthly";
+      rentAmount =
+        tenantCount > 1
+          ? pricing.sharing.perPersonMonthlyRent
+          : pricing.singleOccupancy.monthlyRent;
+    } else {
+      billingType = "daily";
+      rentAmount =
+        tenantCount > 1
+          ? pricing.sharing.perPersonDailyRent
+          : pricing.singleOccupancy.dailyRent;
+    }
+
+    if (!rentAmount) {
+      return res.status(400).json({
+        success: false,
+        message: "Room pricing not configured properly",
+      });
+    }
+
+    const bookingDate = joiningDate ? new Date(joiningDate) : new Date();
+
+    /* 📘 ROOM BOOKING */
+    const roomBooking = await RoomBooking.create({
+      room: room._id,
+      tenant: tenant._id,
+      owner: ownerId,
+      billingType,
+      bookingDate,
+      billingCycleDay:
+        billingType === "monthly" ? bookingDate.getDate() : null,
+      rentAmount,
+      advanceAmount: Number(advanceAmount) || 0,
+      nextDueDate: bookingDate,
+      totalDue: rentAmount,
+      status: "active",
+    });
+
     /* 🔗 ADD TENANT TO ROOM */
     room.tenants.push(tenant._id);
     await room.save();
 
-    /* 💰 ADVANCE PAYMENT + INVOICE */
+    /* 💰 ADVANCE PAYMENT */
     if (advanceAmount && Number(advanceAmount) > 0) {
       const advancePayment = await Payment.create({
         tenant: tenant._id,
@@ -113,31 +174,7 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       });
     }
 
-    /* 🧮 RENT CALCULATION */
-    const tenantCount = room.tenants.length;
-    const pricing = room.pricing;
-    let rentAmount;
-
-    if (pricing.billingType === "monthly") {
-      rentAmount =
-        tenantCount > 1
-          ? pricing.sharing.perPersonMonthlyRent
-          : pricing.singleOccupancy.monthlyRent;
-    } else {
-      rentAmount =
-        tenantCount > 1
-          ? pricing.sharing.perPersonDailyRent
-          : pricing.singleOccupancy.dailyRent;
-    }
-
-    if (!rentAmount) {
-      return res.status(400).json({
-        success: false,
-        message: "Room pricing not configured properly",
-      });
-    }
-
-    /* 🧾 RENT PAYMENT + INVOICE */
+    /* 🧾 RENT PAYMENT (PENDING) */
     const rentPayment = await Payment.create({
       tenant: tenant._id,
       room: room._id,
@@ -145,9 +182,9 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       owner: ownerId,
       type: "RENT",
       amount: rentAmount,
-      month: new Date().toISOString().slice(0, 7), // YYYY-MM
+      month: new Date().toISOString().slice(0, 7),
       status: "PENDING",
-      dueDate: joiningDate || new Date(),
+      dueDate: bookingDate,
     });
 
     await createInvoiceWithPDF({
@@ -161,11 +198,26 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       status: "PENDING",
     });
 
+    const agreementPath = await generateAgreementPDF({
+      bookingId: roomBooking._id,
+      owner,
+      tenant,
+      room,
+      property,
+      rentAmount,
+      advanceAmount,
+      bookingDate,
+    });
+
+    roomBooking.agreementPdf = agreementPath;
+    roomBooking.agreementGeneratedAt = new Date();
+    await roomBooking.save();
+
     /* 🧠 ACTIVITY LOG */
     await logActivity({
       owner: ownerId,
       entityType: "ROOM",
-      entityId: tenant._id,
+      entityId: room._id,
       action: "BOOKED",
       message: `Tenant "${tenant.fullName}" added to room ${room.roomNumber} (${property.name})`,
       meta: {
@@ -175,20 +227,22 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       },
     });
 
-    /* ✅ RESPONSE */
+    /* ✅ FINAL RESPONSE */
     return res.status(201).json({
       success: true,
       message: "Tenant added successfully",
       tenant,
+      roomBooking,
     });
   } catch (error) {
-    console.error(error);
+    console.error("ADD_TENANT_TO_ROOM ERROR:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 };
+
 
 
 exports.DELETE_TENANT_BY_ID = async (req, res) => {

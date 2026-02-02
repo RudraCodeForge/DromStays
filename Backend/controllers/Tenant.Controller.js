@@ -145,6 +145,107 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
       status: "active",
     });
 
+    /* 🔁 UPDATE EXISTING TENANT RENT IF SHARING STARTS */
+    if (room.tenants.length === 1) {
+      // sharing price calculate
+      const sharedRent =
+        pricing.billingType === "monthly"
+          ? pricing.sharing.perPersonMonthlyRent
+          : pricing.sharing.perPersonDailyRent;
+
+      if (!sharedRent) {
+        return res.status(400).json({
+          success: false,
+          message: "Sharing price not configured",
+        });
+      }
+
+      const existingTenantId = room.tenants[0];
+
+      /* 🧾 UPDATE ROOM BOOKING */
+      await RoomBooking.updateOne(
+        {
+          room: room._id,
+          tenant: existingTenantId,
+          status: "active",
+        },
+        {
+          $set: {
+            rentAmount: sharedRent,
+            totalDue: sharedRent,
+          },
+        }
+      );
+
+      /* 💰 UPDATE PENDING RENT PAYMENT */
+      await Payment.updateOne(
+        {
+          tenant: existingTenantId,
+          room: room._id,
+          type: "RENT",
+          status: "PENDING",
+        },
+        {
+          $set: {
+            amount: sharedRent,
+          },
+        }
+      );
+    }
+
+    /* 📄 UPDATE EXISTING TENANT AGREEMENT IF SHARING STARTS */
+    if (room.tenants.length === 1) {
+      const sharedRent =
+        pricing.billingType === "monthly"
+          ? pricing.sharing.perPersonMonthlyRent
+          : pricing.sharing.perPersonDailyRent;
+
+      const existingTenantId = room.tenants[0];
+
+      const existingBooking = await RoomBooking.findOne({
+        room: room._id,
+        tenant: existingTenantId,
+        status: "active",
+      }).populate("tenant");
+
+      if (existingBooking) {
+        /* 🔁 UPDATE RENT */
+        existingBooking.rentAmount = sharedRent;
+        existingBooking.totalDue = sharedRent;
+        await existingBooking.save();
+
+        /* 📄 REGENERATE AGREEMENT */
+        const newAgreementPath = await generateAgreementPDF({
+          bookingId: existingBooking._id,
+          owner,
+          tenant: existingBooking.tenant,
+          room,
+          property,
+          rentAmount: sharedRent,
+          advanceAmount: existingBooking.advanceAmount || 0,
+          bookingDate: existingBooking.bookingDate,
+        });
+
+        existingBooking.agreementPdf = newAgreementPath;
+        existingBooking.agreementGeneratedAt = new Date();
+        await existingBooking.save();
+      }
+
+      /* 💰 UPDATE PENDING RENT PAYMENT */
+      await Payment.updateOne(
+        {
+          tenant: existingTenantId,
+          room: room._id,
+          type: "RENT",
+          status: "PENDING",
+        },
+        {
+          $set: { amount: sharedRent },
+        }
+      );
+    }
+
+
     /* 🔗 ADD TENANT TO ROOM */
     room.tenants.push(tenant._id);
     await room.save();

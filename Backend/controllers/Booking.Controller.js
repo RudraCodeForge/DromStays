@@ -13,7 +13,10 @@ exports.GET_ALL_BOOKINGS = async (req, res) => {
             bookings = await RoomBooking.find({ owner: userId })
                 .populate("room")
                 .populate("tenant")
-                .populate("owner")
+                .populate({
+                    path: "owner",
+                    select: "Name Email Phone Role",
+                })
                 .sort({ createdAt: -1 });
 
             return res.status(200).json({

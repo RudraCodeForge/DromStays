@@ -7,6 +7,27 @@ const RoomBooking = require("../models/RoomBooking");
 const { logActivity } = require("../services/activity.service");
 const createInvoiceWithPDF = require("../utils/createInvoiceWithPDF");
 const generateAgreementPDF = require("../utils/generateAgreementPDF");
+const Notification = require("../models/Notification");
+
+const createNotification = async ({
+  userId,
+  title,
+  message,
+  type = "INFO",
+  redirectUrl = "",
+  data = {},
+}) => {
+  if (!userId) return;
+
+  await Notification.create({
+    user: userId,
+    title,
+    message,
+    type,
+    redirectUrl,
+    data,
+  });
+};
 
 exports.ADD_TENANT_TO_ROOM = async (req, res) => {
   try {
@@ -87,6 +108,14 @@ exports.ADD_TENANT_TO_ROOM = async (req, res) => {
         owner: ownerId,
         isActive: true,
       });
+      if (user) {
+        await createNotification({
+          userId: user._id,
+          title: "Room Assigned",
+          message: `You have been added to Room ${room.roomNumber} at ${property.name}.`,
+          redirectUrl: "/my-bookings",
+        });
+      }
     } else {
       tenant.fullName = fullName;
       tenant.email = email;

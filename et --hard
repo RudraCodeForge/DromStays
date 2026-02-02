@@ -1,0 +1,5 @@
+[33m4592207[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m update the bookings, tanent, aggrementpdf, ui and backend
+[33mfe69710[m Fix the Bookings controller
+[33m89c1ffe[m Use swal for conformation insted of window conform
+[33mbfea703[m Add Bookings page and also geneate an rental aggrement
+[33m1bbf1d2[m Add setings in Tenent side

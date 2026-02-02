@@ -28,6 +28,7 @@ const notificationSchema = new mongoose.Schema(
             enum: [
                 "REQUEST",
                 "PAYMENT",
+                "INFO",
                 "MESSAGE",
                 "SYSTEM",
                 "REMINDER",

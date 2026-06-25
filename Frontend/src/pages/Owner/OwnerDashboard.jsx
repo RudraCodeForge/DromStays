@@ -11,11 +11,17 @@ import { useDashboardPayments } from "../../Custom/useDashboardPayments";
 import { useRecentActivities } from "../../Custom/useRecentActivities";
 import { useRequests } from "../../Custom/useRequests";
 import { useActiveBookings } from "../../Custom/useActiveBookings";
-import { useEffect } from "react"
+import { useEffect } from "react";
 
 const OwnerDashboard = () => {
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  console.log(
+    "OwnerDashboard Rendered - Auth:",
+    isAuthenticated,
+    "Role:",
+    role,
+  );
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -41,7 +47,6 @@ const OwnerDashboard = () => {
 
       <div className={Styles.dashboardContainer}>
         <h1>Welcome back, {user?.Name}</h1>
-
         <DashboardStats
           rooms={rooms}
           newRooms={newRooms}
@@ -55,7 +60,7 @@ const OwnerDashboard = () => {
 
         <div className={Styles.placeholderSection}>
           <RecentActivity activities={activities} loading={loading} />
-          <QuickActions />
+          <QuickActions role={role} />
         </div>
       </div>
 

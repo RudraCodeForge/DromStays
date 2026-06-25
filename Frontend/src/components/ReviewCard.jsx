@@ -1,7 +1,12 @@
+import { useState } from "react";
 import Style from "../styles/ReviewCard.module.css";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 const ReviewCard = ({ item }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  if (!item) return null;
+
   const rating = item.Rating || 0;
   const stars = [];
 
@@ -22,13 +27,31 @@ const ReviewCard = ({ item }) => {
           className={Style.icon}
           src={item.ProfileImg}
           alt={item.Name}
-          width="70px"
-          height="70px"
+          width="70"
+          height="70"
         />
       </div>
+
       <h3>{item.Name}</h3>
       <p>{item.Title}</p>
-      <p>{item.Desc}</p>
+
+      <p
+        className={`${Style.reviewText} ${
+          expanded ? Style.expanded : ""
+        }`}
+      >
+        {item.Desc}
+      </p>
+
+      {item.Desc?.length > 120 && (
+        <button
+          className={Style.showMoreBtn}
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? "Show Less" : "Show More"}
+        </button>
+      )}
+
       <div className={Style.rating}>{stars}</div>
     </div>
   );

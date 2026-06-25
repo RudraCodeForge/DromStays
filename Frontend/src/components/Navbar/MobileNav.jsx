@@ -16,7 +16,7 @@ const MobileNav = () => {
 
   // 🔔 unread notifications count
   const unreadCount = useSelector(
-    (state) => state.notifications?.unreadCount || 0
+    (state) => state.notifications?.unreadCount || 0,
   );
 
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ const MobileNav = () => {
         navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
         closeMenu();
       },
-      () => toast.error("Location access denied")
+      () => toast.error("Location access denied"),
     );
   };
 
@@ -201,6 +201,32 @@ const MobileNav = () => {
                     <Link to="/Aboutus" onClick={closeMenu}>
                       About Us
                     </Link>
+                  </li>
+                </>
+              )}
+
+              {/* PARTNER LINKS */}
+              {role === "partner" && (
+                <>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Partner/dashboard" onClick={closeMenu}>
+                      Dashboard
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Partner/orders" onClick={closeMenu}>
+                      Orders
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Partner/Services" onClick={closeMenu}>
+                      Services
+                    </NavLink>
+                  </li>
+                  <li className={Styles.MobileLink}>
+                    <NavLink to="/Settings" onClick={closeMenu}>
+                      Settings
+                    </NavLink>
                   </li>
                 </>
               )}

@@ -17,17 +17,35 @@ const roleBasedAnswers = {
   },
 
   USER: {
-    "How to book a room?": "Open a property → View rooms → Select room → Book.",
+    "How to book a room?":
+      "Open a property → View rooms → Select room → Book.",
     "Payment issue":
       "If payment is deducted but booking failed, wait 24 hours for auto-refund.",
     "How to cancel booking?": "Go to My Bookings → Cancel booking.",
   },
 
+  PARTNER: {
+    "How to register service?":
+      "Go to Dashboard → My Services → Add Service.",
+    "How to accept requests?":
+      "Go to Dashboard → Service Requests → Accept or Reject requests.",
+    "How to update availability?":
+      "Go to Dashboard → Availability → Update your working schedule.",
+    "How to mark service completed?":
+      "Open Active Jobs → Select Job → Mark as Completed.",
+    "How to view earnings?":
+      "Go to Dashboard → Earnings section.",
+    "Payment not received?":
+      "Payments are processed after successful service completion. Contact support if delayed.",
+  },
+
   GUEST: {
-    "How to create account?": "Click on Signup → Fill details → Verify email.",
+    "How to create account?":
+      "Click on Signup → Fill details → Verify email.",
     "Can I browse rooms without login?":
       "Yes, you can browse properties and rooms without login.",
-    "How to contact support?": "Use Help Center or Contact Support page.",
+    "How to contact support?":
+      "Use Help Center or Contact Support page.",
   },
 };
 
@@ -40,6 +58,8 @@ const SupportBot = () => {
   const userRole = isAuthenticated
     ? role === "owner"
       ? "OWNER"
+      : role === "partner"
+      ? "PARTNER"
       : "USER"
     : "GUEST";
 
@@ -71,6 +91,7 @@ const SupportBot = () => {
 
     setTimeout(() => {
       setTyping(false);
+
       setMessages((prev) => [
         ...prev,
         {
@@ -79,8 +100,12 @@ const SupportBot = () => {
             botAnswers[question] ||
             "Sorry 😔 I don't have an answer for that yet.",
         },
-        { from: "bot", text: "Did this solve your problem?" },
+        {
+          from: "bot",
+          text: "Did this solve your problem?",
+        },
       ]);
+
       setStage("feedback");
     }, 1200);
   };
@@ -93,9 +118,13 @@ const SupportBot = () => {
 
     setTimeout(() => {
       setTyping(false);
+
       setMessages((prev) => [
         ...prev,
-        { from: "bot", text: "Awesome 😊 Happy to help!" },
+        {
+          from: "bot",
+          text: "Awesome 😊 Happy to help!",
+        },
       ]);
 
       setTimeout(() => {
@@ -113,6 +142,7 @@ const SupportBot = () => {
 
     setTimeout(() => {
       setTyping(false);
+
       setMessages((prev) => [
         ...prev,
         {
@@ -120,6 +150,7 @@ const SupportBot = () => {
           text: "Sorry 😔 Please visit Help Center or Contact Support for more help.",
         },
       ]);
+
       setStage("fallback");
     }, 1000);
   };
@@ -129,6 +160,7 @@ const SupportBot = () => {
   /* ============================= */
   const resetBot = () => {
     setStage("chat");
+
     setMessages([
       {
         from: "bot",
@@ -139,8 +171,11 @@ const SupportBot = () => {
 
   return (
     <>
-      {/* 💬 Floating Button */}
-      <div className={Styles.BotButton} onClick={() => setOpen(!open)}>
+      {/* Floating Button */}
+      <div
+        className={Styles.BotButton}
+        onClick={() => setOpen((prev) => !prev)}
+      >
         💬
       </div>
 
@@ -149,16 +184,25 @@ const SupportBot = () => {
           {/* Header */}
           <div className={Styles.BotHeader}>
             <span>Support Bot</span>
-            <button onClick={() => setOpen(false)}>✕</button>
+
+            <button
+              onClick={() => {
+                setOpen(false);
+              }}
+            >
+              ✕
+            </button>
           </div>
 
-          {/* Body */}
+          {/* Chat Body */}
           <div className={Styles.BotBody}>
-            {messages.map((msg, i) => (
+            {messages.map((msg, index) => (
               <div
-                key={i}
+                key={index}
                 className={
-                  msg.from === "bot" ? Styles.BotMessage : Styles.UserMessage
+                  msg.from === "bot"
+                    ? Styles.BotMessage
+                    : Styles.UserMessage
                 }
               >
                 {msg.text}
@@ -179,9 +223,12 @@ const SupportBot = () => {
           {/* Options */}
           <div className={Styles.BotOptions}>
             {stage === "chat" &&
-              Object.keys(botAnswers).map((q, i) => (
-                <button key={i} onClick={() => handleQuestion(q)}>
-                  {q}
+              Object.keys(botAnswers).map((question, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleQuestion(question)}
+                >
+                  {question}
                 </button>
               ))}
 

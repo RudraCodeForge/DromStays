@@ -20,9 +20,8 @@ export const Signup = async (userData) => {
     const res = await api.post("/auth/signup", userData);
     return res.data;
   } catch (error) {
-    if (handleServerError(error)) return;
-    if (handleAuthError(error)) return;
-    throw error.response.data;
+    console.log("Signup Error:", error.response?.data);
+    throw error.response?.data || error;
   }
 };
 

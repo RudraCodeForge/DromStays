@@ -56,6 +56,10 @@ import PayoutPreference from "./pages/Common/PayoutPreference.jsx";
 import Notifications from "./pages/Common/Notifications.jsx";
 import ViewPayments from "./pages/Owner/ViewPayments.jsx";
 import NotificationSettings from "./pages/Common/NotificationSettings.jsx";
+// Import PartnerDashboard
+import PartnerDashboard from "./pages/Partners/PartnerDashboard.jsx";
+import PartnerProfile from "./pages/Partners/PartnerProfile.jsx";
+import Services from "./pages/Partners/Services.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -389,6 +393,31 @@ function App() {
           }
         />
 
+        {/* PARTNER DASHBOARD */}
+        <Route
+          path="/Partner/dashboard"
+          element={
+            <ProtectedRoute>
+              <PartnerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Partner/Profile"
+          element={
+            <ProtectedRoute>
+              <PartnerProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/Partner/Services"
+          element={
+            <ProtectedRoute>
+              <Services />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 Page Not Found */}
 

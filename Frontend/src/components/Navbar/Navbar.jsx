@@ -13,7 +13,7 @@ const Navbar = () => {
 
   // 🔔 unread notifications count
   const unreadCount = useSelector(
-    (state) => state.notifications?.unreadCount || 0
+    (state) => state.notifications?.unreadCount || 0,
   );
 
   const dispatch = useDispatch();
@@ -55,7 +55,7 @@ const Navbar = () => {
         const lng = pos.coords.longitude;
         navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
       },
-      () => toast.error("Location access denied")
+      () => toast.error("Location access denied"),
     );
   };
 
@@ -92,17 +92,27 @@ const Navbar = () => {
         {/* GUEST */}
         {!isAuthenticated && (
           <>
-            <li><NavLink to="/Login">Login</NavLink></li>
-            <li><NavLink to="/Signup">Sign Up</NavLink></li>
+            <li>
+              <NavLink to="/Login">Login</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Signup">Sign Up</NavLink>
+            </li>
           </>
         )}
 
         {/* ADMIN */}
         {isAuthenticated && role === "admin" && (
           <>
-            <li><NavLink to="/">Home</NavLink></li>
-            <li><Link to="/Contactus">Contact Us</Link></li>
-            <li><Link to="/Aboutus">About Us</Link></li>
+            <li>
+              <NavLink to="/">Home</NavLink>
+            </li>
+            <li>
+              <Link to="/Contactus">Contact Us</Link>
+            </li>
+            <li>
+              <Link to="/Aboutus">About Us</Link>
+            </li>
             <li>
               <button onClick={handleLogout} className={Styles.LogoutBtn}>
                 Logout
@@ -111,13 +121,71 @@ const Navbar = () => {
           </>
         )}
 
+        {/* PARTNER */}
+        {isAuthenticated && role === "partner" && (
+          <>
+            <li>
+              <NavLink to="/Partner/dashboard">Dashboard</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Partner/orders">Orders</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Partner/Services">Services</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Settings">Setting</NavLink>
+            </li>
+
+            {/* 🔔 NOTIFICATION */}
+            <li>
+              <div
+                className={Styles.NotificationIcon}
+                onClick={() => navigate("/notifications")}
+              >
+                <FaBell />
+                {unreadCount > 0 && (
+                  <span className={Styles.NotificationBadge}>
+                    {unreadCount}
+                  </span>
+                )}
+              </div>
+            </li>
+            {/* PROFILE */}
+            <li>
+              <NavLink to="/Profile">
+                <div className={Styles.OwnerProfile}>
+                  <p>
+                    {user?.Name}
+                    <br />
+                    <span className={Styles.Role}>{role}</span>
+                  </p>
+                  <img
+                    src={user?.ProfilePicture}
+                    alt="profile"
+                    className={Styles.Profile}
+                  />
+                </div>
+              </NavLink>
+            </li>
+          </>
+        )}
+
         {/* OWNER */}
         {isAuthenticated && role === "owner" && (
           <>
-            <li><NavLink to="/Owner/dashboard">Dashboard</NavLink></li>
-            <li><NavLink to="/Owner/properties">Properties</NavLink></li>
-            <li><NavLink to="/bookings">Bookings</NavLink></li>
-            <li><NavLink to="/Settings">Settings</NavLink></li>
+            <li>
+              <NavLink to="/Owner/dashboard">Dashboard</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Owner/properties">Properties</NavLink>
+            </li>
+            <li>
+              <NavLink to="/bookings">Bookings</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Settings">Settings</NavLink>
+            </li>
 
             {/* 🔔 NOTIFICATION */}
             <li>
@@ -157,10 +225,18 @@ const Navbar = () => {
         {/* TENANT */}
         {isAuthenticated && role === "tenant" && (
           <>
-            <li><NavLink to="/saved-rooms">Saved</NavLink></li>
-            <li><NavLink to="/my-bookings">My Bookings</NavLink></li>
-            <li><NavLink to="/my-requests">My Requests</NavLink></li>
-            <li><NavLink to="/Settings">Settings</NavLink></li>
+            <li>
+              <NavLink to="/saved-rooms">Saved</NavLink>
+            </li>
+            <li>
+              <NavLink to="/my-bookings">My Bookings</NavLink>
+            </li>
+            <li>
+              <NavLink to="/my-requests">My Requests</NavLink>
+            </li>
+            <li>
+              <NavLink to="/Settings">Settings</NavLink>
+            </li>
 
             {/* 🔔 NOTIFICATION */}
             <li>

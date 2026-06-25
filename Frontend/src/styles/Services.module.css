@@ -1,0 +1,233 @@
+.container {
+  max-width: 1000px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.addButton {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.desc {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.meta {
+  font-weight: 600;
+  color: #111827;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+}
+
+.modalContent {
+  background: #fff;
+  padding: 20px;
+  width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actions button {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+}
+
+.actions button[type="submit"] {
+  background: #10b981;
+  color: #fff;
+  border: none;
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rating {
+  background: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+.prices {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  color: #374151;
+}
+.cardActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.cardActions button {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  background: #fff;
+}
+
+.reviewsList {
+  max-height: 320px;
+  overflow: auto;
+}
+.reviewItem {
+  border-bottom: 1px solid #eee;
+  padding: 8px 0;
+}
+.reviewHead {
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+/* Animations: button, card, modal */
+.addButton {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+  will-change: transform;
+}
+.addButton:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.18);
+}
+.addButton:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.card {
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.modalOverlay {
+  animation: fadeIn 160ms ease;
+}
+.modalContent {
+  animation: slideUp 220ms cubic-bezier(0.16, 0.84, 0.36, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+@keyframes slideUp {
+  from {
+    transform: translateY(8px) scale(0.995);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .container {
+    max-width: 720px;
+    margin: 20px auto;
+  }
+  .servicesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 12px;
+    margin: 12px auto;
+  }
+  .servicesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .modalContent {
+    width: calc(100% - 32px);
+    margin: 0 16px;
+  }
+  .header h1 {
+    font-size: 18px;
+  }
+  .addButton {
+    padding: 8px 10px;
+  }
+  .card {
+    padding: 10px;
+  }
+  .prices {
+    flex-direction: column;
+    gap: 6px;
+  }
+}

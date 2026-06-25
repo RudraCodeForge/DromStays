@@ -34,9 +34,9 @@ exports.SUBMIT_REVIEW = async (req, res) => {
     }
 
     const cleanMessage = message.trim();
-    if (cleanMessage.length < 5 || cleanMessage.length > 500) {
+    if (cleanMessage.length < 10) {
       return res.status(400).json({
-        message: "Message must be between 5 and 500 characters",
+        message: "Message must be at least 10 characters long",
       });
     }
 
@@ -91,6 +91,11 @@ exports.SUBMIT_REVIEW = async (req, res) => {
     });
 
     await newReview.save();
+
+    // Mark revieweligible as false after review submission
+    if (reviewType !== "PLATFORM") {
+      await Request.findByIdAndUpdate(requestId, { reviewEligible: false });
+    }
 
     return res.status(201).json({
       success: true,

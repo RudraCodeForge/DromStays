@@ -79,20 +79,24 @@ const Signup = () => {
     };
 
     // ------------------ BACKEND CALL FIXED ------------------ //
-    try {
-      const res = await SignupService(payload);
-      // Clear form
-      e.target.reset();
-      setRole("");
-      setErrors([]);
-      toast.success(res.data.message || "Signup successful!");
-      navigate("/Login");
-    } catch (error) {
-      setErrors([
-        error.response?.data?.message || "An error occurred during signup.",
-      ]);
-      toast.error("An error occurred during signup.");
-    }
+   try {
+  const res = await SignupService(payload);
+
+  e.target.reset();
+  setRole("");
+  setErrors([]);
+
+  toast.success(res.message || "Signup successful!");
+  navigate("/Login");
+} catch (error) {
+  const msg =
+    error.message ||
+    error.errors?.[0]?.msg ||
+    "An error occurred during signup.";
+
+  setErrors([msg]);
+  toast.error(msg);
+}
   };
 
   return (

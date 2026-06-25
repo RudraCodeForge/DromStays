@@ -14,7 +14,6 @@ import Swal from "sweetalert2";
 const Profile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
   if (!isAuthenticated) {
     return <Navigate to="/Login" replace />;
   }
@@ -71,15 +70,15 @@ const Profile = () => {
   const formattedAddress =
     user?.Address && Object.values(user.Address).some((v) => v)
       ? [
-        user.Address.houseNo,
-        user.Address.street,
-        user.Address.locality,
-        user.Address.city,
-        user.Address.state,
-        user.Address.pincode && `- ${user.Address.pincode}`,
-      ]
-        .filter(Boolean)
-        .join(", ")
+          user.Address.houseNo,
+          user.Address.street,
+          user.Address.locality,
+          user.Address.city,
+          user.Address.state,
+          user.Address.pincode && `- ${user.Address.pincode}`,
+        ]
+          .filter(Boolean)
+          .join(", ")
       : "N/A";
   return (
     <>
@@ -162,6 +161,12 @@ const Profile = () => {
             </NavLink>
           )}
 
+          {user?.Role === "partner" && (
+            <NavLink to="/Partner/Profile" className={Style.EditLink}>
+              Partner Profile
+            </NavLink>
+          )}
+
           <button
             className={Style.LogoutBtn}
             onClick={() => {
@@ -181,7 +186,6 @@ const Profile = () => {
           >
             Logout
           </button>
-
         </div>
       </div>
 

@@ -28,6 +28,81 @@ const sendMail = async ({ to, subject, html }) => {
 };
 
 // ============================
+// Send Welcome Emails (Optional)
+// ============================
+exports.sendWelcomeEmail = async (toEmail, userName, role) => {
+  if (role === "tenant") {
+    await exports.sendWelcomeEmailtoTenant(toEmail, userName);
+  } else if (role === "owner") {
+    await exports.sendWelcomeEmailToOwner(toEmail, userName);
+  } else if (role === "partner") {
+    await exports.sendWelcomeEmailToPartner(toEmail, userName);
+  }
+};
+exports.sendWelcomeEmailtoTenant = async (toEmail, userName) => {
+  await sendMail({
+    to: toEmail,
+    subject: "Welcome to DormStays!",
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#333;">
+        <h2 style="color:#2e126a;">Welcome to DormStays, ${userName} 👋</h2>
+        <p>We’re thrilled to have you on board! DormStays is your go-to platform for finding and managing student accommodations with ease.</p>
+        <p>Here’s what you can do next:</p>
+        <ul>
+          <li><strong>Explore Listings:</strong> Browse through our extensive listings to find your perfect space.</li>
+          <li><strong>Manage Your Account:</strong> Update your profile, track your bookings, and manage your preferences.</li>
+          <li><strong>Get Support:</strong> Our support team is here to help you with any questions or issues you may have.</li>
+        </ul>
+        <p>We’re committed to providing you with the best experience possible. If you have any feedback or need assistance, don’t hesitate to reach out.</p>
+        <p style="margin-top:24px;">Warm regards,<br/><strong>DormStays Team</strong></p>
+      </div>
+    `,
+  });
+};
+
+exports.sendWelcomeEmailToOwner = async (toEmail, userName) => {
+  await sendMail({
+    to: toEmail,
+    subject: "Welcome to DormStays, Property Owner!",
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#333;">
+        <h2 style="color:#2e126a;">Welcome to DormStays, ${userName} 👋</h2>
+        <p>We’re excited to have you as a property owner on DormStays! Our platform is designed to help you easily list and manage your properties while connecting with potential tenants.</p>   
+        <p>Here’s how to get started:</p>
+        <ul>
+          <li><strong>List Your Property:</strong> Create a listing for your property with photos, descriptions, and pricing.</li>
+          <li><strong>Manage Bookings:</strong> Keep track of tenant inquiries, bookings, and availability all in one place.</li>
+          <li><strong>Get Support:</strong> Our dedicated support team is here to assist you with any questions or issues.</li>
+        </ul>
+        <p>We’re committed to helping you succeed as a property owner. If you have any feedback or need assistance, please don’t hesitate to reach out.</p>
+        <p style="margin-top:24px;">Warm regards,<br/><strong>DormStays Team</strong></p>
+      </div>
+    `,
+  });
+};  
+
+exports.sendWelcomeEmailToPartner = async (toEmail, userName) => {
+  await sendMail({
+    to: toEmail,
+    subject: "Welcome to DormStays, Service Partner!",
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#333;">
+        <h2 style="color:#2e126a;">Welcome to DormStays, ${userName} 👋</h2>
+        <p>We’re thrilled to have you as a service partner on DormStays! Our platform is designed to help you connect with property owners and tenants who need your services.</p>
+        <p>Here’s how to get started:</p>
+        <ul>
+          <li><strong>Create Your Profile:</strong> Set up your service profile with details about the services you offer.</li>
+          <li><strong>Connect with Clients:</strong> Respond to inquiries and connect with property owners and tenants who need your services.</li>
+          <li><strong>Get Support:</strong> Our support team is here to assist you with any questions or issues you may have.</li>
+        </ul>
+        <p>We’re committed to helping you succeed as a service partner. If you have any feedback or need assistance, please don’t hesitate to reach out.</p>
+        <p style="margin-top:24px;">Warm regards,<br/><strong>DormStays Team</strong></p>
+      </div>
+    `,
+  });
+};
+
+// ============================
 // VERIFY EMAIL
 // ============================
 exports.sendVerificationEmail = async (toEmail, verifyLink) => {

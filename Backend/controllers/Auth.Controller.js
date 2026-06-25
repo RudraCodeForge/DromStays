@@ -6,6 +6,7 @@ const { generateAccessToken, generateRefreshToken } = require("../utils/Token");
 const {
   sendVerificationEmail,
   sendResetPasswordEmail,
+  sendWelcomeEmail
 } = require("../utils/sendEmail");
 
 const LoginActivity = require("../models/LoginActivity");
@@ -98,6 +99,9 @@ exports.POSTSIGNUP = [
       });
 
       await newUser.save();
+
+      // Send welcome email
+      await sendWelcomeEmail(Email, Name, Role);
 
       return res.status(201).json({
         message: "User registered successfully",

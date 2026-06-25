@@ -19,6 +19,7 @@ const SessionRouter = require("./routes/Session.route");
 const InvoiceRouter = require("./routes/Invoices.route");
 const NotificationRouter = require("./routes/Notification.route");
 const BookingRouter = require("./routes/Booking.route");
+const PartnerRouter = require("./routes/Partner.route");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const app = express();
@@ -51,10 +52,10 @@ app.use("/requests", RequestRouter);
 app.use("/sessions", SessionRouter);
 app.use("/invoices", InvoiceRouter);
 app.use("/notifications", NotificationRouter);
-app.use("/Bookings", BookingRouter)
+app.use("/Bookings", BookingRouter);
+app.use("/partner", PartnerRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/storage", express.static(path.join(__dirname, "storage")));
-
 
 // ------------------ MONGO DB CONNECTION ------------------ //
 mongoose

@@ -1,13 +1,42 @@
 import styles from "../../styles/Services.module.css";
-const ServiceCard = ({ Status, trial }) => {
+
+const ServiceCard = ({ Status, trial, searchTerm, sortBy }) => {
+  const filteredServices = [...trial]
+    // Status Filter
+    .filter((item) =>
+      Status === "ALL" ? true : item.status.toUpperCase() === Status,
+    )
+
+    // Search Filter
+    .filter((item) =>
+      item.serviceName.toLowerCase().includes(searchTerm.toLowerCase()),
+    )
+
+    // Sort
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "A-Z":
+          return a.serviceName.localeCompare(b.serviceName);
+
+        case "Z-A":
+          return b.serviceName.localeCompare(a.serviceName);
+
+        case "Newest":
+          return new Date(b.createdAt) - new Date(a.createdAt);
+
+        case "Oldest":
+          return new Date(a.createdAt) - new Date(b.createdAt);
+      }
+    });
+
   return (
     <div className={styles.Services}>
-      {trial
-        .filter((item) =>
-          Status === "ALL" ? true : item.status.toUpperCase() === Status,
-        )
-        .map((service, index) => (
-          <div className={styles.serviceCard} key={index}>
+      {filteredServices.length > 0 ? (
+        filteredServices.map((service) => (
+          <div
+            className={styles.serviceCard}
+            key={service.id || service.serviceName}
+          >
             <img
               src={service.image}
               alt={service.serviceName}
@@ -51,8 +80,15 @@ const ServiceCard = ({ Status, trial }) => {
               </div>
             </div>
           </div>
-        ))}
+        ))
+      ) : (
+        <div className={styles.noData}>
+          <h3>No Services Found</h3>
+          <p>Try changing the search or filter.</p>
+        </div>
+      )}
     </div>
   );
 };
+
 export default ServiceCard;

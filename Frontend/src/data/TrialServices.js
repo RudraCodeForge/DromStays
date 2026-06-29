@@ -1,5 +1,6 @@
 export const services = [
   {
+    id: 1,
     serviceName: "AC Repair",
     category: "Home Appliances",
     price: 599,
@@ -9,8 +10,10 @@ export const services = [
     reviews: 156,
     image: "https://picsum.photos/300/200?random=1",
     description: "Professional AC repair service.",
+    createdAt: "2026-06-29T10:30:00Z",
   },
   {
+    id: 2,
     serviceName: "Plumbing",
     category: "Home Maintenance",
     price: 399,
@@ -20,8 +23,10 @@ export const services = [
     reviews: 98,
     image: "https://picsum.photos/300/200?random=2",
     description: "Pipe leakage and tap repair.",
+    createdAt: "2026-06-28T09:15:00Z",
   },
   {
+    id: 3,
     serviceName: "Electrician",
     category: "Home Maintenance",
     price: 499,
@@ -31,8 +36,10 @@ export const services = [
     reviews: 132,
     image: "https://picsum.photos/300/200?random=3",
     description: "Electrical repair and installation.",
+    createdAt: "2026-06-27T14:45:00Z",
   },
   {
+    id: 4,
     serviceName: "House Cleaning",
     category: "Cleaning",
     price: 999,
@@ -42,8 +49,10 @@ export const services = [
     reviews: 221,
     image: "https://picsum.photos/300/200?random=4",
     description: "Complete home deep cleaning.",
+    createdAt: "2026-06-26T11:20:00Z",
   },
   {
+    id: 5,
     serviceName: "Car Wash",
     category: "Automobile",
     price: 699,
@@ -53,8 +62,10 @@ export const services = [
     reviews: 75,
     image: "https://picsum.photos/300/200?random=5",
     description: "Premium interior and exterior wash.",
+    createdAt: "2026-06-25T16:10:00Z",
   },
   {
+    id: 6,
     serviceName: "Laptop Repair",
     category: "Electronics",
     price: 899,
@@ -64,8 +75,10 @@ export const services = [
     reviews: 184,
     image: "https://picsum.photos/300/200?random=6",
     description: "Laptop hardware and software repair.",
+    createdAt: "2026-06-24T08:40:00Z",
   },
   {
+    id: 7,
     serviceName: "Salon at Home",
     category: "Beauty",
     price: 799,
@@ -75,8 +88,10 @@ export const services = [
     reviews: 312,
     image: "https://picsum.photos/300/200?random=7",
     description: "Professional beauty services at home.",
+    createdAt: "2026-06-23T13:00:00Z",
   },
   {
+    id: 8,
     serviceName: "RO Service",
     category: "Home Appliances",
     price: 499,
@@ -86,8 +101,10 @@ export const services = [
     reviews: 67,
     image: "https://picsum.photos/300/200?random=8",
     description: "RO installation and maintenance.",
+    createdAt: "2026-06-22T15:30:00Z",
   },
   {
+    id: 9,
     serviceName: "Painting",
     category: "Home Improvement",
     price: 2499,
@@ -97,8 +114,10 @@ export const services = [
     reviews: 94,
     image: "https://picsum.photos/300/200?random=9",
     description: "Interior and exterior painting.",
+    createdAt: "2026-06-21T10:00:00Z",
   },
   {
+    id: 10,
     serviceName: "Pest Control",
     category: "Home Maintenance",
     price: 1299,
@@ -108,6 +127,7 @@ export const services = [
     reviews: 143,
     image: "https://picsum.photos/300/200?random=10",
     description: "Home and office pest control.",
+    createdAt: "2026-06-20T12:25:00Z",
   },
 ];
 

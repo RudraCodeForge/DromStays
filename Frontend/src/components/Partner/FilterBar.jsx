@@ -1,6 +1,13 @@
 import styles from "../../styles/Services.module.css";
 
-const FilterBar = ({ status, setStatus }) => {
+const FilterBar = ({
+  status,
+  setStatus,
+  searchTerm,
+  setSearchTerm,
+  sortBy,
+  setSortBy,
+}) => {
   return (
     <div className={styles.FilterNavBar}>
       {/* Search */}
@@ -21,7 +28,12 @@ const FilterBar = ({ status, setStatus }) => {
           />
         </svg>
 
-        <input type="text" placeholder="Find a specific service..." />
+        <input
+          type="text"
+          placeholder="Find a specific service..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
 
       {/* Status Filter */}
@@ -56,11 +68,11 @@ const FilterBar = ({ status, setStatus }) => {
       <div className={styles.sortBox}>
         <span className={styles.sortIcon}>☰</span>
 
-        <select>
-          <option>Sort by: Newest</option>
-          <option>Oldest</option>
-          <option>Name (A-Z)</option>
-          <option>Name (Z-A)</option>
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <option value="Newest">Newest</option>
+          <option value="Oldest">Oldest</option>
+          <option value="A-Z">Name (A-Z)</option>
+          <option value="Z-A">Name (Z-A)</option>
         </select>
       </div>
     </div>

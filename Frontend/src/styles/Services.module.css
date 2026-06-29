@@ -11,6 +11,11 @@
   height: 100vh;
   border-right: 1px solid rgb(210, 210, 255);
 }
+
+.leftCon {
+  display: flex;
+  flex-direction: column;
+}
 .RightCon {
   width: 80%;
   min-height: 100vh;
@@ -394,6 +399,79 @@
   font-weight: 600;
 }
 
+/* Sidebar important links */
+.impLinks {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  justify-content: space-between;
+}
+.impLinks ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.impLinkItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #334155;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    transform 0.12s;
+}
+.impLinkItem:hover {
+  background: #eef2ff;
+  color: #1e3a8a;
+  transform: translateX(4px);
+}
+.impLinkItem .icon {
+  color: #7c3aed;
+  font-size: 16px;
+  width: 18px;
+}
+.upgradeButton {
+  bottom: 0;
+  margin-top: 6px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.upgradeButton:hover {
+  filter: brightness(1.03);
+}
+
+.upgradeButton {
+  display: inline-flex;
+  align-items: center;
+  bottom: 0;
+  gap: 10px;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.upgradeIcon {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 16px;
+  width: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .footer {
   display: flex;
   justify-content: space-between;
@@ -478,6 +556,11 @@
   font-size: 14px;
   font-weight: 500;
   color: #6b7280;
+}
+.activeLink {
+  border-bottom: 2px solid #0f172a;
+  background: #eef2ff;
+  color: #1e3a8a;
 }
 @media (max-width: 900px) {
   .container {
@@ -590,6 +673,36 @@
   .drawer {
     width: 360px;
   }
+
+  /* Responsive sidebar: make important links horizontal on smaller viewports */
+  .impLinks {
+    padding: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .impLinks ul {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .impLinkItem {
+    padding: 8px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+
+  .upgradeButton {
+    margin-left: auto;
+    padding: 8px 12px;
+    min-width: 120px;
+  }
 }
 
 /* ===========================
@@ -688,6 +801,41 @@
 
   .partnerInfo h3 {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Compact the sidebar links and make upgrade button full width */
+  .impLinks {
+    padding: 10px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .impLinks ul {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    order: 1;
+  }
+
+  .impLinkItem {
+    padding: 8px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .upgradeButton {
+    min-width: 0;
+    width: 100%;
+    margin-left: 0;
+    margin-top: 8px;
+    order: 2;
   }
 }
 

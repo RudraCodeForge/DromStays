@@ -5,15 +5,16 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ServiceForm from "../../components/ServiceForm";
-import FilterBar from "../../components/Partner/FilterBar";
+import PartnerSideBar from "../../components/Partner/PartnerSidebar";
 import { services as trial, PartnerData } from "../../data/TrialServices";
-import ServiceCard from "../../components/Partner/ServiceCard";
+import ServiceContainer from "../../components/Partner/ServiceContainer";
 const Services = () => {
   const { isAuthenticated, role } = useSelector((state) => state.auth || {});
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [formcall, setFormCall] = useState(false);
   const [Status, setStatus] = useState("ALL");
+  const [Link, setLink] = useState("services");
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -39,23 +40,17 @@ const Services = () => {
               <p>{PartnerData.Subscription}</p>
             </div>
           </div>
+          <PartnerSideBar Link={Link} setLink={setLink} />
         </div>
         <div className={styles.RightCon}>
-          <div className={styles.Header}>
-            <div className={styles.Contant}>
-              <h2>Manage Services</h2>
-              <p>Manage your all Services here...</p>
-            </div>
-            <button
-              type="button"
-              className={styles.Button}
-              onClick={() => setIsDrawerOpen(true)}
-            >
-              Add Services
-            </button>
-          </div>
-          <FilterBar status={Status} setStatus={setStatus} />
-          <ServiceCard Status={Status} trial={trial} />
+          {Link === "services" && (
+            <ServiceContainer
+              Status={Status}
+              setStatus={setStatus}
+              trial={trial}
+              setIsDrawerOpen={setIsDrawerOpen}
+            />
+          )}
         </div>
       </div>
 

@@ -7,7 +7,7 @@ import {
   faMedal,
 } from "@fortawesome/free-solid-svg-icons";
 
-const PartnerSideBar = ({ Link, setLink }) => {
+const PartnerSideBar = ({ Link, handleClick }) => {
   return (
     <nav className={styles.impLinks} aria-label="partner sidebar">
       <ul>
@@ -15,7 +15,7 @@ const PartnerSideBar = ({ Link, setLink }) => {
           className={`${styles.impLinkItem} ${
             Link === "services" ? styles.activeLink : ""
           }`}
-          onClick={() => setLink("services")}
+          onClick={() => handleClick("services")}
         >
           <FontAwesomeIcon icon={faWrench} className={styles.icon} />
           <span className={styles.linktext}>Services</span>
@@ -25,7 +25,7 @@ const PartnerSideBar = ({ Link, setLink }) => {
           className={`${styles.impLinkItem} ${
             Link === "earnings" ? styles.activeLink : ""
           }`}
-          onClick={() => setLink("earnings")}
+          onClick={() => handleClick("earnings")}
         >
           <FontAwesomeIcon icon={faMoneyBills} className={styles.icon} />
           <span className={styles.linktext}>Earnings</span>
@@ -35,7 +35,7 @@ const PartnerSideBar = ({ Link, setLink }) => {
           className={`${styles.impLinkItem} ${
             Link === "requests" ? styles.activeLink : ""
           }`}
-          onClick={() => setLink("requests")}
+          onClick={() => handleClick("requests")}
         >
           <FontAwesomeIcon icon={faBell} className={styles.icon} />
           <span className={styles.linktext}>Requests</span>

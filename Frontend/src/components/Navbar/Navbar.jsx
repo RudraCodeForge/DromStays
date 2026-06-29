@@ -11,7 +11,6 @@ import { FaBell } from "react-icons/fa";
 const Navbar = () => {
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
 
-  // 🔔 unread notifications count
   const unreadCount = useSelector(
     (state) => state.notifications?.unreadCount || 0,
   );
@@ -20,20 +19,19 @@ const Navbar = () => {
   const navigate = useNavigate();
   const searchRef = useRef(null);
 
-  /* 🔔 LOAD UNREAD COUNT ON MOUNT */
+  const activeClass = ({ isActive }) => (isActive ? Styles.ActiveLink : "");
+
   useEffect(() => {
     if (isAuthenticated) {
       dispatch(loadUnreadCount());
     }
   }, [dispatch, isAuthenticated]);
 
-  /* 🔓 LOGOUT */
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
   };
 
-  /* 🔍 SEARCH */
   const handleSearch = (e) => {
     if (e.key === "Enter") {
       const value = searchRef.current.value.trim();
@@ -42,7 +40,6 @@ const Navbar = () => {
     }
   };
 
-  /* 📍 NEAR ME */
   const handleNearMe = () => {
     if (!navigator.geolocation) {
       toast.warning("Geolocation not supported");
@@ -51,9 +48,9 @@ const Navbar = () => {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-        navigate(`/explore_properties?nearby=true&lat=${lat}&lng=${lng}`);
+        navigate(
+          `/explore_properties?nearby=true&lat=${pos.coords.latitude}&lng=${pos.coords.longitude}`,
+        );
       },
       () => toast.error("Location access denied"),
     );
@@ -61,12 +58,10 @@ const Navbar = () => {
 
   return (
     <nav className={Styles.Navbar}>
-      {/* LOGO */}
       <Link to="/">
         <img src="/logo.png" alt="DormStays Logo" className={Styles.Logo} />
       </Link>
 
-      {/* SEARCH BAR (Guest / Tenant) */}
       {(role === "tenant" || !isAuthenticated) && (
         <div className={Styles.SearchBox}>
           <input
@@ -76,6 +71,7 @@ const Navbar = () => {
             className={Styles.SearchBar}
             onKeyDown={handleSearch}
           />
+
           <button
             type="button"
             className={Styles.NearMeBtn}
@@ -87,32 +83,45 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* DESKTOP MENU */}
       <ul className={Styles.NavLinks}>
-        {/* GUEST */}
+        {/* Guest */}
         {!isAuthenticated && (
           <>
             <li>
-              <NavLink to="/Login">Login</NavLink>
+              <NavLink to="/Login" className={activeClass}>
+                Login
+              </NavLink>
             </li>
+
             <li>
-              <NavLink to="/Signup">Sign Up</NavLink>
+              <NavLink to="/Signup" className={activeClass}>
+                Sign Up
+              </NavLink>
             </li>
           </>
         )}
 
-        {/* ADMIN */}
+        {/* Admin */}
         {isAuthenticated && role === "admin" && (
           <>
             <li>
-              <NavLink to="/">Home</NavLink>
+              <NavLink to="/" className={activeClass}>
+                Home
+              </NavLink>
             </li>
+
             <li>
-              <Link to="/Contactus">Contact Us</Link>
+              <NavLink to="/Contactus" className={activeClass}>
+                Contact Us
+              </NavLink>
             </li>
+
             <li>
-              <Link to="/Aboutus">About Us</Link>
+              <NavLink to="/Aboutus" className={activeClass}>
+                About Us
+              </NavLink>
             </li>
+
             <li>
               <button onClick={handleLogout} className={Styles.LogoutBtn}>
                 Logout
@@ -121,23 +130,33 @@ const Navbar = () => {
           </>
         )}
 
-        {/* PARTNER */}
+        {/* Partner */}
         {isAuthenticated && role === "partner" && (
           <>
             <li>
-              <NavLink to="/Partner/dashboard">Dashboard</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Partner/orders">Orders</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Partner/Services">Services</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Settings">Setting</NavLink>
+              <NavLink to="/Partner/dashboard" className={activeClass}>
+                Dashboard
+              </NavLink>
             </li>
 
-            {/* 🔔 NOTIFICATION */}
+            <li>
+              <NavLink to="/Partner/orders" className={activeClass}>
+                Orders
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/Partner/Services" className={activeClass}>
+                Services
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/Settings" className={activeClass}>
+                Settings
+              </NavLink>
+            </li>
+
             <li>
               <div
                 className={Styles.NotificationIcon}
@@ -151,15 +170,16 @@ const Navbar = () => {
                 )}
               </div>
             </li>
-            {/* PROFILE */}
+
             <li>
-              <NavLink to="/Profile">
+              <NavLink to="/Profile" className={activeClass}>
                 <div className={Styles.OwnerProfile}>
                   <p>
                     {user?.Name}
                     <br />
                     <span className={Styles.Role}>{role}</span>
                   </p>
+
                   <img
                     src={user?.ProfilePicture}
                     alt="profile"
@@ -170,24 +190,33 @@ const Navbar = () => {
             </li>
           </>
         )}
-
         {/* OWNER */}
         {isAuthenticated && role === "owner" && (
           <>
             <li>
-              <NavLink to="/Owner/dashboard">Dashboard</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Owner/properties">Properties</NavLink>
-            </li>
-            <li>
-              <NavLink to="/bookings">Bookings</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Settings">Settings</NavLink>
+              <NavLink to="/Owner/dashboard" className={activeClass}>
+                Dashboard
+              </NavLink>
             </li>
 
-            {/* 🔔 NOTIFICATION */}
+            <li>
+              <NavLink to="/Owner/properties" className={activeClass}>
+                Properties
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/bookings" className={activeClass}>
+                Bookings
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/Settings" className={activeClass}>
+                Settings
+              </NavLink>
+            </li>
+
             <li>
               <div
                 className={Styles.NotificationIcon}
@@ -202,15 +231,15 @@ const Navbar = () => {
               </div>
             </li>
 
-            {/* PROFILE */}
             <li>
-              <NavLink to="/Profile">
+              <NavLink to="/Profile" className={activeClass}>
                 <div className={Styles.OwnerProfile}>
                   <p>
                     {user?.Name}
                     <br />
                     <span className={Styles.Role}>{role}</span>
                   </p>
+
                   <img
                     src={user?.ProfilePicture}
                     alt="profile"
@@ -226,19 +255,29 @@ const Navbar = () => {
         {isAuthenticated && role === "tenant" && (
           <>
             <li>
-              <NavLink to="/saved-rooms">Saved</NavLink>
-            </li>
-            <li>
-              <NavLink to="/my-bookings">My Bookings</NavLink>
-            </li>
-            <li>
-              <NavLink to="/my-requests">My Requests</NavLink>
-            </li>
-            <li>
-              <NavLink to="/Settings">Settings</NavLink>
+              <NavLink to="/saved-rooms" className={activeClass}>
+                Saved
+              </NavLink>
             </li>
 
-            {/* 🔔 NOTIFICATION */}
+            <li>
+              <NavLink to="/my-bookings" className={activeClass}>
+                My Bookings
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/my-requests" className={activeClass}>
+                My Requests
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/Settings" className={activeClass}>
+                Settings
+              </NavLink>
+            </li>
+
             <li>
               <div
                 className={Styles.NotificationIcon}
@@ -253,15 +292,15 @@ const Navbar = () => {
               </div>
             </li>
 
-            {/* PROFILE */}
             <li>
-              <NavLink to="/Profile">
+              <NavLink to="/Profile" className={activeClass}>
                 <div className={Styles.OwnerProfile}>
                   <p>
                     {user?.Name}
                     <br />
                     <span className={Styles.Role}>{role}</span>
                   </p>
+
                   <img
                     src={user?.ProfilePicture}
                     alt="profile"

@@ -190,11 +190,14 @@
 }
 
 .formActions {
+  width: 100%;
   display: flex;
   justify-content: flex-end;
+  margin-bottom: 80px;
 }
 
 .formActions button {
+  width: 100%;
   padding: 14px 26px;
   background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
   color: #ffffff;

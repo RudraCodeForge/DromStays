@@ -47,3 +47,32 @@ export const CheckPartnerProfile = async () => {
     );
   }
 };
+
+export const AddServices = async (serviceData) => {
+  try {
+    const formData = new FormData();
+
+    Object.entries(serviceData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, value);
+      }
+    });
+
+    const res = await api.post("/partner/AddServices", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw (
+      error.response?.data || {
+        message: "Failed To Add Services",
+      }
+    );
+  }
+};

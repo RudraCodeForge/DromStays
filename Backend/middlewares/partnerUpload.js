@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5 MB
+    fileSize: 5 * 1024 * 1024,
   },
   fileFilter,
 });
@@ -32,4 +32,9 @@ const partnerProfileUpload = upload.fields([
   { name: "aadhaarBack", maxCount: 1 },
 ]);
 
-module.exports = partnerProfileUpload;
+const serviceUpload = upload.single("coverImage");
+
+module.exports = {
+  partnerProfileUpload,
+  serviceUpload,
+};

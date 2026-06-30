@@ -144,3 +144,34 @@ exports.CheckProfile = async (req, res) => {
     });
   }
 };
+
+exports.AddServices = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    console.log("User ID:", userId);
+    console.log("Body:", req.body);
+    console.log("File:", req.file);
+
+    const coverImage = await uploadToCloudinary(
+      req.file,
+      "Services",
+      req.body.serviceName,
+    );
+
+    console.log("Image Uploaded Successfully");
+
+    return res.status(200).json({
+      success: true,
+      message: "Service data received",
+      imageUrl: coverImage.secure_url,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

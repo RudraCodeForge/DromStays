@@ -58,7 +58,7 @@ export const AddServices = async (serviceData) => {
       }
     });
 
-    const res = await api.post("/partner/AddServices", formData, {
+    const res = await api.post("/partner/Services", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -72,6 +72,21 @@ export const AddServices = async (serviceData) => {
     throw (
       error.response?.data || {
         message: "Failed To Add Services",
+      }
+    );
+  }
+};
+export const GetServicesByPartnerId = async (id) => {
+  try {
+    const res = await api.get(`/partner/Services?PartnerId=${id}`);
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw (
+      error.response?.data || {
+        message: "Something went wrong",
       }
     );
   }

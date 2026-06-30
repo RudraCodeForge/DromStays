@@ -3,7 +3,7 @@ const Verification = require("../models/Verification.js");
 const Consent = require("../models/Consent.js");
 const BankDetails = require("../models/BankDetails.js");
 const uploadToCloudinary = require("../utils/cloudinaryUpload");
-
+const Service = require("../models/Services.js");
 exports.submitPartnerProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -102,8 +102,6 @@ exports.submitPartnerProfile = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Partner profile created successfully.",
-      aadhaarFrontUrl: aadhaarFront.secure_url,
-      aadhaarBackUrl: aadhaarBack.secure_url,
     });
   } catch (error) {
     console.error("submitPartnerProfile Error:", error);
@@ -132,6 +130,9 @@ exports.CheckProfile = async (req, res) => {
       success: true,
       profileExists: true,
       partnerId: existingPartner._id,
+      BussinessName: existingPartner.businessName,
+      Subscription: "Partner Pro",
+      Logo: "https://picsum.photos/300/200?random=8",
       isVerified: existingPartner.isVerified,
       completepercentage: existingPartner.completepercentage,
     });
@@ -149,22 +150,50 @@ exports.AddServices = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    console.log("User ID:", userId);
-    console.log("Body:", req.body);
-    console.log("File:", req.file);
+    const existingPartner = await Partner.findOne({ userId });
 
+    if (!existingPartner) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner profile not found.",
+      });
+    }
+
+    if (existingPartner.completepercentage !== 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Complete your partner profile first.",
+      });
+    }
+
+    if (!existingPartner.isVerified) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "You cannot add services until your partner profile is verified.",
+      });
+    }
+
+    // Upload image
     const coverImage = await uploadToCloudinary(
       req.file,
       "Services",
       req.body.serviceName,
     );
 
-    console.log("Image Uploaded Successfully");
+    const service = await Service.create({
+      partnerId: existingPartner._id,
+      serviceName: req.body.serviceName,
+      category: req.body.category,
+      description: req.body.description,
+      coverImage: coverImage.secure_url,
+      price: req.body.price,
+      duration: req.body.pricingType,
+    });
 
     return res.status(200).json({
       success: true,
-      message: "Service data received",
-      imageUrl: coverImage.secure_url,
+      message: "Services Add Sucessfully",
     });
   } catch (error) {
     console.error(error);
@@ -172,6 +201,27 @@ exports.AddServices = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+exports.GetServices = async (req, res) => {
+  try {
+    const { PartnerId } = req.query;
+
+    const serviceData = await Service.find({
+      partnerId: PartnerId,
+    });
+    return res.status(200).json({
+      success: true,
+      services: serviceData,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 };

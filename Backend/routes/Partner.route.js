@@ -9,6 +9,10 @@ const {
   serviceUpload,
 } = require("../middlewares/partnerUpload");
 
+// =======================
+// Partner Profile
+// =======================
+
 PartnerRouter.post(
   "/profile",
   authMiddleware,
@@ -18,11 +22,16 @@ PartnerRouter.post(
 
 PartnerRouter.get("/profile", authMiddleware, PartnerController.CheckProfile);
 
+// =======================
+// Services
+// =======================
+
 PartnerRouter.post(
-  "/AddServices",
+  "/Services",
   authMiddleware,
   serviceUpload,
   PartnerController.AddServices,
 );
+PartnerRouter.get("/Services", authMiddleware, PartnerController.GetServices);
 
 module.exports = PartnerRouter;

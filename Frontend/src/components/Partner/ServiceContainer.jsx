@@ -2,9 +2,17 @@ import styles from "../../styles/Services.module.css";
 import FilterBar from "./FilterBar";
 import ServiceCard from "./ServiceCard";
 import { useState } from "react";
-const ServiceContainer = ({ Status, setStatus, trial, setIsDrawerOpen }) => {
+
+const ServiceContainer = ({
+  Status,
+  setStatus,
+  services,
+  loading,
+  setIsDrawerOpen,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("Newest");
+
   return (
     <>
       <div className={styles.Header}>
@@ -12,6 +20,7 @@ const ServiceContainer = ({ Status, setStatus, trial, setIsDrawerOpen }) => {
           <h2>Manage Services</h2>
           <p>Manage your all Services here...</p>
         </div>
+
         <button
           type="button"
           className={styles.Button}
@@ -20,6 +29,7 @@ const ServiceContainer = ({ Status, setStatus, trial, setIsDrawerOpen }) => {
           Add Services
         </button>
       </div>
+
       <FilterBar
         status={Status}
         setStatus={setStatus}
@@ -29,13 +39,20 @@ const ServiceContainer = ({ Status, setStatus, trial, setIsDrawerOpen }) => {
         setSortBy={setSortBy}
       />
 
-      <ServiceCard
-        Status={Status}
-        trial={trial}
-        searchTerm={searchTerm}
-        sortBy={sortBy}
-      />
+      {loading ? (
+        <div className={styles.loading}>
+          <h3>Loading Services...</h3>
+        </div>
+      ) : (
+        <ServiceCard
+          Status={Status}
+          services={services}
+          searchTerm={searchTerm}
+          sortBy={sortBy}
+        />
+      )}
     </>
   );
 };
+
 export default ServiceContainer;

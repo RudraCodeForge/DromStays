@@ -1,18 +1,13 @@
 import styles from "../../styles/Services.module.css";
 
-const ServiceCard = ({ Status, trial, searchTerm, sortBy }) => {
-  const filteredServices = [...trial]
-    // Status Filter
+const ServiceCard = ({ Status, services, searchTerm, sortBy }) => {
+  const filteredServices = [...services]
     .filter((item) =>
       Status === "ALL" ? true : item.status.toUpperCase() === Status,
     )
-
-    // Search Filter
     .filter((item) =>
       item.serviceName.toLowerCase().includes(searchTerm.toLowerCase()),
     )
-
-    // Sort
     .sort((a, b) => {
       switch (sortBy) {
         case "A-Z":
@@ -26,6 +21,9 @@ const ServiceCard = ({ Status, trial, searchTerm, sortBy }) => {
 
         case "Oldest":
           return new Date(a.createdAt) - new Date(b.createdAt);
+
+        default:
+          return 0;
       }
     });
 
@@ -33,12 +31,9 @@ const ServiceCard = ({ Status, trial, searchTerm, sortBy }) => {
     <div className={styles.Services}>
       {filteredServices.length > 0 ? (
         filteredServices.map((service) => (
-          <div
-            className={styles.serviceCard}
-            key={service.id || service.serviceName}
-          >
+          <div className={styles.serviceCard} key={service._id}>
             <img
-              src={service.image}
+              src={service.coverImage}
               alt={service.serviceName}
               className={styles.serviceImage}
             />

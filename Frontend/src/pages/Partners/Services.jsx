@@ -14,6 +14,7 @@ import ServiceContainer from "../../components/Partner/ServiceContainer";
 
 const Services = () => {
   const { isAuthenticated, role } = useSelector((state) => state.auth || {});
+  const { partnerId } = useSelector((state) => state.partner || {});
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,7 +49,7 @@ const Services = () => {
         setPartnerData(partner);
 
         if (partner?.partnerId) {
-          const serviceData = await GetServicesByPartnerId(partner.partnerId);
+          const serviceData = await GetServicesByPartnerId(partnerId);
 
           setServices(serviceData.services || serviceData || []);
         }

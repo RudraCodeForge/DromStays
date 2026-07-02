@@ -1,17 +1,17 @@
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const Partner = require("../models/Partner");
 const crypto = require("crypto");
 const { check, validationResult } = require("express-validator");
 const { generateAccessToken, generateRefreshToken } = require("../utils/Token");
 const {
   sendVerificationEmail,
   sendResetPasswordEmail,
-  sendWelcomeEmail
+  sendWelcomeEmail,
 } = require("../utils/sendEmail");
 
 const LoginActivity = require("../models/LoginActivity");
 const Session = require("../models/Session");
-
 
 /* ======================================================
    🔧 HELPER : format user (single source of truth)
@@ -49,7 +49,7 @@ exports.POSTSIGNUP = [
     .withMessage("Password must be at least 8 characters long")
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).+$/)
     .withMessage(
-      "Password must contain uppercase, lowercase, number, and special character"
+      "Password must contain uppercase, lowercase, number, and special character",
     ),
 
   check("ConfirmPassword").custom((value, { req }) => {
@@ -207,8 +207,6 @@ exports.POSTLOGIN = async (req, res) => {
   }
 };
 
-
-
 /* ======================================================
    🟢 SEND VERIFICATION EMAIL
 ====================================================== */
@@ -290,15 +288,27 @@ exports.GET_ME = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    res.json({
+    const partner = await Partner.findOne({ userId: user._id }).select("_id");
+
+    return res.status(200).json({
       success: true,
       user: formatUser(user),
+      partnerId: partner?.id || null,
+      ownerId: user.id || null,
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("GET_ME ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 

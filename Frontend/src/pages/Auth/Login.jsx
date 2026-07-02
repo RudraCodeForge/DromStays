@@ -61,7 +61,7 @@ const Login = () => {
         }),
       );
 
-      dispatch(fetchCurrentUser());
+      await dispatch(fetchCurrentUser());
       e.target.reset();
 
       if (res.user.Role === "owner") {

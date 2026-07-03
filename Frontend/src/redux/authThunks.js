@@ -7,7 +7,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
   try {
     const res = await api.get("/auth/me");
     dispatch(setUserFromBackend(res.data.user));
-    dispatch(setPartnerFromBackend(res.data.partnerId));
+    dispatch(setPartnerFromBackend(res.data.partner));
     dispatch(setOwnerFromBackend(res.data.owner));
   } catch (err) {
     console.log("/auth/me failed:", err.response?.status);

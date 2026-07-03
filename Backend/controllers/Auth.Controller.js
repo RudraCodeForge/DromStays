@@ -30,6 +30,17 @@ const formatUser = (user) => ({
 });
 
 /* ======================================================
+   HELPER : format partner (single source of truth)
+====================================================== */
+const formatPartner = (partner) => ({
+  partnerId: partner._id,
+  isVerified: partner.isVerified,
+  completepercentage: partner.completepercentage,
+  InProfileCompleted: partner.completepercentage === 100 ? true : false,
+  Subscription: partner.Subscription,
+});
+
+/* ======================================================
    🟢 POST SIGNUP
 ====================================================== */
 exports.POSTSIGNUP = [
@@ -294,12 +305,14 @@ exports.GET_ME = async (req, res) => {
       });
     }
 
-    const partner = await Partner.findOne({ userId: user._id }).select("_id");
+    const partner = await Partner.findOne({ userId: user._id });
+
+    const formattedPartner = partner ? formatPartner(partner) : null;
 
     return res.status(200).json({
       success: true,
       user: formatUser(user),
-      partnerId: partner?.id || null,
+      partner: formattedPartner,
       ownerId: user.id || null,
     });
   } catch (error) {

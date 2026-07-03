@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  partnerId: null,
+  partner: null,
 };
 
 const partnerSlice = createSlice({
@@ -9,11 +9,11 @@ const partnerSlice = createSlice({
   initialState,
   reducers: {
     setPartnerFromBackend: (state, action) => {
-      state.partnerId = action.payload;
+      state.partner = action.payload;
     },
 
     clearPartner: (state) => {
-      state.partnerId = null;
+      state.partner = null;
     },
   },
 });

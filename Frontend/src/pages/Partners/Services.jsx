@@ -14,7 +14,8 @@ import ServiceContainer from "../../components/Partner/ServiceContainer";
 
 const Services = () => {
   const { isAuthenticated, role } = useSelector((state) => state.auth || {});
-  const { partnerId } = useSelector((state) => state.partner || {});
+  const { partner } = useSelector((state) => state.partner || {});
+  const partnerId = partner?.partnerId;
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -34,4 +34,14 @@ PartnerRouter.post(
 );
 PartnerRouter.get("/Services", authMiddleware, PartnerController.GetServices);
 
+PartnerRouter.get("/", authMiddleware, PartnerController.GetPartnerById);
+
+// Update Verification
+PartnerRouter.put(
+  "/verification",
+  authMiddleware,
+  partnerProfileUpload,
+  PartnerController.updateVerification,
+);
+
 module.exports = PartnerRouter;

@@ -4,6 +4,7 @@ const Consent = require("../models/Consent.js");
 const BankDetails = require("../models/BankDetails.js");
 const uploadToCloudinary = require("../utils/cloudinaryUpload");
 const Service = require("../models/Services.js");
+
 exports.submitPartnerProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -69,9 +70,16 @@ exports.submitPartnerProfile = async (req, res) => {
     await Promise.all([
       Verification.create({
         partnerId: partner._id,
+
         aadhaarFrontUrl: aadhaarFront.secure_url,
+        aadhaarFrontPublicId: aadhaarFront.public_id,
+
         aadhaarBackUrl: aadhaarBack.secure_url,
+        aadhaarBackPublicId: aadhaarBack.public_id,
+
         liveSelfieUrl: liveSelfie.secure_url,
+        liveSelfiePublicId: liveSelfie.public_id,
+
         addharno: req.body.aadhaarNumber,
         gstno: req.body.gstNumber,
         panNo: req.body.panNumber,
@@ -222,6 +230,120 @@ exports.GetServices = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
+    });
+  }
+};
+
+exports.GetPartnerById = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const partner = await Partner.findOne({ userId });
+
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner not found",
+      });
+    }
+
+    const [bank, verification] = await Promise.all([
+      BankDetails.findOne({ userId }),
+      Verification.findOne({ partnerId: partner._id }),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        partner,
+        bank,
+        verification,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.updateVerification = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const partner = await Partner.findOne({ userId });
+
+    if (!partner) {
+      return res.status(404).json({
+        success: false,
+        message: "Partner not found",
+      });
+    }
+
+    const verification = await Verification.findOne({
+      partnerId: partner._id,
+    });
+
+    if (!verification) {
+      return res.status(404).json({
+        success: false,
+        message: "Verification record not found",
+      });
+    }
+
+    // Live Selfie
+    if (req.files?.liveSelfie?.length) {
+      const result = await uploadToCloudinary(
+        req.files.liveSelfie[0],
+        `kyc/${userId}/selfie`,
+        "Live-Photo",
+      );
+
+      verification.liveSelfieUrl = result.secure_url;
+      verification.liveSelfiePublicId = result.public_id;
+    }
+
+    // Aadhaar Front
+    if (req.files?.aadhaarFront?.length) {
+      const result = await uploadToCloudinary(
+        req.files.aadhaarFront[0],
+        `kyc/${userId}/aadhaar`,
+        "aadhaar-front",
+      );
+
+      verification.aadhaarFrontUrl = result.secure_url;
+      verification.aadhaarFrontPublicId = result.public_id;
+    }
+
+    // Aadhaar Back
+    if (req.files?.aadhaarBack?.length) {
+      const result = await uploadToCloudinary(
+        req.files.aadhaarBack[0],
+        `kyc/${userId}/aadhaar`,
+        "aadhaar-back",
+      );
+
+      verification.aadhaarBackUrl = result.secure_url;
+      verification.aadhaarBackPublicId = result.public_id;
+    }
+
+    // Reset verification status
+    verification.status = "pending";
+    verification.rejectionReason = "";
+    verification.reviewedAt = null;
+
+    await verification.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Verification resubmitted successfully.",
+    });
+  } catch (error) {
+    console.error("Update Verification:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };

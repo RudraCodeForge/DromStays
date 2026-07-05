@@ -189,6 +189,18 @@
   font-weight: 500;
 }
 
+.previewImage {
+  margin-top: 12px;
+}
+
+.previewImg {
+  width: 220px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
 @media (max-width: 900px) {
   .form {
     grid-template-columns: 1fr;

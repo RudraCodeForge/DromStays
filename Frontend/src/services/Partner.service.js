@@ -91,3 +91,39 @@ export const GetServicesByPartnerId = async (id) => {
     );
   }
 };
+
+export const getPartnerProfile = async () => {
+  try {
+    const res = await api.get(`/partner`);
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw (
+      error.response?.data || {
+        message: "Failed to get partner by ID",
+      }
+    );
+  }
+};
+
+export const updateVerification = async (formData) => {
+  try {
+    const res = await api.put("/partner/verification", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+
+    throw (
+      error.response?.data || {
+        message: "Failed to update verification",
+      }
+    );
+  }
+};

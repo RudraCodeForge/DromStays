@@ -7,8 +7,17 @@ import {
 } from "../../utils/partnerValidation";
 import LiveSelfieCapture from "../../components/LiveSelfieCapture";
 
-const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
+const VerificationDetails = ({
+  data,
+  mode,
+  profile,
+  updateData,
+  nextStep,
+  prevStep,
+  submitVerification,
+}) => {
   const [errors, setErrors] = useState({});
+  const isEdit = mode === "edit";
 
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
@@ -64,33 +73,56 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
     updateData({ [name]: file });
   };
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
 
     const validationErrors = {};
 
-    if (!validateGST(data.gstNumber)) {
+    // GST
+    if (!validateGST(data.gstNumber || profile?.verification?.gstno)) {
       validationErrors.gstNumber = "Invalid GST number format";
     }
 
-    if (!validateAadhaar(data.aadhaarNumber)) {
+    // Aadhaar
+    if (
+      !validateAadhaar(data.aadhaarNumber || profile?.verification?.addharno)
+    ) {
       validationErrors.aadhaarNumber = "Aadhaar must be 12 digits";
     }
 
-    if (!validatePAN(data.panNumber)) {
+    // PAN
+    if (!validatePAN(data.panNumber || profile?.verification?.panNo)) {
       validationErrors.panNumber = "Invalid PAN format";
     }
 
-    if (!data.liveSelfie) {
-      validationErrors.liveSelfie = "Live Selfie is required";
+    // Create Mode
+    if (!isEdit) {
+      if (!data.liveSelfie) {
+        validationErrors.liveSelfie = "Live Selfie is required";
+      }
+
+      if (!data.aadhaarFront) {
+        validationErrors.aadhaarFront = "Aadhaar Front is required";
+      }
+
+      if (!data.aadhaarBack) {
+        validationErrors.aadhaarBack = "Aadhaar Back is required";
+      }
     }
 
-    if (!data.aadhaarFront) {
-      validationErrors.aadhaarFront = "Aadhaar Front is required";
-    }
+    // Edit Mode
+    else {
+      if (!data.liveSelfie && !profile?.verification?.liveSelfieUrl) {
+        validationErrors.liveSelfie = "Live Selfie is required";
+      }
 
-    if (!data.aadhaarBack) {
-      validationErrors.aadhaarBack = "Aadhaar Back is required";
+      if (!data.aadhaarFront && !profile?.verification?.aadhaarFrontUrl) {
+        validationErrors.aadhaarFront = "Aadhaar Front is required";
+      }
+
+      if (!data.aadhaarBack && !profile?.verification?.aadhaarBackUrl) {
+        validationErrors.aadhaarBack = "Aadhaar Back is required";
+      }
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -98,7 +130,11 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
       return;
     }
 
-    nextStep();
+    if (isEdit) {
+      await submitVerification();
+    } else {
+      nextStep();
+    }
   };
 
   return (
@@ -108,7 +144,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         <input
           type="text"
           name="gstNumber"
-          value={data.gstNumber}
+          value={data.gstNumber || profile?.verification?.gstno || ""}
           onChange={handleChange}
           placeholder="Enter GST number"
           required
@@ -124,7 +160,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         <input
           type="text"
           name="aadhaarNumber"
-          value={data.aadhaarNumber}
+          value={data.aadhaarNumber || profile?.verification?.addharno || ""}
           onChange={handleChange}
           placeholder="Enter Aadhaar Number"
           maxLength="12"
@@ -141,7 +177,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         <input
           type="text"
           name="panNumber"
-          value={data.panNumber}
+          value={data.panNumber || profile?.verification?.panNo || ""}
           onChange={handleChange}
           placeholder="Enter PAN Number"
           maxLength="10"
@@ -169,6 +205,18 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         )}
       </div>
 
+      {isEdit && profile?.verification?.liveSelfieUrl && (
+        <div className={styles.previewImage}>
+          <p>Current Selfie</p>
+          <img
+            width="100%"
+            src={profile.verification.liveSelfieUrl}
+            alt="Selfie"
+            className={styles.previewImg}
+          />
+        </div>
+      )}
+
       <div className={`${styles.formGroup} ${styles.fullWidth}`}>
         <label>Aadhaar Front *</label>
         <input
@@ -176,7 +224,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
           name="aadhaarFront"
           accept="image/*,application/pdf"
           onChange={handleFileChange}
-          required
+          required={!isEdit}
           className={errors.aadhaarFront ? styles.inputError : ""}
         />
         {errors.aadhaarFront && (
@@ -187,6 +235,18 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         )}
       </div>
 
+      {isEdit && profile?.verification?.aadhaarFrontUrl && (
+        <div className={styles.previewImage}>
+          <p>Current Aadhaar Front</p>
+          <img
+            width="100%"
+            src={profile.verification.aadhaarFrontUrl}
+            alt="Aadhaar Front"
+            className={styles.previewImg}
+          />
+        </div>
+      )}
+
       <div className={`${styles.formGroup} ${styles.fullWidth}`}>
         <label>Aadhaar Back *</label>
         <input
@@ -194,7 +254,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
           name="aadhaarBack"
           accept="image/*,application/pdf"
           onChange={handleFileChange}
-          required
+          required={!isEdit}
           className={errors.aadhaarBack ? styles.inputError : ""}
         />
         {errors.aadhaarBack && (
@@ -204,6 +264,18 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
           <span className={styles.fileInfo}>✓ {data.aadhaarBack.name}</span>
         )}
       </div>
+
+      {isEdit && profile?.verification?.aadhaarBackUrl && (
+        <div className={styles.previewImage}>
+          <p>Current Aadhaar Back</p>
+          <img
+            width="100%"
+            src={profile.verification.aadhaarBackUrl}
+            alt="Aadhaar Back"
+            className={styles.previewImg}
+          />
+        </div>
+      )}
 
       <div className={styles.buttonGroup}>
         <button
@@ -215,7 +287,7 @@ const VerificationDetails = ({ data, updateData, nextStep, prevStep }) => {
         </button>
 
         <button type="submit" className={styles.nextBtn}>
-          Next →
+          {isEdit ? "Re-submit Verification" : "Next →"}
         </button>
       </div>
     </form>

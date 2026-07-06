@@ -272,12 +272,14 @@ exports.GetServices = async (req, res) => {
 exports.GetPartnerById = async (req, res) => {
   try {
     const userId = req.user.id;
+
     const partner = await Partner.findOne({ userId });
 
     if (!partner) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
-        message: "Partner not found",
+        data: null,
+        message: "Partner profile not created",
       });
     }
 
@@ -286,11 +288,11 @@ exports.GetPartnerById = async (req, res) => {
       Verification.findOne({ partnerId: partner._id }),
     ]);
 
-    const Data = FormatPartnerProfile(partner, bank, verification);
+    const data = FormatPartnerProfile(partner, bank, verification);
 
     return res.status(200).json({
       success: true,
-      data: Data,
+      data,
     });
   } catch (error) {
     return res.status(500).json({

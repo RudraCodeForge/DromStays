@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import ProfessionalDetails from "./ProfessionalDetails";
 import VerificationDetails from "./VerificationDetails";
@@ -12,10 +13,28 @@ import {
 } from "../../services/Partner.service";
 
 import styles from "../../styles/PartnerProfile.module.css";
+import { initialPartnerData } from "./partnerInitialState";
 
 import PageLoader from "../../components/PageLoader";
 import PartnerProfileCard from "../../components/Partner/PartnerProfileCard";
 import ProgressRapper from "../../components/ProgressRapper";
+
+const TOTAL_STEPS = 3;
+
+const STEP_DATA = {
+  1: {
+    title: "Professional Details",
+    message: "Tell us about your professional services.",
+  },
+  2: {
+    title: "Verification Details",
+    message: "Share your verification documents so we can verify your profile.",
+  },
+  3: {
+    title: "Bank Details",
+    message: "Enter your bank details to receive payouts.",
+  },
+};
 
 const PartnerProfile = () => {
   const navigate = useNavigate();
@@ -25,64 +44,41 @@ const PartnerProfile = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
   const [partnerProfile, setPartnerProfile] = useState(null);
+  const [partnerData, setPartnerData] = useState(initialPartnerData);
 
-  const [partnerData, setPartnerData] = useState({
-    businessName: "",
-    contactPerson: "",
-    serviceCategory: "",
-    experience: "",
-    skills: "",
-    languages: "",
-    workingHours: "",
-    city: "",
-    serviceRadius: "",
+  const { title: stepTitle, message: stepMessage } = STEP_DATA[step];
 
-    gstNumber: "",
-    aadhaarNumber: "",
-    panNumber: "",
-    aadhaarFront: null,
-    aadhaarBack: null,
-    liveSelfie: null,
-
-    accountHolderName: "",
-    bankName: "",
-    accountNumber: "",
-    ifscCode: "",
-    upiId: "",
-  });
-
-  // Authentication Check
+  // Authentication
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
-      return;
-    }
-
-    if (role !== "partner") {
+    } else if (role !== "partner") {
       navigate("/unauthorized");
     }
   }, [isAuthenticated, role, navigate]);
 
   // Fetch Partner Profile
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  const fetchPartnerProfile = async () => {
+    try {
+      setLoading(true);
 
-        const profile = await getPartnerProfile();
+      const profile = await getPartnerProfile();
 
-        if (profile?.success) {
-          setPartnerProfile(profile);
-        }
-      } catch (error) {
-        console.error("Error fetching partner profile:", error);
-      } finally {
-        setLoading(false);
+      if (profile?.success) {
+        setPartnerProfile(profile.data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching partner profile:", error);
+      toast.error("Failed to fetch partner profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchPartnerProfile();
   }, []);
 
   const updatePartnerData = (newData) => {
@@ -92,7 +88,8 @@ const PartnerProfile = () => {
     }));
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, 3));
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const submitPartnerProfile = async () => {
@@ -101,49 +98,27 @@ const PartnerProfile = () => {
 
       const res = await submit_Partner_Profile(partnerData);
 
-      if (res?.success) {
-        alert("Profile Submitted Successfully");
-
-        const profile = await getPartnerProfile();
-
-        if (profile?.success) {
-          setPartnerProfile(profile);
-        }
-      } else {
-        alert(res?.message || "Failed to submit profile");
+      if (!res?.success) {
+        toast.error(res?.message || "Failed to submit profile");
+        return;
       }
+
+      toast.success("Profile submitted successfully");
+
+      await fetchPartnerProfile();
     } catch (error) {
       console.error(error);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setSubmitting(false);
     }
   };
-
-  const stepData = {
-    1: {
-      title: "Professional Details",
-      message: "Tell us about your professional services.",
-    },
-    2: {
-      title: "Verification Details",
-      message:
-        "Share your verification documents so we can verify your profile.",
-    },
-    3: {
-      title: "Bank Details",
-      message: "Enter your bank details to receive payouts.",
-    },
-  };
-
-  const { title: stepTitle, message: stepMessage } = stepData[step];
-
-  if (loading || submitting) {
+  if (loading) {
     return <PageLoader />;
   }
 
   if (partnerProfile) {
-    return <PartnerProfileCard profile={partnerProfile.data} />;
+    return <PartnerProfileCard profile={partnerProfile} />;
   }
 
   return (
@@ -156,7 +131,9 @@ const PartnerProfile = () => {
 
         <ProgressRapper step={step} />
 
-        <div className={styles.stepInfo}>Step {step} of 3</div>
+        <div className={styles.stepInfo}>
+          Step {step} of {TOTAL_STEPS}
+        </div>
 
         <div className={styles.stepContent}>
           {step === 1 && (
@@ -183,6 +160,7 @@ const PartnerProfile = () => {
               updateData={updatePartnerData}
               prevStep={prevStep}
               submitProfile={submitPartnerProfile}
+              submitting={submitting}
             />
           )}
         </div>

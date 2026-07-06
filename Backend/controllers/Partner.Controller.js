@@ -4,7 +4,7 @@ const Consent = require("../models/Consent.js");
 const BankDetails = require("../models/BankDetails.js");
 const uploadToCloudinary = require("../utils/cloudinaryUpload");
 const Service = require("../models/Services.js");
-
+const { parseCommaSeparated } = require("../utils/CoomaSeperator.js");
 const FormatPartnerProfile = (partner, bank, verification) => {
   return {
     partner: {
@@ -93,8 +93,8 @@ exports.submitPartnerProfile = async (req, res) => {
       contactPerson: req.body.contactPerson,
       serviceCategory: req.body.serviceCategory,
       experience: req.body.experience,
-      skills: req.body.skills,
-      languages: req.body.languages,
+      skills: parseCommaSeparated(req.body.skills),
+      languages: parseCommaSeparated(req.body.languages),
       city: req.body.city,
       serviceRadius: req.body.serviceRadius,
       workingHours: req.body.workingHours,

@@ -60,6 +60,7 @@ import NotificationSettings from "./pages/Common/NotificationSettings.jsx";
 import PartnerDashboard from "./pages/Partners/PartnerDashboard.jsx";
 import PartnerProfile from "./pages/Partners/PartnerProfile.jsx";
 import Services from "./pages/Partners/Services.jsx";
+import RejectedProfile from "./components/Partner/RejectedProfile.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -415,6 +416,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Services />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Partner/RejectedProfile"
+          element={
+            <ProtectedRoute>
+              <RejectedProfile />
             </ProtectedRoute>
           }
         />

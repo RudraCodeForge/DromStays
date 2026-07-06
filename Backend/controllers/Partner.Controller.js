@@ -5,6 +5,41 @@ const BankDetails = require("../models/BankDetails.js");
 const uploadToCloudinary = require("../utils/cloudinaryUpload");
 const Service = require("../models/Services.js");
 
+const FormatPartnerProfile = (partner, bank, verification) => {
+  return {
+    partner: {
+      id: partner._id,
+      businessName: partner.businessName,
+      contactPerson: partner.contactPerson,
+      serviceCategory: partner.serviceCategory,
+      experience: partner.experience,
+      skills: partner.skills,
+      languages: partner.languages,
+      workingHours: partner.workingHours,
+      city: partner.city,
+      serviceRadius: partner.serviceRadius,
+      completepercentage: partner.completepercentage,
+      isVerified: partner.isVerified,
+    },
+    bank: {
+      accountHolderName: bank.accountHolderName,
+      bankName: bank.bankName,
+      accountNumber: bank.accountNumber,
+      ifscCode: bank.ifscCode,
+      upiId: bank.upiId,
+    },
+    verification: {
+      aadhaarFrontUrl: verification.aadhaarFrontUrl,
+      aadhaarBackUrl: verification.aadhaarBackUrl,
+      liveSelfieUrl: verification.liveSelfieUrl,
+      addharno: verification.addharno,
+      gstno: verification.gstno,
+      panNo: verification.panNo,
+      status: verification.status,
+      rejectionReason: verification.rejectionReason,
+    },
+  };
+};
 exports.submitPartnerProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -251,13 +286,11 @@ exports.GetPartnerById = async (req, res) => {
       Verification.findOne({ partnerId: partner._id }),
     ]);
 
+    const Data = FormatPartnerProfile(partner, bank, verification);
+
     return res.status(200).json({
       success: true,
-      data: {
-        partner,
-        bank,
-        verification,
-      },
+      data: Data,
     });
   } catch (error) {
     return res.status(500).json({

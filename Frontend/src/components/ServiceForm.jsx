@@ -3,16 +3,7 @@ import { useState } from "react";
 import { AddServices } from "../services/Partner.service";
 import { useSelector } from "react-redux";
 const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
-  const { partnerId } = useSelector((state) => state.partner || {});
-
-  if (!partnerId) {
-    return (
-      <div className={styles.noPartnerMessage}>
-        <p>You need to create a partner profile before adding services.</p>
-      </div>
-    );
-  }
-
+  const { partner } = useSelector((state) => state.partner || {});
   const [formData, setFormData] = useState({
     serviceName: "",
     category: "",

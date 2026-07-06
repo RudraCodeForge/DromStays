@@ -8,16 +8,12 @@ import BankDetails from "./BankDetails";
 
 import {
   submit_Partner_Profile,
-  CheckPartnerProfile,
   getPartnerProfile,
-  updateVerification,
 } from "../../services/Partner.service";
 
 import styles from "../../styles/PartnerProfile.module.css";
 
 import PageLoader from "../../components/PageLoader";
-import Navbar from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer";
 import PartnerProfileCard from "../../components/Partner/PartnerProfileCard";
 import ProgressRapper from "../../components/ProgressRapper";
 
@@ -29,7 +25,6 @@ const PartnerProfile = () => {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [profileExists, setProfileExists] = useState(false);
   const [partnerProfile, setPartnerProfile] = useState(null);
 
   const [partnerData, setPartnerData] = useState({
@@ -69,20 +64,13 @@ const PartnerProfile = () => {
     }
   }, [isAuthenticated, role, navigate]);
 
-  // Fetch Profile
+  // Fetch Partner Profile
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const [profileCheck, profile] = await Promise.all([
-          CheckPartnerProfile(),
-          getPartnerProfile(),
-        ]);
-
-        if (profileCheck?.success && profileCheck?.profileExists) {
-          setProfileExists(true);
-        }
+        const profile = await getPartnerProfile();
 
         if (profile?.success) {
           setPartnerProfile(profile);
@@ -116,8 +104,6 @@ const PartnerProfile = () => {
       if (res?.success) {
         alert("Profile Submitted Successfully");
 
-        setProfileExists(true);
-
         const profile = await getPartnerProfile();
 
         if (profile?.success) {
@@ -134,117 +120,32 @@ const PartnerProfile = () => {
     }
   };
 
-  const stepTitle =
-    step === 1
-      ? "Professional Details"
-      : step === 2
-        ? "Verification Details"
-        : "Bank Details";
+  const stepData = {
+    1: {
+      title: "Professional Details",
+      message: "Tell us about your professional services.",
+    },
+    2: {
+      title: "Verification Details",
+      message:
+        "Share your verification documents so we can verify your profile.",
+    },
+    3: {
+      title: "Bank Details",
+      message: "Enter your bank details to receive payouts.",
+    },
+  };
 
-  const stepMessage =
-    step === 1
-      ? "Tell us about your professional services."
-      : step === 2
-        ? "Share your verification documents so we can verify your profile."
-        : "Enter your bank details to receive payouts.";
+  const { title: stepTitle, message: stepMessage } = stepData[step];
 
   if (loading || submitting) {
     return <PageLoader />;
   }
 
-  const submitVerification = async () => {
-    try {
-      setSubmitting(true);
-
-      const formData = new FormData();
-
-      formData.append("partnerId", partnerProfile.data.partner._id);
-
-      if (partnerData.liveSelfie) {
-        formData.append("liveSelfie", partnerData.liveSelfie);
-      }
-
-      if (partnerData.aadhaarFront) {
-        formData.append("aadhaarFront", partnerData.aadhaarFront);
-      }
-
-      if (partnerData.aadhaarBack) {
-        formData.append("aadhaarBack", partnerData.aadhaarBack);
-      }
-
-      const res = await updateVerification(formData);
-
-      if (res.success) {
-        alert("Verification submitted successfully");
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-  // Rejected Profile
-  if (partnerProfile?.data?.verification?.status === "rejected") {
-    return (
-      <>
-        <Navbar />
-
-        <div className={styles.container}>
-          <div className={styles.card}>
-            <div className={styles.header}>
-              <h1>Verification Rejected</h1>
-
-              <p>
-                Your verification documents were rejected. Please upload them
-                again.
-              </p>
-
-              <div
-                style={{
-                  background: "#ffe8e8",
-                  color: "#d32f2f",
-                  padding: "12px",
-                  borderRadius: "8px",
-                  marginTop: "15px",
-                  fontWeight: 500,
-                }}
-              >
-                Reason: {partnerProfile.data.verification.rejectionReason}
-              </div>
-            </div>
-
-            <VerificationDetails
-              mode="edit"
-              profile={partnerProfile.data}
-              data={partnerData}
-              updateData={updatePartnerData}
-              submitVerification={submitVerification}
-            />
-          </div>
-        </div>
-
-        <Footer />
-      </>
-    );
+  if (partnerProfile) {
+    return <PartnerProfileCard profile={partnerProfile.data} />;
   }
 
-  // Profile Already Exists
-  if (profileExists) {
-    return (
-      <>
-        <Navbar />
-
-        <div className={styles.container}>
-          <PartnerProfileCard profile={partnerProfile?.data} />
-        </div>
-
-        <Footer />
-      </>
-    );
-  }
-
-  // New Profile Form
   return (
     <div className={styles.container}>
       <div className={styles.card}>

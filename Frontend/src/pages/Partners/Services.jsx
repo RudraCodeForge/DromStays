@@ -1,70 +1,82 @@
-import styles from "../../styles/Services.module.css";
-import Navber from "../../components/Navbar/Navbar";
-import Footer from "../../components/Footer";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+
+import styles from "../../styles/Services.module.css";
+
+import Navber from "../../components/Navbar/Navbar";
+import Footer from "../../components/Footer";
 import ServiceForm from "../../components/ServiceForm";
 import PartnerSideBar from "../../components/Partner/PartnerSidebar";
+import ServiceContainer from "../../components/Partner/ServiceContainer";
+import NoPartnerProfile from "../../components/Partner/NoPartnerProfile";
 import {
   CheckPartnerProfile,
   GetServicesByPartnerId,
 } from "../../services/Partner.service";
-import ServiceContainer from "../../components/Partner/ServiceContainer";
 
 const Services = () => {
   const { isAuthenticated, role } = useSelector((state) => state.auth || {});
   const { partner } = useSelector((state) => state.partner || {});
-  const partnerId = partner?.partnerId;
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [Status, setStatus] = useState("ALL");
-  const [Link, setLink] = useState("services");
+  const [status, setStatus] = useState("ALL");
+  const [link, setLink] = useState("services");
 
   const [partnerData, setPartnerData] = useState(null);
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Authentication Check
+  // Authentication & Authorization
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/login", { replace: true });
       return;
     }
 
     if (role !== "partner") {
-      navigate("/unauthorized");
+      navigate("/unauthorized", { replace: true });
     }
   }, [isAuthenticated, role, navigate]);
 
-  // Fetch Partner & Services
+  // Fetch Partner Profile & Services
   useEffect(() => {
+    if (!isAuthenticated || role !== "partner") return;
+
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const partner = await CheckPartnerProfile();
-        setPartnerData(partner);
+        const partnerResponse = await CheckPartnerProfile();
 
-        if (partner?.partnerId) {
-          const serviceData = await GetServicesByPartnerId(partnerId);
-
-          setServices(serviceData.services || serviceData || []);
+        if (!partnerResponse?.partnerId) {
+          setPartnerData(null);
+          setServices([]);
+          return;
         }
+
+        setPartnerData(partnerResponse);
+
+        const serviceResponse = await GetServicesByPartnerId(
+          partnerResponse.partnerId,
+        );
+
+        setServices(serviceResponse?.services || []);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching partner/services:", error);
+        setServices([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [isAuthenticated, role]);
 
-  // Handle Tab Change
+  // Handle Sidebar Tabs
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     setLink(params.get("tab") || "services");
@@ -79,49 +91,58 @@ const Services = () => {
     <>
       <Navber />
 
-      <div className={styles.container}>
-        <div className={styles.leftCon}>
-          <div className={styles.PartnerProfile}>
-            <div className={styles.partnerLogo}>
-              <img src={partnerData?.Logo} alt={partnerData?.BussinessName} />
+      {!loading && !partnerData ? (
+        <NoPartnerProfile />
+      ) : (
+        <>
+          <div className={styles.container}>
+            <div className={styles.leftCon}>
+              <div className={styles.PartnerProfile}>
+                <div className={styles.partnerLogo}>
+                  <img
+                    src={partnerData?.Logo || "/images/default-partner.png"}
+                    alt={partnerData?.BussinessName || "Partner"}
+                  />
+                </div>
+
+                <div className={styles.partnerInfo}>
+                  <h3>{partnerData?.BussinessName || "Partner"}</h3>
+                  <p>{partnerData?.Subscription || "Free Plan"}</p>
+                </div>
+              </div>
+
+              <PartnerSideBar Link={link} handleClick={handleClick} />
             </div>
 
-            <div className={styles.partnerInfo}>
-              <h3>{partnerData?.BussinessName}</h3>
-              <p>{partnerData?.Subscription}</p>
+            <div className={styles.RightCon}>
+              {link === "services" && (
+                <ServiceContainer
+                  Status={status}
+                  setStatus={setStatus}
+                  services={services}
+                  setServices={setServices}
+                  setIsDrawerOpen={setIsDrawerOpen}
+                  loading={loading}
+                />
+              )}
+
+              {link === "earnings" && <h1>Earnings Page</h1>}
+
+              {link === "requests" && <h1>Requests Page</h1>}
             </div>
           </div>
 
-          <PartnerSideBar Link={Link} handleClick={handleClick} />
-        </div>
+          <div
+            className={`${styles.overlay} ${isDrawerOpen ? styles.show : ""}`}
+            onClick={() => setIsDrawerOpen(false)}
+          />
 
-        <div className={styles.RightCon}>
-          {Link === "services" && (
-            <ServiceContainer
-              Status={Status}
-              setStatus={setStatus}
-              services={services}
-              setServices={setServices}
-              setIsDrawerOpen={setIsDrawerOpen}
-              loading={loading} // 👈 Pass loading here
-            />
-          )}
-
-          {Link === "earnings" && <h1>Earnings Page</h1>}
-
-          {Link === "requests" && <h1>Requests Page</h1>}
-        </div>
-      </div>
-
-      <div
-        className={`${styles.overlay} ${isDrawerOpen ? styles.show : ""}`}
-        onClick={() => setIsDrawerOpen(false)}
-      />
-
-      <ServiceForm
-        isDrawerOpen={isDrawerOpen}
-        setIsDrawerOpen={setIsDrawerOpen}
-      />
+          <ServiceForm
+            isDrawerOpen={isDrawerOpen}
+            setIsDrawerOpen={setIsDrawerOpen}
+          />
+        </>
+      )}
 
       <Footer />
     </>

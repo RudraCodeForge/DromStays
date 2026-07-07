@@ -25,6 +25,7 @@ const PartnerSchema = new mongoose.Schema(
       type: String,
       default: "pending",
     },
+
     completepercentage: {
       type: Number,
       default: 0,

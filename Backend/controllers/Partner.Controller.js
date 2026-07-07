@@ -47,7 +47,6 @@ exports.submitPartnerProfile = async (req, res) => {
     const existingPartner = await Partner.findOne({ userId });
 
     if (existingPartner) {
-      console.log(completepercentage, isVerified);
       return res.status(200).json({
         success: true,
         completepercentage,
@@ -145,6 +144,13 @@ exports.submitPartnerProfile = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Partner profile created successfully.",
+      partner: {
+        partnerId: partner._id,
+        businessName: partner.businessName,
+        isVerified: partner.isVerified,
+        completepercentage: partner.completepercentage,
+        status: partner.status,
+      },
     });
   } catch (error) {
     console.error("submitPartnerProfile Error:", error);
@@ -178,6 +184,7 @@ exports.CheckProfile = async (req, res) => {
       Logo: "https://picsum.photos/300/200?random=8",
       isVerified: existingPartner.isVerified,
       completepercentage: existingPartner.completepercentage,
+      Status: existingPartner.status,
     });
   } catch (error) {
     console.error(error);

@@ -18,6 +18,8 @@ import { initialPartnerData } from "./partnerInitialState";
 import PageLoader from "../../components/PageLoader";
 import PartnerProfileCard from "../../components/Partner/PartnerProfileCard";
 import ProgressRapper from "../../components/ProgressRapper";
+import { useDispatch } from "react-redux";
+import { setPartnerFromBackend } from "../../redux/partnerSlice";
 
 const TOTAL_STEPS = 3;
 
@@ -49,6 +51,8 @@ const PartnerProfile = () => {
   const [partnerData, setPartnerData] = useState(initialPartnerData);
 
   const { title: stepTitle, message: stepMessage } = STEP_DATA[step];
+
+  const dispatch = useDispatch();
 
   // Authentication
   useEffect(() => {
@@ -103,6 +107,7 @@ const PartnerProfile = () => {
         return;
       }
 
+      dispatch(setPartnerFromBackend(res.partner));
       toast.success("Profile submitted successfully");
 
       await fetchPartnerProfile();

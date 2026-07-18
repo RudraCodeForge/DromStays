@@ -241,7 +241,7 @@ exports.AddServices = async (req, res) => {
       duration: req.body.pricingType,
     });
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: "Services Add Sucessfully",
     });

@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Carter+One&display=swap");
+.hero {
+  background-color: rgb(247, 250, 255);
+  width: 100%;
+  height: 100%;
+  padding: 20px 40px;
+}
+.Content {
+  display: flex;
+  justify-content: space-between;
+}
+.herotext {
+  width: 45%;
+  padding: 20px;
+}
+.badge {
+  margin: 20px 0 0 0;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgb(220, 220, 220);
+  color: blue;
+  font-family: "Carter One", system-ui;
+  font-weight: 200;
+  font-style: normal;
+}
+.Pera1 {
+  margin-top: 20px;
+  color: rgb(2, 6, 23);
+  font-size: 60px;
+  font-weight: 800;
+}
+.Pera2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+.Pera3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+}
+.badge1,
+.badge2 {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  font-weight: 600;
+}
+.heroimage {
+  width: 45%;
+  border-radius: 20px;
+  box-shadow:
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+    rgba(37, 99, 235, 0.35) 0px 25px 65px -22px;
+}
+.heroImg {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+}
+.blue {
+  color: blue;
+}
+.SearchServicesCon {
+  width: 100%;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-top: 70px;
+  background-color: white;
+}
+/* Search form styles */
+.SearchForm {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.FromSpan {
+  display: block;
+  margin-left: 5px;
+  color: grey;
+  font-weight: bold;
+}
+.Label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  flex: 1 1 210px;
+  min-width: 220px;
+}
+.Label div {
+  width: 100%;
+}
+.Select,
+.Input {
+  width: 100%;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #0b1220;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+.Select {
+  min-width: 200px;
+  border: none;
+  font-weight: bold;
+}
+.Input {
+  min-width: 200px;
+  border: none;
+  color: black;
+  font-weight: bold;
+}
+.Button {
+  background: #2563eb;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.Button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+}
+.Label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px;
+}
+
+.Location,
+.Icons {
+  color: red;
+  background-color: rgba(255, 89, 0, 0.2);
+  padding: 15px;
+  font-size: 20px;
+  border-radius: 10px;
+}
+.Icons {
+  color: #2563eb;
+  background-color: #2564eb19;
+}
+/* Responsive layout */
+@media (max-width: 1024px) {
+  .Content {
+    gap: 20px;
+  }
+  .Pera1 {
+    font-size: 42px;
+  }
+  .herotext {
+    width: 100%;
+  }
+  .heroimage {
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+@media (max-width: 768px) {
+  .Content {
+    flex-direction: column;
+  }
+  .Pera1 {
+    font-size: 34px;
+  }
+  .Pera2 {
+    font-size: 16px;
+  }
+  .Pera3 {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .SearchServicesCon {
+    margin-top: 30px;
+    padding: 14px;
+  }
+  .SearchForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .Label {
+    flex: 1 1 150px;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+  }
+  .Input,
+  .Select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .Button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .Label {
+    flex: 1 1 150px;
+    min-width: 150px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .Label .Icons,
+  .Label .Location {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .Pera1 {
+    font-size: 28px;
+  }
+  .badge {
+    padding: 8px;
+    font-size: 14px;
+  }
+}

@@ -56,6 +56,7 @@ import PayoutPreference from "./pages/Common/PayoutPreference.jsx";
 import Notifications from "./pages/Common/Notifications.jsx";
 import ViewPayments from "./pages/Owner/ViewPayments.jsx";
 import NotificationSettings from "./pages/Common/NotificationSettings.jsx";
+import BookServices from "./pages/Common/BookServices.jsx";
 // Import PartnerDashboard
 import PartnerDashboard from "./pages/Partners/PartnerDashboard.jsx";
 import PartnerProfile from "./pages/Partners/PartnerProfile.jsx";
@@ -425,6 +426,15 @@ function App() {
           element={
             <ProtectedRoute>
               <RejectedProfile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/Book/Services"
+          element={
+            <ProtectedRoute>
+              <BookServices />
             </ProtectedRoute>
           }
         />

@@ -212,6 +212,12 @@ const Navbar = () => {
             </li>
 
             <li>
+              <NavLink to="/Book/Services" className={activeClass}>
+                Book Services
+              </NavLink>
+            </li>
+
+            <li>
               <NavLink to="/Settings" className={activeClass}>
                 Settings
               </NavLink>
@@ -269,6 +275,12 @@ const Navbar = () => {
             <li>
               <NavLink to="/my-requests" className={activeClass}>
                 My Requests
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink to="/Book/Services" className={activeClass}>
+                Book Services
               </NavLink>
             </li>
 

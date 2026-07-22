@@ -4,6 +4,8 @@ import Footer from "../../components/Footer";
 import LineText from "../../components/LineText";
 import styles from "../../styles/BookServices/BookServices.module.css";
 import ServiceHero from "../../components/ServiceBooking/ServiceHero";
+import QuickCatogary from "../../components/ServiceBooking/QuickCategory";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const BookServices = () => {
   return (
@@ -12,6 +14,7 @@ const BookServices = () => {
 
       <div className="Container">
         <ServiceHero />
+        <QuickCatogary />
       </div>
 
       <Footer />

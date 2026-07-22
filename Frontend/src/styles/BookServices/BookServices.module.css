@@ -189,6 +189,126 @@
     opacity: 0;
   }
 }
+
+/*start quickcatogary design*/
+
+.quickcatogary {
+  background-color: #fff;
+  margin-top: 20px;
+  padding-top: 100px;
+  padding-left: 40px;
+}
+
+.tagline {
+  color: #2563eb;
+  font-weight: bold;
+  display: block;
+}
+
+.Heading {
+  font-weight: bolder;
+  font-size: 35px;
+  display: block;
+}
+.SubHeading {
+  color: grey;
+  display: block;
+  font-size: 20px;
+}
+
+.cardContainer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 20px 8px;
+
+  flex-wrap: nowrap;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.cardContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.catagoryCard {
+  flex: 0 0 auto; /* IMPORTANT: card shrink nahi hoga */
+
+  width: 110px;
+  min-width: 110px;
+  height: 110px;
+
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.catagoryCard:hover {
+  transform: translateY(-6px);
+  border-color: #2563eb;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.18);
+}
+
+.catagorylogo {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #2563eb;
+
+  font-size: 24px;
+  transition: all 0.25s ease;
+}
+
+.catagoryCard:hover .catagorylogo {
+  background: #2563eb;
+  color: #fff;
+  transform: scale(1.1) rotate(8deg);
+}
+
+.catagoryName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  line-height: 1.2;
+  padding: 0 6px;
+  transition: color 0.25s ease;
+}
+
+.catagoryCard:hover .catagoryName {
+  color: #2563eb;
+}
 /* Responsive layout */
 @media (max-width: 1024px) {
   .Content {

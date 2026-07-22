@@ -11,6 +11,8 @@ import { faAngellist } from "@fortawesome/free-brands-svg-icons";
 const ServiceForm = () => {
   const formRef = useRef(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const today = new Date().toISOString().split("T")[0];
 
   const currentTime = new Date().toLocaleTimeString("en-GB", {
@@ -23,6 +25,7 @@ const ServiceForm = () => {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(formRef.current));
+    setIsSubmitting(true);
 
     console.log("Search Data:", data);
 
@@ -109,8 +112,22 @@ const ServiceForm = () => {
           </div>
         </label>
 
-        <button type="submit" className={styles.Button}>
-          <FontAwesomeIcon icon={faMagnifyingGlass} /> Search Services
+        <button type="submit" disabled={isSubmitting} className={styles.Button}>
+          {isSubmitting ? (
+            <>
+              Submitting
+              <span className={styles.loadingDots}>
+                <span>.</span>
+                <span>.</span>
+                <span>.</span>
+              </span>
+            </>
+          ) : (
+            <>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+              <span> Search Services</span>
+            </>
+          )}
         </button>
       </form>
     </div>

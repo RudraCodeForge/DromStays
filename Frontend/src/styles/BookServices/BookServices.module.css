@@ -329,10 +329,6 @@
     border-color 0.3s ease;
 }
 
-.PopularServicesCard {
-  cursor: pointer;
-}
-
 .PopularServicesCard:hover {
   transform: translateY(-4px);
   border-color: #c7d2fe;
@@ -449,6 +445,342 @@
 .bookButton:hover {
   transform: translateY(-1px);
   background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%);
+}
+
+/*Promise Container Design Start Here*/
+
+.PromiseContainer {
+  padding: 60px 40px;
+  margin: 40px 20px;
+  background: linear-gradient(
+    135deg,
+    rgb(237, 242, 247) 0%,
+    rgb(225, 235, 245) 100%
+  );
+  border-radius: 24px;
+}
+
+.tagline {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+}
+
+.Heading {
+  display: block;
+  font-size: 42px;
+  font-weight: 800;
+  color: rgb(2, 6, 23);
+  margin-bottom: 48px;
+  line-height: 1.2;
+}
+
+.PromiseCardCon {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  margin-top: 32px;
+}
+
+.PromiseCard {
+  background: white;
+  padding: 32px 28px;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 10px 20px rgba(37, 99, 235, 0.08);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 300px;
+  justify-content: center;
+  border: 1px solid rgba(225, 235, 245, 0.6);
+  cursor: pointer;
+}
+
+.PromiseCard:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 12px 24px rgba(37, 99, 235, 0.15),
+    0 20px 40px rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.2);
+}
+
+.PromiseIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: #2563eb;
+  margin-bottom: 20px;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.1) 0%,
+    rgba(37, 99, 235, 0.05) 100%
+  );
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.PromiseCard:hover .PromiseIcon {
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.2) 0%,
+    rgba(37, 99, 235, 0.1) 100%
+  );
+  transform: scale(1.1);
+}
+
+.PromiseTitle {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(2, 6, 23);
+  margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.PromiseDisc {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgb(71, 85, 105);
+  line-height: 1.6;
+  letter-spacing: 0.2px;
+}
+
+/* Coupon Container design start Here */
+
+.CouponContainer {
+  padding: 60px 40px;
+  margin: 40px 20px;
+  background: linear-gradient(
+    135deg,
+    rgb(237, 242, 247) 0%,
+    rgb(225, 235, 245) 100%
+  );
+  border-radius: 24px;
+}
+
+.CouponHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.CouponHeaderContent {
+  flex: 1;
+}
+
+.CouponContainer .tagline {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-bottom: 12px;
+}
+
+.CouponContainer .Heading {
+  display: block;
+  font-size: 42px;
+  font-weight: 800;
+  color: rgb(2, 6, 23);
+  margin-bottom: 0;
+  line-height: 1.2;
+  max-width: 600px;
+}
+
+.CouponCardContainer {
+  display: flex;
+  gap: 28px;
+  margin-top: 32px;
+  overflow-x: auto;
+  padding-top: 10px;
+  padding-bottom: 12px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(37, 99, 235, 0.3) rgba(37, 99, 235, 0.1);
+}
+
+.CouponCardContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.CouponCardContainer::-webkit-scrollbar-track {
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 10px;
+}
+
+.CouponCardContainer::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.3);
+  border-radius: 10px;
+}
+
+.CouponCardContainer::-webkit-scrollbar-thumb:hover {
+  background: rgba(37, 99, 235, 0.5);
+}
+
+.Couponcard {
+  background: linear-gradient(
+    135deg,
+    var(--color1, #2563eb) 0%,
+    var(--color2, #1e40af) 100%
+  );
+  padding: 32px 28px;
+  border-radius: 20px;
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.12),
+    0 16px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: none;
+  position: relative;
+  min-height: 240px;
+  cursor: pointer;
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.Couponcard:hover {
+  transform: translateY(-12px);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.15),
+    0 24px 48px rgba(0, 0, 0, 0.12);
+}
+
+.Couponcard::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.Couponcard::after {
+  content: "";
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background:
+    radial-gradient(
+      circle at 20% 50%,
+      rgba(255, 255, 255, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 50%
+    );
+  opacity: 0.6;
+  z-index: 1;
+}
+
+.CouponTagline {
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.CouponCode {
+  display: none;
+}
+
+.CouponDiscount {
+  font-size: 52px;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+  line-height: 1;
+}
+
+.CouponTitle {
+  display: none;
+}
+
+.CouponDescription {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 24px;
+  line-height: 1.4;
+  position: relative;
+  z-index: 2;
+}
+
+.CouponValidity {
+  display: none;
+}
+
+.ClaimOfferLink {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  width: fit-content;
+}
+
+.ClaimOfferLink:hover {
+  opacity: 0.8;
+  transform: translateX(4px);
+}
+
+.SeeMoreLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2563eb;
+  text-decoration: none;
+  padding: 12px 24px;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.SeeMoreLink:hover {
+  background: #2563eb;
+  color: white;
+  transform: translateX(4px);
 }
 
 /* Responsive layout */

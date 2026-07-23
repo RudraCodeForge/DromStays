@@ -5,16 +5,16 @@ import LineText from "../../components/LineText";
 import styles from "../../styles/BookServices/BookServices.module.css";
 import ServiceHero from "../../components/ServiceBooking/ServiceHero";
 import QuickCatogary from "../../components/ServiceBooking/QuickCategory";
+import PopularServices from "../../components/ServiceBooking/PopularServices";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 const BookServices = () => {
   return (
     <>
       <Navbar />
-
-      <div className="Container">
+      <div className={styles.Container}>
         <ServiceHero />
         <QuickCatogary />
+        <PopularServices />
       </div>
 
       <Footer />

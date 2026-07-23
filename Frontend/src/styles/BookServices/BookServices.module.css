@@ -192,9 +192,9 @@
 
 /*start quickcatogary design*/
 
-.quickcatogary {
+.quickcatogary,
+.PopularServicesContainer {
   background-color: #fff;
-  margin-top: 20px;
   padding-top: 100px;
   padding-left: 40px;
 }
@@ -309,6 +309,148 @@
 .catagoryCard:hover .catagoryName {
   color: #2563eb;
 }
+
+/*Popular services design Starts here */
+
+.PopularServicesCard {
+  min-width: 350px;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  padding: 18px;
+  gap: 16px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.PopularServicesCard {
+  cursor: pointer;
+}
+
+.PopularServicesCard:hover {
+  transform: translateY(-4px);
+  border-color: #c7d2fe;
+}
+
+.serviceImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.serviceImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.serviceImage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at top left,
+      rgba(59, 130, 246, 0.18),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(99, 102, 241, 0.16),
+      transparent 30%
+    );
+}
+
+.serviceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.serviceTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.serviceDesc {
+  color: #4b5563;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+.serviceMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.serviceBadge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(99, 102, 241, 0.95);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.18);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.priceText {
+  font-weight: 700;
+  color: #111827;
+}
+.priceSpan {
+  color: grey;
+  font-weight: 400;
+}
+.bookButton {
+  border: none;
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.bookButton:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #1e40af 0%, #4338ca 100%);
+}
+
 /* Responsive layout */
 @media (max-width: 1024px) {
   .Content {

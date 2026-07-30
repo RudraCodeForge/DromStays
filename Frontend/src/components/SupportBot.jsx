@@ -18,6 +18,13 @@ const categorizedAnswers = {
       "Tenant not adding?":
         "Check room capacity. Tenants cannot exceed capacity.",
     },
+    "Help Ticket": {
+      "Where Can I See My Created Tickets?":
+        "After creating a ticket, go to Help Center → Then go to View Tickets.",
+
+      "How Can I Create a New Ticket?":
+        "First, go to Help Center → Check if your issue is listed there. If your issue is not listed, click Raise a Support Ticket.",
+    },
   },
 
   USER: {
@@ -43,6 +50,13 @@ const categorizedAnswers = {
         "After service completion, go to My Bookings → Leave review and rating.",
       "Service quality issue":
         "Report the issue in 24 hours with photo evidence for proper resolution.",
+    },
+    "Help Ticket": {
+      "Where Can I See My Created Tickets?":
+        "After creating a ticket, go to Help Center → Then go to View Tickets.",
+
+      "How Can I Create a New Ticket?":
+        "First, go to Help Center → Check if your issue is listed there. If your issue is not listed, click Raise a Support Ticket.",
     },
   },
 
@@ -79,6 +93,13 @@ const categorizedAnswers = {
     "Account & Compliance": {
       "Account suspension or warning":
         "Check your email for details. Go to Dashboard → Support to appeal or resolve issues.",
+    },
+    "Help Ticket": {
+      "Where Can I See My Created Tickets?":
+        "After creating a ticket, go to Help Center → Then go to View Tickets.",
+
+      "How Can I Create a New Ticket?":
+        "First, go to Help Center → Check if your issue is listed there. If your issue is not listed, click Raise a Support Ticket.",
     },
   },
 

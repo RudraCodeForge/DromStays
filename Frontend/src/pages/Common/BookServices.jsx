@@ -11,6 +11,7 @@ import CoupunContainer from "../../components/ServiceBooking/CouponContainer";
 import RecentlySearched from "../../components/ServiceBooking/RecentrlySearched";
 import ReviewCon from "../../components/ServiceBooking/ReviewCon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import QuestionAnswers from "../../components/ServiceBooking/Question&Answer";
 
 const BookServices = () => {
   return (
@@ -41,6 +42,7 @@ const BookServices = () => {
           PSLink={"/Professionals"}
         />
         <ReviewCon />
+        <QuestionAnswers />
       </div>
 
       <Footer />

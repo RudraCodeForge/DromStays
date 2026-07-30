@@ -1,4 +1,5 @@
 import Styles from "../styles/Popup.module.css";
+
 const Popup = ({
   isOpen,
   title = "Notification",
@@ -10,6 +11,7 @@ const Popup = ({
   onPrimaryClick,
   onSecondaryClick,
   onClose,
+  children, // Optional content (Form, OTP, etc.)
 }) => {
   if (!isOpen) return null;
 
@@ -31,12 +33,17 @@ const Popup = ({
 
         <h2>{title}</h2>
 
-        <p>{message}</p>
+        {message && <p>{message}</p>}
+
+        {/* Optional Form / Custom Content */}
+        {children && <div className={Styles.content}>{children}</div>}
 
         <div className={Styles.actions}>
           {secondaryText && (
             <button
-              className={`${Styles.secondaryBtn} ${Styles[secondaryClassName]}`}
+              className={`${Styles.secondaryBtn} ${
+                secondaryClassName ? Styles[secondaryClassName] : ""
+              }`}
               onClick={onSecondaryClick}
             >
               {secondaryText}

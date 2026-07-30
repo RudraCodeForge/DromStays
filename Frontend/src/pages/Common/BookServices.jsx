@@ -12,7 +12,7 @@ import RecentlySearched from "../../components/ServiceBooking/RecentrlySearched"
 import ReviewCon from "../../components/ServiceBooking/ReviewCon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import QuestionAnswers from "../../components/ServiceBooking/Question&Answer";
-
+import NeedHelp from "../../components/ServiceBooking/HelpSection";
 const BookServices = () => {
   return (
     <>
@@ -43,6 +43,7 @@ const BookServices = () => {
         />
         <ReviewCon />
         <QuestionAnswers />
+        <NeedHelp />
       </div>
 
       <Footer />

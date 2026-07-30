@@ -1496,6 +1496,57 @@
   border-bottom: 1px solid #f0f0f0;
 }
 
+/*Help section Starts Here*/
+.HelpCon {
+  border-radius: 20px;
+  background-color: #2563eb;
+  margin: 30px;
+  text-align: center;
+  padding: 50px;
+  color: #fff;
+}
+.HelpCon h3 {
+  font-size: 40px;
+  color: #fff;
+}
+.HelpCon p {
+  font-size: 20px;
+  color: #fff;
+}
+.Chat {
+  background-color: #fff;
+  color: #2563eb;
+  margin: 10px;
+  font-weight: bold;
+}
+.Chat:hover {
+  background-color: #e5e9ee;
+}
+.Call {
+  font-weight: bold;
+}
+.Call:hover {
+  background-color: #ffffff46;
+}
+
+.CommentIcon {
+  font-size: 30px;
+}
+
+.PopupInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 15px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.PopupInput:focus {
+  border-color: var(--primary-color);
+}
 /* Responsive Styles for Professional Card */
 @media (max-width: 768px) {
   .professionalCard {

@@ -1,7 +1,7 @@
 import ReviewCard from "./ReviewCard";
 import Style from "../styles/ReviewCard.module.css";
 
-const ReviewsSection = ({ reviews = [] }) => {
+const ReviewsSection = ({ reviews = [], Type }) => {
   return (
     <div className={Style.ReviewCard_Con}>
       {reviews

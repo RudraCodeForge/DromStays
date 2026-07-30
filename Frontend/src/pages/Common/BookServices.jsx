@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import { NavLink } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import LineText from "../../components/LineText";
@@ -9,7 +8,8 @@ import QuickCatogary from "../../components/ServiceBooking/QuickCategory";
 import PopularServices from "../../components/ServiceBooking/PopularServices";
 import Promises from "../../components/ServiceBooking/Promises";
 import CoupunContainer from "../../components/ServiceBooking/CouponContainer";
-import { recentlySearched } from "../../data/recentlySearched";
+import RecentlySearched from "../../components/ServiceBooking/RecentrlySearched";
+import ReviewCon from "../../components/ServiceBooking/ReviewCon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const BookServices = () => {
@@ -19,37 +19,28 @@ const BookServices = () => {
       <div className={styles.Container}>
         <ServiceHero />
         <QuickCatogary />
-        <PopularServices />
+        <PopularServices
+          PSTagline={"Loved in your neighborhood"}
+          PSHeading={"Popular services"}
+          PSSubHeading={
+            "Highly rated services booked by thousands of happy households."
+          }
+        />
         <Promises />
         <CoupunContainer />
+        <RecentlySearched />
 
-        <div className={styles.RecentlySearchedCon}>
-          <div className={styles.RecentlySearchedConleft}>
-            <span className={styles.tagline}>SAVED FOR LATER</span>
-            <span className={styles.Heading}>Recently searched</span>
-            <span className={styles.SubHeading}>
-              Pick up where you left off.
-            </span>
-            <div className={styles.RecentlySearchedBadges}>
-              {recentlySearched.map((item) => (
-                <span key={item.id} className={styles.RecentlySearchedBadge}>
-                  {item.name}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className={styles.RecentlySearchedConRight}>
-            <span className={styles.tagline}>
-              Your next service is closer than you think
-            </span>
-            <span className={styles.Heading}>
-              Trusted help is available in your neighborhood today.
-            </span>
-            <NavLink to="/services" className={styles.tagline}>
-              Explore nearby pros →
-            </NavLink>
-          </div>
-        </div>
+        <PopularServices
+          PSCardType={true}
+          PSTagline={"Available nearby"}
+          PSHeading={"Meet your local experts"}
+          PSSubHeading={
+            "Professionals with the skills and care your home deserves."
+          }
+          PSLinkText={"View all professionals"}
+          PSLink={"/Professionals"}
+        />
+        <ReviewCon />
       </div>
 
       <Footer />

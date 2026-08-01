@@ -200,6 +200,7 @@ exports.AddServices = async (req, res) => {
   try {
     const userId = req.user._id;
 
+    // Find Partner
     const existingPartner = await Partner.findOne({ userId });
 
     if (!existingPartner) {
@@ -224,33 +225,70 @@ exports.AddServices = async (req, res) => {
       });
     }
 
-    // Upload image
+    // Cover Image Validation
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "Cover image is required.",
+      });
+    }
+
+    // Duplicate Service Check
+    const existingService = await Service.findOne({
+      partnerId: existingPartner._id,
+      serviceName: req.body.serviceName,
+    });
+
+    if (existingService) {
+      return res.status(409).json({
+        success: false,
+        message: "You have already added this service.",
+      });
+    }
+
+    // Upload Image
     const coverImage = await uploadToCloudinary(
       req.file,
       "Services",
       req.body.serviceName,
     );
 
+    // Create Service
     const service = await Service.create({
       partnerId: existingPartner._id,
-      serviceName: req.body.serviceName,
-      category: req.body.category,
-      description: req.body.description,
+
+      serviceName: req.body.serviceName.trim(),
+
+      category: req.body.category.trim().toLowerCase(),
+
+      description: req.body.description.trim(),
+
       coverImage: coverImage.secure_url,
-      price: req.body.price,
-      duration: req.body.pricingType,
+
+      price: Number(req.body.price),
+
+      pricingType: req.body.pricingType,
+
+      unit: req.body.unit,
+
+      estimatedDuration: Number(req.body.estimatedDuration),
+
+      durationUnit: req.body.durationUnit,
+
+      status: "Pending",
     });
 
     return res.status(201).json({
       success: true,
-      message: "Services Add Sucessfully",
+      message: "Service added successfully.",
+      data: service,
     });
   } catch (error) {
-    console.error(error);
+    console.error("AddServices Error:", error);
 
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: error.message || "Internal Server Error",
     });
   }
 };

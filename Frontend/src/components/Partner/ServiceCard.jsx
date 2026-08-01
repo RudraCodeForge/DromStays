@@ -61,7 +61,9 @@ const ServiceCard = ({ Status, services, searchTerm, sortBy }) => {
 
               <div className={styles.serviceInfo}>
                 <span>💰 ₹{service.price}</span>
-                <span>⏱ {service.duration}</span>
+                <span>
+                  ⏱ {service.estimatedDuration} {service.durationUnit}
+                </span>
                 <span>⭐ {service.rating}</span>
               </div>
 

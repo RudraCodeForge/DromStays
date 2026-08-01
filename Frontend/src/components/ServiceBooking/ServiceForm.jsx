@@ -8,6 +8,7 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import { faAngellist } from "@fortawesome/free-brands-svg-icons";
+import { SearchServices } from "../../services/ServiceApi.service";
 const ServiceForm = () => {
   const formRef = useRef(null);
   const [selectedDate, setSelectedDate] = useState("");
@@ -21,16 +22,19 @@ const ServiceForm = () => {
     hour12: false,
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(formRef.current));
     setIsSubmitting(true);
-
-    console.log("Search Data:", data);
-
-    // TODO:
-    // SearchServices(data);
+    try {
+      const response = await SearchServices(data);
+      console.log("Search Response:", response);
+      setIsSubmitting(false);
+    } catch (error) {
+      console.error("Error searching services:", error);
+      setIsSubmitting(false);
+    }
   };
   return (
     <div className={styles.SearchServicesCon}>
@@ -52,6 +56,7 @@ const ServiceForm = () => {
               <option value="plumbing">Plumbing</option>
               <option value="electrical">Electrical</option>
               <option value="painting">Painting</option>
+              <option value="maintenance">Maintenance</option>
             </select>
           </div>
         </label>

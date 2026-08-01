@@ -20,6 +20,7 @@ const InvoiceRouter = require("./routes/Invoices.route");
 const NotificationRouter = require("./routes/Notification.route");
 const BookingRouter = require("./routes/Booking.route");
 const PartnerRouter = require("./routes/Partner.route");
+const ServiceRouter = require("./routes/Service.route");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const app = express();
@@ -54,6 +55,7 @@ app.use("/invoices", InvoiceRouter);
 app.use("/notifications", NotificationRouter);
 app.use("/Bookings", BookingRouter);
 app.use("/partner", PartnerRouter);
+app.use("/services", ServiceRouter);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/storage", express.static(path.join(__dirname, "storage")));
 

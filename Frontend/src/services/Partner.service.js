@@ -69,11 +69,7 @@ export const AddServices = async (serviceData) => {
     if (handleServerError(error)) return;
     if (handleAuthError(error)) return;
 
-    throw (
-      error.response?.data || {
-        message: "Failed To Add Services",
-      }
-    );
+    throw error;
   }
 };
 export const GetServicesByPartnerId = async (id) => {

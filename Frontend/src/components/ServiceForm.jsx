@@ -11,7 +11,12 @@ const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
   const navigate = useNavigate();
 
   const [availableServices, setAvailableServices] = useState([]);
-
+  const [popupData, setPopupData] = useState({
+    open: false,
+    title: "",
+    message: "",
+    type: "warning",
+  });
   const [formData, setFormData] = useState({
     serviceName: "",
     category: "",
@@ -58,9 +63,6 @@ const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
 
     try {
       const res = await AddServices(formData);
-
-      console.log(res);
-
       setIsDrawerOpen(false);
 
       setFormData({
@@ -77,6 +79,17 @@ const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
 
       setAvailableServices([]);
     } catch (error) {
+      if (error.response?.status === 409) {
+        setPopupData({
+          open: true,
+          type: "warning",
+          title: "Service Already Exists",
+          message: error.response.data.message,
+        });
+
+        return;
+      }
+
       console.log(error);
     }
   };
@@ -98,6 +111,26 @@ const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
         onClose={() => setShowPopup(false)}
       />
 
+      <Popup
+        isOpen={popupData.open}
+        type={popupData.type}
+        title={popupData.title}
+        message={popupData.message}
+        secondaryText="Close"
+        secondaryClassName="close"
+        onSecondaryClick={() =>
+          setPopupData((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+        onClose={() =>
+          setPopupData((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
       <aside className={`${styles.drawer} ${isDrawerOpen ? styles.open : ""}`}>
         <div className={styles.drawerHeader}>
           <div className={styles.drawerTitle}>

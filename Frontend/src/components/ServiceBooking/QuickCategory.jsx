@@ -2,6 +2,7 @@ import { categories } from "../../data/Catogary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "../../styles/BookServices/BookServices.module.css";
 import CategoryCard from "../CatogaryCard";
+import { GetServiceByCategory } from "../../services/ServiceApi.service";
 const QuickCatogary = () => {
   const handleCategoryClick = (serviceName) => {
     const now = new Date();
@@ -20,14 +21,21 @@ const QuickCatogary = () => {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log({
-          service: serviceName,
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const data = {
+          serviceName,
+          latitude,
+          longitude,
           date: currentDate,
           time: currentTime,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
+        };
+        try {
+          const response = await GetServiceByCategory(data);
+          console.log(response);
+        } catch (error) {
+          console.log(error);
+        }
       },
       (error) => {
         console.log({
@@ -38,6 +46,7 @@ const QuickCatogary = () => {
           error: error.message,
         });
       },
+      { enableHighAccuracy: true, timeout: 10000 },
     );
   };
   return (

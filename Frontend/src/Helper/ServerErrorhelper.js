@@ -1,14 +1,17 @@
 const handleServerError = (error) => {
-    if (!error.response) {
-        window.location.href = "/server-error";
-        return true;
-    }
+  const from = window.location.pathname + window.location.search;
+  const encodedFrom = encodeURIComponent(from);
 
-    if (error.response.status >= 500) {
-        window.location.href = "/server-error";
-        return true;
-    }
+  if (!error.response) {
+    window.location.href = `/server-error?from=${encodedFrom}`;
+    return true;
+  }
 
-    return false;
+  if (error.response.status >= 500) {
+    window.location.href = `/server-error?from=${encodedFrom}`;
+    return true;
+  }
+
+  return false;
 };
 export default handleServerError;

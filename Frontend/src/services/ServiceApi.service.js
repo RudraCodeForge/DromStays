@@ -16,3 +16,20 @@ export const SearchServices = async (data) => {
     );
   }
 };
+
+export const GetServiceByCategory = async (data) => {
+  try {
+    const response = await api.get("/services/GetServiceByCategory", {
+      params: data,
+    });
+    return response.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw (
+      error.response?.data || {
+        message: "Failed to get services by category",
+      }
+    );
+  }
+};

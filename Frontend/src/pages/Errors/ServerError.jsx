@@ -1,40 +1,48 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Styles from "../../styles/ServerError.module.css";
 
 const ServerError = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    return (
-        <div className={Styles.wrapper}>
-            <div className={Styles.card}>
-                <h1 className={Styles.code}>500</h1>
+  const query = new URLSearchParams(location.search);
+  const from = query.get("from") ? decodeURIComponent(query.get("from")) : null;
 
-                <h2 className={Styles.title}>Server Error</h2>
+  return (
+    <div className={Styles.wrapper}>
+      <div className={Styles.card}>
+        <h1 className={Styles.code}>500</h1>
 
-                <p className={Styles.message}>
-                    Oops! Something went wrong on our end.
-                    <br />
-                    Please try again after some time.
-                </p>
+        <h2 className={Styles.title}>Server Error</h2>
 
-                <div className={Styles.actions}>
-                    <button
-                        className={Styles.primaryBtn}
-                        onClick={() => window.location.reload()}
-                    >
-                        Try Again
-                    </button>
+        <p className={Styles.message}>
+          Oops! Something went wrong on our end.
+          <br />
+          Please try again after some time.
+        </p>
 
-                    <button
-                        className={Styles.secondaryBtn}
-                        onClick={() => navigate("/")}
-                    >
-                        Go Home
-                    </button>
-                </div>
-            </div>
+        <div className={Styles.actions}>
+          <button
+            className={Styles.primaryBtn}
+            onClick={() => {
+              if (from) {
+                const separator = from.includes("?") ? "&" : "?";
+                navigate(`${from}${separator}_retry=${Date.now()}`);
+              } else {
+                navigate(-1);
+              }
+            }}
+          >
+            Try Again
+          </button>
+
+          <button className={Styles.secondaryBtn} onClick={() => navigate("/")}>
+            Go Home
+          </button>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ServerError;

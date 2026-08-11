@@ -8,4 +8,9 @@ ServiceRouter.post(
   authMiddleware,
   ServiceController.searchServices,
 );
+ServiceRouter.get(
+  "/GetServiceByCategory",
+  authMiddleware,
+  ServiceController.getServiceByCategory,
+);
 module.exports = ServiceRouter;

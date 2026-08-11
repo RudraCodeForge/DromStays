@@ -14,3 +14,20 @@ exports.searchServices = async (req, res) => {
     res.status(500).json({ message: "Error searching services" });
   }
 };
+
+// Get services by category
+exports.getServiceByCategory = async (req, res) => {
+  try {
+    console.log("request hit");
+    const { serviceName, latitude, longitude, date, time } = req.query;
+    const categorty = serviceName.toLowerCase();
+    const services = await Service.find({ category: categorty });
+    res.status(200).json({
+      message: "Service category received",
+      data: services,
+    });
+  } catch (error) {
+    console.error("Error getting service by category:", error);
+    res.status(500).json({ message: "Error getting service by category" });
+  }
+};

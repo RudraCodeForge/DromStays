@@ -89,8 +89,6 @@ const ServiceForm = ({ isDrawerOpen, setIsDrawerOpen }) => {
 
         return;
       }
-
-      console.log(error);
     }
   };
   return (

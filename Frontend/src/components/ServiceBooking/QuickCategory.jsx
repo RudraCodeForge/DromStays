@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styles from "../../styles/BookServices/BookServices.module.css";
 import CategoryCard from "../CatogaryCard";
 import { GetServiceByCategory } from "../../services/ServiceApi.service";
+import { useNavigate } from "react-router-dom";
 const QuickCatogary = () => {
+  const navigate = useNavigate();
   const handleCategoryClick = (serviceName) => {
     const now = new Date();
 
@@ -32,7 +34,10 @@ const QuickCatogary = () => {
         };
         try {
           const response = await GetServiceByCategory(data);
-          console.log(response);
+          // Navigate to results page and pass response as state
+          navigate("/services/results", {
+            state: { results: response, query: data },
+          });
         } catch (error) {
           console.log(error);
         }

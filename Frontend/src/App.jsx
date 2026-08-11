@@ -57,6 +57,7 @@ import Notifications from "./pages/Common/Notifications.jsx";
 import ViewPayments from "./pages/Owner/ViewPayments.jsx";
 import NotificationSettings from "./pages/Common/NotificationSettings.jsx";
 import BookServices from "./pages/Common/BookServices.jsx";
+import ServiceResults from "./pages/Common/ServiceResults.jsx";
 // Import PartnerDashboard
 import PartnerDashboard from "./pages/Partners/PartnerDashboard.jsx";
 import PartnerProfile from "./pages/Partners/PartnerProfile.jsx";
@@ -438,6 +439,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/services/results" element={<ServiceResults />} />
 
         {/* 404 Page Not Found */}
 

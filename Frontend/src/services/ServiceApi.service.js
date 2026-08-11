@@ -22,7 +22,7 @@ export const GetServiceByCategory = async (data) => {
     const response = await api.get("/services/GetServiceByCategory", {
       params: data,
     });
-    return response.data;
+    return response.data?.data ?? response.data;
   } catch (error) {
     if (handleServerError(error)) return;
     if (handleAuthError(error)) return;

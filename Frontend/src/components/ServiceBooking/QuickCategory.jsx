@@ -4,9 +4,12 @@ import styles from "../../styles/BookServices/BookServices.module.css";
 import CategoryCard from "../CatogaryCard";
 import { GetServiceByCategory } from "../../services/ServiceApi.service";
 import { useNavigate } from "react-router-dom";
-const QuickCatogary = () => {
+import { useState } from "react";
+import PageLoader from "../PageLoader";
+const QuickCatogary = ({ loading, setLoading }) => {
   const navigate = useNavigate();
   const handleCategoryClick = (serviceName) => {
+    setLoading(true);
     const now = new Date();
 
     const currentDate = now.toLocaleDateString("en-IN");
@@ -34,11 +37,12 @@ const QuickCatogary = () => {
         };
         try {
           const response = await GetServiceByCategory(data);
-          // Navigate to results page and pass response as state
+          setLoading(false);
           navigate("/services/results", {
             state: { results: response, query: data },
           });
         } catch (error) {
+          setLoading(false);
           console.log(error);
         }
       },
@@ -55,24 +59,27 @@ const QuickCatogary = () => {
     );
   };
   return (
-    <div className={styles.quickcatogary}>
-      <span className={styles.tagline}>EXPLORE BY NEED</span>
-      <span className={styles.Heading}>Quick categories</span>
-      <span className={styles.SubHeading}>
-        Whatever needs doing, there’s an expert ready to help.
-      </span>
+    <>
+      {loading && <PageLoader />}
+      <div className={styles.quickcatogary}>
+        <span className={styles.tagline}>EXPLORE BY NEED</span>
+        <span className={styles.Heading}>Quick categories</span>
+        <span className={styles.SubHeading}>
+          Whatever needs doing, there’s an expert ready to help.
+        </span>
 
-      <div className={styles.cardContainer}>
-        {categories.map((category) => (
-          <CategoryCard
-            key={category.id}
-            icon={<FontAwesomeIcon icon={category.icon} />}
-            name={category.name}
-            onClick={() => handleCategoryClick(category.name)}
-          />
-        ))}
+        <div className={styles.cardContainer}>
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              icon={<FontAwesomeIcon icon={category.icon} />}
+              name={category.name}
+              onClick={() => handleCategoryClick(category.name)}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 export default QuickCatogary;

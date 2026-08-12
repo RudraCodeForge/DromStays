@@ -18,7 +18,6 @@ exports.searchServices = async (req, res) => {
 // Get services by category
 exports.getServiceByCategory = async (req, res) => {
   try {
-    console.log("request hit");
     const { serviceName, latitude, longitude, date, time } = req.query;
     const categorty = serviceName.toLowerCase();
     const services = await Service.find({ category: categorty });

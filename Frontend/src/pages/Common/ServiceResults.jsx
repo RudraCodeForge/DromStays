@@ -43,6 +43,11 @@ const ServiceResults = () => {
   if (loading) return <div>Loading results...</div>;
   if (error) return <div>{error}</div>;
 
+  const handleBookNow = (service) => {
+    const ServiceId = service._id || service.id;
+    navigate(`/cart`);
+  };
+
   return (
     <>
       <Navbar />
@@ -52,13 +57,13 @@ const ServiceResults = () => {
             <ServiceCard
               services={results}
               mode="results"
-              onBook={() => navigate("/book-now")}
+              onBook={handleBookNow}
             />
           ) : (
             <ServiceCard
               service={results}
               mode="results"
-              onBook={() => navigate("/book-now")}
+              onBook={handleBookNow}
             />
           )
         ) : (

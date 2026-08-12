@@ -13,38 +13,44 @@ import ReviewCon from "../../components/ServiceBooking/ReviewCon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import QuestionAnswers from "../../components/ServiceBooking/Question&Answer";
 import NeedHelp from "../../components/ServiceBooking/HelpSection";
+import PageLoader from "../../components/PageLoader";
 const BookServices = () => {
+  const [loading, setLoading] = useState(false);
   return (
     <>
       <Navbar />
-      <div className={styles.Container}>
-        <ServiceHero />
-        <QuickCatogary />
-        <PopularServices
-          PSTagline={"Loved in your neighborhood"}
-          PSHeading={"Popular services"}
-          PSSubHeading={
-            "Highly rated services booked by thousands of happy households."
-          }
-        />
-        <Promises />
-        <CoupunContainer />
-        <RecentlySearched />
+      {loading ? (
+        <PageLoader />
+      ) : (
+        <div className={styles.Container}>
+          <ServiceHero />
+          <QuickCatogary loading={loading} setLoading={setLoading} />
+          <PopularServices
+            PSTagline={"Loved in your neighborhood"}
+            PSHeading={"Popular services"}
+            PSSubHeading={
+              "Highly rated services booked by thousands of happy households."
+            }
+          />
+          <Promises />
+          <CoupunContainer />
+          <RecentlySearched />
 
-        <PopularServices
-          PSCardType={true}
-          PSTagline={"Available nearby"}
-          PSHeading={"Meet your local experts"}
-          PSSubHeading={
-            "Professionals with the skills and care your home deserves."
-          }
-          PSLinkText={"View all professionals"}
-          PSLink={"/Professionals"}
-        />
-        <ReviewCon />
-        <QuestionAnswers />
-        <NeedHelp />
-      </div>
+          <PopularServices
+            PSCardType={true}
+            PSTagline={"Available nearby"}
+            PSHeading={"Meet your local experts"}
+            PSSubHeading={
+              "Professionals with the skills and care your home deserves."
+            }
+            PSLinkText={"View all professionals"}
+            PSLink={"/Professionals"}
+          />
+          <ReviewCon />
+          <QuestionAnswers />
+          <NeedHelp />
+        </div>
+      )}
 
       <Footer />
     </>

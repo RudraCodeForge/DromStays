@@ -1,0 +1,81 @@
+.cartContainer {
+  padding: 20px;
+}
+.backButton {
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  color: grey;
+}
+.cartTitle {
+  display: block;
+  margin-left: 10px;
+  font-weight: bold;
+  color: blue;
+}
+.Header {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 30px;
+}
+.cartSubtitle {
+  display: block;
+  font-size: 35px;
+  margin-left: 10px;
+  font-weight: 800;
+}
+.cartDescriptionContainer {
+  display: flex;
+  justify-content: space-between;
+}
+.cartDescription {
+  font-size: 20px;
+  margin-left: 10px;
+  color: #666;
+}
+.SpanContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sp1,
+.sp2,
+.sp3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 10px;
+  color: blue;
+  cursor: pointer;
+}
+
+.icon {
+  color: white;
+  background-color: blue;
+  border-radius: 50%;
+  padding: 5px;
+  font-size: 8px;
+}
+
+.sp3 {
+  color: grey;
+}
+
+.sp3 .icon {
+  color: white;
+  background-color: grey;
+}
+
+.bar {
+  height: 1px;
+  width: 50px;
+  background-color: blue;
+  border: none;
+  margin: 0 5px;
+}
+.bar2 {
+  height: 1px;
+  width: 50px;
+  background-color: grey;
+  border: none;
+  margin: 0 5px;
+}

@@ -80,13 +80,22 @@ const ServiceCard = ({
                   </button>
                 </>
               ) : (
-                <button
-                  type="button"
-                  className={styles.editBtn}
-                  onClick={() => onBook?.(item)}
-                >
-                  Book Now
-                </button>
+                <>
+                  <button
+                    type="button"
+                    className={styles.editBtn}
+                    onClick={() => onBook?.(item)}
+                  >
+                    Book Now
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.editBtn}
+                    onClick={() => onBook?.(item)}
+                  >
+                    Cart
+                  </button>
+                </>
               )}
             </div>
           </div>

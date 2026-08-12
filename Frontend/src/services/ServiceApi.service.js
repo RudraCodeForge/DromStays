@@ -33,3 +33,18 @@ export const GetServiceByCategory = async (data) => {
     );
   }
 };
+
+export const GetServiceById = async (serviceId) => {
+  try {
+    const response = await api.get(`/services/${serviceId}`);
+    return response.data?.data ?? response.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw (
+      error.response?.data || {
+        message: "Failed to get service by ID",
+      }
+    );
+  }
+};

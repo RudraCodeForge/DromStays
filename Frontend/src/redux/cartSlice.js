@@ -9,7 +9,13 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      state.items.push(action.payload);
+      const alreadyExists = state.items.some(
+        (item) => item.serviceId === action.payload.serviceId,
+      );
+
+      if (!alreadyExists) {
+        state.items.push(action.payload);
+      }
     },
 
     removeFromCart: (state, action) => {

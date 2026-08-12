@@ -454,6 +454,37 @@
   border-radius: 50%;
   font-weight: bold;
 }
+
+/* ============================= */
+/* Cart Icon & Badge */
+/* ============================= */
+.CartIcon {
+  position: relative;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 6px;
+  color: var(--primary-color);
+  transition: color 0.25s ease;
+}
+
+.CartIcon:hover {
+  color: #1e0a4a;
+}
+
+.CartBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+  min-width: 18px;
+  text-align: center;
+}
+
 .ActiveLink {
   color: #4f46e5 !important;
   font-weight: 600;

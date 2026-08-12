@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../redux/authSlice";
 import { loadUnreadCount } from "../../redux/notificationSlice";
-import { FaBell } from "react-icons/fa";
+import { FaBell, FaShoppingCart } from "react-icons/fa";
 
 const Navbar = () => {
   const { isAuthenticated, role, user } = useSelector((state) => state.auth);
@@ -14,6 +14,9 @@ const Navbar = () => {
   const unreadCount = useSelector(
     (state) => state.notifications?.unreadCount || 0,
   );
+
+  const cartItems = useSelector((state) => state.cart.items || []);
+  const cartCount = cartItems.length;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -224,9 +227,15 @@ const Navbar = () => {
             </li>
 
             <li>
-              <NavLink to="/cart" className={activeClass}>
-                Cart
-              </NavLink>
+              <div
+                className={Styles.CartIcon}
+                onClick={() => navigate("/cart")}
+              >
+                <FaShoppingCart />
+                {cartCount > 0 && (
+                  <span className={Styles.CartBadge}>{cartCount}</span>
+                )}
+              </div>
             </li>
 
             <li>
@@ -294,6 +303,18 @@ const Navbar = () => {
               <NavLink to="/Settings" className={activeClass}>
                 Settings
               </NavLink>
+            </li>
+
+            <li>
+              <div
+                className={Styles.CartIcon}
+                onClick={() => navigate("/cart")}
+              >
+                <FaShoppingCart />
+                {cartCount > 0 && (
+                  <span className={Styles.CartBadge}>{cartCount}</span>
+                )}
+              </div>
             </li>
 
             <li>

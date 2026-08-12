@@ -1,4 +1,8 @@
 import styles from "../../styles/Services.module.css";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { FaPlus, FaCheck } from "react-icons/fa";
 
 const ServiceCard = ({
   Status = "ALL",
@@ -10,9 +14,44 @@ const ServiceCard = ({
   onEdit,
   onDelete,
   onBook,
+  onAddToCart,
 }) => {
+  const cartItems = useSelector((state) => state.cart.items || []);
+  const navigate = useNavigate();
+
   const renderCard = (item) => {
     const key = item._id || item.id || item.serviceName;
+    const isInCart = cartItems.some(
+      (cartItem) =>
+        cartItem.serviceId === item._id || cartItem.serviceId === item.id,
+    );
+
+    const handleCartClick = () => {
+      if (isInCart) {
+        toast.info(
+          <div>
+            <p>Service is already added into cart</p>
+            <button
+              onClick={() => navigate("/cart")}
+              style={{
+                background: "#2563eb",
+                color: "white",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                marginTop: "8px",
+              }}
+            >
+              View Cart
+            </button>
+          </div>,
+          { autoClose: 4000 },
+        );
+      } else {
+        onAddToCart?.(item);
+      }
+    };
 
     return (
       <div className={styles.serviceCard} key={key}>
@@ -90,10 +129,20 @@ const ServiceCard = ({
                   </button>
                   <button
                     type="button"
-                    className={styles.editBtn}
-                    onClick={() => onBook?.(item)}
+                    className={`${styles.editBtn} ${
+                      isInCart ? styles.cartBtnAdded : styles.cartBtn
+                    }`}
+                    onClick={handleCartClick}
                   >
-                    Cart
+                    {isInCart ? (
+                      <>
+                        <FaCheck /> Added
+                      </>
+                    ) : (
+                      <>
+                        <FaPlus /> Cart
+                      </>
+                    )}
                   </button>
                 </>
               )}

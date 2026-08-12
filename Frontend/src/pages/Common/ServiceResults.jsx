@@ -65,6 +65,25 @@ const ServiceResults = () => {
     navigate("/cart");
   };
 
+  const handleAddToCart = (service) => {
+    const serviceId = service._id || service.id;
+
+    dispatch(
+      addToCart({
+        serviceId,
+        serviceName: service.serviceName,
+        price: service.price,
+        duration: service.estimatedDuration,
+        durationUnit: service.durationUnit,
+        unit: service.unit,
+        pricingType: service.pricingType,
+        ratings: service.rating,
+        category: service.category,
+        coverImage: service.coverImage,
+      }),
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -75,12 +94,14 @@ const ServiceResults = () => {
               services={results}
               mode="results"
               onBook={handleBookNow}
+              onAddToCart={handleAddToCart}
             />
           ) : (
             <ServiceCard
               service={results}
               mode="results"
               onBook={handleBookNow}
+              onAddToCart={handleAddToCart}
             />
           )
         ) : (

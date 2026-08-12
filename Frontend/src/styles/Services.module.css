@@ -516,6 +516,32 @@
 .deleteBtn:hover {
   background: #dc2626;
 }
+
+/* Cart Button Styles */
+.cartBtn {
+  background: #10b981 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.cartBtn:hover {
+  background: #059669 !important;
+}
+
+.cartBtnAdded {
+  background: #6366f1 !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.cartBtnAdded:hover {
+  background: #4f46e5 !important;
+}
+
 /* PartnerData */
 .PartnerProfile {
   display: flex;

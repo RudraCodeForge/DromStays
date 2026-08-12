@@ -6,9 +6,15 @@ import { faCircleCheck, fa2, fa3 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Cart.module.css";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { clearCart, removeFromCart } from "../../redux/cartSlice";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   console.log("Cart Items:", cartItems);
+  const dispatch = useDispatch();
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
 
   return (
     <>

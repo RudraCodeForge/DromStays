@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, fa2, fa3 } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Cart.module.css";
+import { useSelector } from "react-redux";
 const Cart = () => {
-  const { serviceId } = useParams();
+  const cartItems = useSelector((state) => state.cart.items);
+  console.log("Cart Items:", cartItems);
 
   return (
     <>

@@ -224,6 +224,12 @@ const Navbar = () => {
             </li>
 
             <li>
+              <NavLink to="/cart" className={activeClass}>
+                Cart
+              </NavLink>
+            </li>
+
+            <li>
               <div
                 className={Styles.NotificationIcon}
                 onClick={() => navigate("/notifications")}

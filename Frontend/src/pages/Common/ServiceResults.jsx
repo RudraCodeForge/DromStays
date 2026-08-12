@@ -4,14 +4,15 @@ import { GetServiceByCategory } from "../../services/ServiceApi.service";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import ServiceCard from "../../components/Partner/ServiceCard";
-
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../redux/cartSlice";
 const ServiceResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const dispatch = useDispatch();
   const state = location.state || {};
 
   useEffect(() => {
@@ -44,8 +45,24 @@ const ServiceResults = () => {
   if (error) return <div>{error}</div>;
 
   const handleBookNow = (service) => {
-    const ServiceId = service._id || service.id;
-    navigate(`/cart`);
+    const serviceId = service._id || service.id;
+
+    dispatch(
+      addToCart({
+        serviceId,
+        serviceName: service.serviceName,
+        price: service.price,
+        duration: service.estimatedDuration,
+        durationUnit: service.durationUnit,
+        unit: service.unit,
+        pricingType: service.pricingType,
+        ratings: service.rating,
+        category: service.category,
+        coverImage: service.coverImage,
+      }),
+    );
+
+    navigate("/cart");
   };
 
   return (

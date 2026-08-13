@@ -7,8 +7,10 @@ import {
   increaseQuantity,
   decreaseQuantity,
 } from "../../redux/cartSlice";
+import { useNavigate } from "react-router-dom";
 const AddedServices = ({ cartItems }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   return (
     <div className={styles.AddedServices}>
       <h2 className={styles.addedServicesTitle}>Added Services</h2>

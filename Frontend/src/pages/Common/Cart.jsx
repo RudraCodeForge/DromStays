@@ -15,9 +15,9 @@ import {
 } from "../../redux/cartSlice";
 import CartHeader from "../../components/Cart/CartHeader";
 import AddedServices from "../../components/Cart/AddedServices";
+import EmptyCart from "../../components/Cart/EmptyCart";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
-  console.log("Cart Items:", cartItems);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClearCart = () => {
@@ -27,21 +27,25 @@ const Cart = () => {
   return (
     <>
       <Navbar />
-      <div className={styles.cartContainer}>
-        <button
-          className={styles.backButton}
-          onClick={() => window.history.back()}
-        >
-          &larr; Continue Browsing
-        </button>
-        <CartHeader />
-        <div className={styles.cartItemsContainer}>
-          <div className={styles.LeftcartItems}>
-            <AddedServices cartItems={cartItems} />
+      {cartItems.length === 0 ? (
+        <EmptyCart />
+      ) : (
+        <div className={styles.cartContainer}>
+          <button
+            className={styles.backButton}
+            onClick={() => window.history.back()}
+          >
+            &larr; Continue Browsing
+          </button>
+          <CartHeader />
+          <div className={styles.cartItemsContainer}>
+            <div className={styles.LeftcartItems}>
+              <AddedServices cartItems={cartItems} />
+            </div>
+            <div className={styles.RightcartItems}></div>
           </div>
-          <div className={styles.RightcartItems}></div>
         </div>
-      </div>
+      )}
       <Footer />
     </>
   );

@@ -4,9 +4,10 @@ import { GetServiceByCategory } from "../../services/ServiceApi.service";
 import Navbar from "../../components/Navbar/Navbar";
 import Footer from "../../components/Footer";
 import ServiceCard from "../../components/Partner/ServiceCard";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/cartSlice";
 const ServiceResults = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const location = useLocation();
   const navigate = useNavigate();
   const [results, setResults] = useState(null);
@@ -45,6 +46,10 @@ const ServiceResults = () => {
   if (error) return <div>{error}</div>;
 
   const handleBookNow = (service) => {
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
     const serviceId = service._id || service.id;
 
     dispatch(
@@ -66,6 +71,10 @@ const ServiceResults = () => {
   };
 
   const handleAddToCart = (service) => {
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
     const serviceId = service._id || service.id;
 
     dispatch(

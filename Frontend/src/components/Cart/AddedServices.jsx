@@ -39,7 +39,7 @@ const AddedServices = ({ cartItems }) => {
                 {item.duration} {item.durationUnit} service
               </p>
 
-              <strong>₹{item.price}</strong>
+              <strong>₹{item.price * item.quantity}</strong>
             </div>
 
             {/* Quantity */}

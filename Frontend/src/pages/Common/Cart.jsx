@@ -51,6 +51,11 @@ const Cart = () => {
                     <p>We’ll try our best to accommodate you.</p>
                   </div>
                 </div>
+                <textarea
+                  id="disc"
+                  className={styles.disc}
+                  placeholder="Add Your special instruction to your stay or services..."
+                />
               </div>
             </div>
             <div className={styles.RightcartItems}></div>

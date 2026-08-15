@@ -101,8 +101,27 @@
   padding: 20px;
   box-sizing: border-box;
 }
+
+.scrollableCart {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+@media (min-width: 1024px) {
+  .cartItemsContainer {
+    align-items: flex-start;
+  }
+
+  .RightcartItems {
+    position: sticky;
+    top: 20px;
+  }
+}
 .AddedServices,
-.RequestContainer {
+.RequestContainer,
+.BookingSummary {
   border-radius: 12px;
   padding: 24px;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
@@ -340,6 +359,49 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+.clearCart {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff5f5 0%, #fee2e2 100%);
+  color: #b91c1c;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.clearCart::before {
+  content: "🗑";
+  font-size: 12px;
+  transform: translateY(-1px);
+}
+
+.clearCart:hover {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.clearCart:active {
+  transform: translateY(0);
+}
+
+.clearCart:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+}
+
 .RequestHeadingCon {
   display: flex;
   align-items: center;
@@ -384,13 +446,453 @@
 .disc {
   width: 100%;
   height: 150px;
-  border-radius: 20px;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1f2937;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.disc::placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.disc:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.disc:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow:
+    0 0 0 3px rgba(79, 70, 229, 0.1),
+    0 2px 8px rgba(79, 70, 229, 0.12);
+  background: #fafbfc;
+}
+
+.bookingSummaryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  margin-bottom: 20px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+  letter-spacing: -0.3px;
+}
+
+.bookingDate {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4f46e5;
+  background: linear-gradient(135deg, #eef2ff 0%, #f3e8ff 100%);
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(79, 70, 229, 0.15);
+  white-space: nowrap;
+}
+
+.CouponSection {
+  padding: 18px;
+  background: linear-gradient(135deg, #eef2ff 0%, #f3e8ff 100%);
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.couponHeading {
+  margin: 0 0 14px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #4f46e5;
+  letter-spacing: -0.3px;
+}
+
+.couponInputContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.couponInput {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
+  background: #faf5ff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4f46e5;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.couponInput::placeholder {
+  color: #a78bfa;
+  opacity: 0.8;
+}
+
+.couponInput:hover {
+  border-color: #c4b5fd;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.1);
+}
+
+.couponInput:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  background: #fefbff;
+}
+
+.applyCouponButton {
+  padding: 11px 24px;
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+}
+
+.applyCouponButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.applyCouponButton:active {
+  transform: translateY(0);
+}
+
+.applyCouponButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.applyCouponButton:disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+}
+
+.couponMessage {
+  margin: 10px 0 0 0;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.3s ease;
+}
+
+.couponMessage.success {
+  color: #10b981;
+}
+
+.couponMessage.error {
+  color: #ef4444;
+}
+
+.couponMessage.loading {
+  color: #4f46e5;
+}
+
+.dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #4f46e5;
+  animation: dotPulse 1.4s infinite;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dotPulse {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.AmountContainer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px 16px;
   padding: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
   margin-top: 20px;
 }
-.disc:focus {
-  outline: #4f46e5;
+
+.totalAmountLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  text-align: left;
+  padding: 8px 0;
 }
+
+.totalAmountValue {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: right;
+  padding: 8px 0;
+}
+
+.AmountContainer > :nth-child(5),
+.AmountContainer > :nth-child(6) {
+  border-top: 2px solid #e2e8f0;
+  padding-top: 12px;
+}
+
+.AmountContainer > :nth-child(5) {
+  font-weight: 600;
+  color: #64748b;
+}
+
+.AmountContainer > :nth-child(6) {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.AmountContainer > :nth-child(7),
+.AmountContainer > :nth-child(8) {
+  border-top: 2px solid #4f46e5;
+  padding-top: 12px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.AmountContainer > :nth-child(7) {
+  color: #4f46e5;
+}
+
+.AmountContainer > :nth-child(8) {
+  color: #4f46e5;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.removeCoupon {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #ef4444;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+  background: none;
+}
+
+.removeCoupon:hover {
+  color: #dc2626;
+  transform: scale(1.15);
+}
+
+.removeCoupon:active {
+  transform: scale(0.95);
+}
+
+.discountRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.finalAmountNote {
+  font-size: 13px;
+  color: #10b981;
+  margin-top: 4px;
+  font-weight: 800;
+}
+
+.checkoutButton {
+  background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+  margin-top: 20px;
+  width: 100%;
+  font-weight: 700;
+}
+.impPoints {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #f3e8ff 100%);
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  border-left: 4px solid #4f46e5;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.08);
+}
+
+.impPoints h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: #4f46e5;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.3px;
+}
+
+.impPoints p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+  list-style: none;
+}
+
+.impPoints ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+  list-style-type: none;
+}
+
+.impPoints li {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 6px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.impPoints li:before {
+  content: "✓";
+  position: absolute;
+  left: -18px;
+  color: #4f46e5;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+@media (max-width: 1024px) {
+  .impPoints {
+    margin-top: 16px;
+    padding: 14px;
+  }
+
+  .impPoints h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .impPoints p,
+  .impPoints li {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .impPoints {
+    margin-top: 12px;
+    padding: 12px;
+    border-left-width: 3px;
+  }
+
+  .impPoints h3 {
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .impPoints p,
+  .impPoints li {
+    font-size: 12px;
+  }
+
+  .impPoints ul {
+    padding-left: 18px;
+  }
+
+  .impPoints li:before {
+    font-size: 13px;
+    left: -16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .impPoints {
+    margin-top: 10px;
+    padding: 10px;
+    border-left-width: 3px;
+  }
+
+  .impPoints h3 {
+    font-size: 12px;
+    margin-bottom: 4px;
+    gap: 4px;
+  }
+
+  .impPoints p,
+  .impPoints li {
+    font-size: 11px;
+  }
+
+  .impPoints ul {
+    margin: 6px 0 0 0;
+    padding-left: 16px;
+  }
+
+  .impPoints li {
+    margin-bottom: 4px;
+  }
+
+  .impPoints li:before {
+    font-size: 12px;
+    left: -14px;
+  }
+}
+
 @media (max-width: 1024px) {
   .cartContainer {
     padding: 16px;
@@ -405,6 +907,24 @@
     width: 100%;
     border-right: none;
     padding: 12px 0;
+  }
+
+  .CouponSection {
+    padding: 14px;
+  }
+
+  .couponInputContainer {
+    flex-direction: column;
+  }
+
+  .couponInput,
+  .applyCouponButton {
+    width: 100%;
+  }
+
+  .AmountContainer {
+    gap: 10px 12px;
+    padding: 16px;
   }
 }
 
@@ -495,6 +1015,198 @@
   .emptyCart {
     padding: 32px 18px;
   }
+
+  .CouponSection {
+    padding: 12px;
+    margin-bottom: 16px;
+  }
+
+  .couponHeading {
+    font-size: 14px;
+  }
+
+  .couponInputContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .couponInput,
+  .applyCouponButton {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .AmountContainer {
+    padding: 14px;
+    gap: 10px 12px;
+  }
+
+  .totalAmountLabel,
+  .totalAmountValue {
+    font-size: 13px;
+  }
+
+  .discountRow {
+    gap: 6px;
+  }
+
+  .removeCoupon {
+    font-size: 14px;
+  }
+
+  .finalAmountNote {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+}
+
+/* CANCELLATION POLICY DETAILS */
+.cancellationDetails {
+  margin-top: 20px;
+  padding: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #7dd3fc;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(6, 182, 212, 0.08);
+}
+
+.cancellationDetails[open] {
+  padding: 0;
+}
+
+.cancellationSummary {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #0369a1;
+  font-size: 14px;
+  list-style: none;
+  user-select: none;
+  transition: all 0.3s ease;
+}
+
+.cancellationSummary:hover {
+  background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
+}
+
+.cancellationSummary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+  color: #0284c7;
+}
+
+.cancellationDetails[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.cancellationContent {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #cffafe 100%);
+  border-top: 1px solid #7dd3fc;
+}
+
+.policyDescription {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  color: #0c4a6e;
+  line-height: 1.6;
+}
+
+.policyDescription strong {
+  color: #0369a1;
+  font-weight: 700;
+}
+
+.viewPolicyButton {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+  display: inline-block;
+}
+
+.viewPolicyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.viewPolicyButton:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .cancellationDetails {
+    margin-top: 16px;
+  }
+
+  .cancellationSummary {
+    padding: 12px 14px;
+    font-size: 13px;
+    gap: 10px;
+  }
+
+  .cancellationContent {
+    padding: 12px 14px;
+  }
+
+  .policyDescription {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .viewPolicyButton {
+    padding: 9px 14px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cancellationDetails {
+    margin-top: 12px;
+  }
+
+  .cancellationSummary {
+    padding: 10px 12px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  .cancellationContent {
+    padding: 10px 12px;
+  }
+
+  .policyDescription {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .viewPolicyButton {
+    padding: 8px 12px;
+    font-size: 11px;
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -546,5 +1258,77 @@
 
   .emptyCart p {
     font-size: 14px;
+  }
+
+  .CouponSection {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+
+  .couponHeading {
+    font-size: 13px;
+    margin: 0 0 8px 0;
+  }
+
+  .couponInputContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .couponInput {
+    padding: 9px 10px;
+    font-size: 12px;
+  }
+
+  .applyCouponButton {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+
+  .couponMessage {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .AmountContainer {
+    padding: 12px;
+    gap: 8px 10px;
+  }
+
+  .totalAmountLabel,
+  .totalAmountValue {
+    font-size: 12px;
+  }
+
+  .totalAmountValue {
+    font-weight: 600;
+  }
+
+  .AmountContainer > :nth-child(7),
+  .AmountContainer > :nth-child(8) {
+    font-size: 13px;
+  }
+
+  .removeCoupon {
+    font-size: 13px;
+  }
+
+  .finalAmountNote {
+    font-size: 11px;
+    margin-top: 6px;
+  }
+
+  .bookingSummaryHeader {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .heading {
+    font-size: 18px;
+  }
+
+  .bookingDate {
+    font-size: 12px;
+    padding: 6px 12px;
   }
 }

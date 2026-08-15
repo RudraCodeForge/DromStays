@@ -64,6 +64,7 @@ import PartnerDashboard from "./pages/Partners/PartnerDashboard.jsx";
 import PartnerProfile from "./pages/Partners/PartnerProfile.jsx";
 import Services from "./pages/Partners/Services.jsx";
 import RejectedProfile from "./components/Partner/RejectedProfile.jsx";
+import CancellationPolicy from "./pages/Common/CancellationPolicy.jsx";
 // Import ToastContainer if using react-toastify
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -449,6 +450,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/cancellation-policy" element={<CancellationPolicy />} />
 
         {/* 404 Page Not Found */}
 

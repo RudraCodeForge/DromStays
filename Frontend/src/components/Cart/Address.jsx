@@ -1,9 +1,13 @@
 import styles from "../../styles/Cart.module.css";
 import { useState } from "react";
 import Popup from "../../components/Popup";
+import { addAddress, removeAddress } from "../../redux/addressSlice";
+import { useDispatch, useSelector } from "react-redux";
 const Address = ({ formData, setFormData }) => {
   const [pincodeLoading, setPincodeLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
+  const SavedAddresses = useSelector((state) => state.address.Addresses);
   const handleInputChange = (e) => {
     setMessage("");
     const { name, value } = e.target;
@@ -112,11 +116,12 @@ const Address = ({ formData, setFormData }) => {
       );
       return;
     }
-    console.log("Form Data:", formData);
-    // Form is valid, you can proceed with checkout or save this data
+    /*dispatch(addAddress(formData));*/
+    console.log("Address added to Redux store:", formData);
   };
   return (
     <div className={styles.AddressContainer}>
+      <hr className={styles.divider} />
       <p className={styles.error}>{message}</p>
       <h3 className={styles.addressTitle}>Delivery Address & Contact</h3>
       <form className={styles.AddressForm} onSubmit={handleAddressSubmit}>

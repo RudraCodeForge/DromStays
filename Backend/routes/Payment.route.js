@@ -6,7 +6,7 @@ const authMiddleware = require("../middlewares/authMiddleware");
 PaymentRouter.get(
   "/dashboard/owner/:ownerId",
   authMiddleware,
-  PaymentController.getOwnerDashboardPayments
+  PaymentController.getOwnerDashboardPayments,
 );
 
 PaymentRouter.get("/owner", authMiddleware, PaymentController.getOwnerPayments);
@@ -14,8 +14,12 @@ PaymentRouter.get("/owner", authMiddleware, PaymentController.getOwnerPayments);
 PaymentRouter.put(
   "/mark-as-paid",
   authMiddleware,
-  PaymentController.markPaymentAsPaid
+  PaymentController.markPaymentAsPaid,
 );
-
+PaymentRouter.post(
+  "/checkout",
+  authMiddleware,
+  PaymentController.CheckoutPayment,
+);
 
 module.exports = PaymentRouter;

@@ -86,8 +86,6 @@ exports.getOwnerDashboardPayments = async (req, res) => {
   }
 };
 
-
-
 exports.getOwnerPayments = async (req, res) => {
   try {
     const ownerId = req.user.id;
@@ -131,7 +129,6 @@ exports.getOwnerPayments = async (req, res) => {
   }
 };
 
-
 exports.markPaymentAsPaid = async (req, res) => {
   try {
     const ownerId = req.user.id;
@@ -162,7 +159,7 @@ exports.markPaymentAsPaid = async (req, res) => {
     /* 🔍 FETCH PAYMENT */
     const payment = await Payment.findById(paymentId).populate(
       "property",
-      "name"
+      "name",
     );
 
     if (!payment) {
@@ -245,7 +242,7 @@ exports.markPaymentAsPaid = async (req, res) => {
 
         const totalPaid = paidPayments.reduce(
           (sum, p) => sum + (p.amount || 0),
-          0
+          0,
         );
 
         if (totalPaid >= invoice.totalAmount) {
@@ -267,10 +264,12 @@ exports.markPaymentAsPaid = async (req, res) => {
       title: "Payment Update",
       message:
         paymentMode === "FULL"
-          ? `Your payment for ${payment.property?.name || "property"
-          } has been marked as PAID.`
-          : `A partial payment has been received for ${payment.property?.name || "property"
-          }.`,
+          ? `Your payment for ${
+              payment.property?.name || "property"
+            } has been marked as PAID.`
+          : `A partial payment has been received for ${
+              payment.property?.name || "property"
+            }.`,
       type: "PAYMENT",
       data: {
         paymentId: payment._id,
@@ -292,6 +291,28 @@ exports.markPaymentAsPaid = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to update payment",
+    });
+  }
+};
+
+exports.CheckoutPayment = async (req, res) => {
+  const data = req.body;
+  console.log("Checkout Payment Data:", data);
+
+  try {
+    // Here you would typically call your payment gateway API to process the payment
+    // For demonstration, we'll just return a success response
+    return res.status(200).json({
+      message: "Payment processed successfully",
+      data: {
+        transactionId: "txn_1234567890",
+        amount: data.amount,
+      },
+    });
+  } catch (error) {
+    console.error("ChackoutPayment error:", error);
+    return res.status(500).json({
+      message: "payment processing failed",
     });
   }
 };

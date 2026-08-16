@@ -23,6 +23,7 @@ import SpecialRequest from "../../components/Cart/SpecialRequest";
 import BookingSummary from "../../components/Cart/BookingSummary";
 import Address from "../../components/Cart/Address";
 import { Verify_Coupon } from "../../services/Coupon.service";
+import { CheckoutPayment } from "../../services/Payment.service";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
@@ -106,7 +107,8 @@ const Cart = () => {
   };
   const currentDate = new Date();
   const BookingDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
-  const handleCheckout = () => {
+
+  const handleCheckout = async () => {
     if (cartItems.length === 0) {
       alert("Your cart is empty. Please add items to proceed to checkout.");
       return;
@@ -163,12 +165,17 @@ const Cart = () => {
       timestamp: new Date().toISOString(),
     };
 
-    // Console log the checkout data
-    console.log("=== CHECKOUT DATA ===");
-    console.log(checkoutData);
-    console.log("=== END CHECKOUT DATA ===");
-
-    navigate("/checkout", {
+    try {
+      const response = await CheckoutPayment(checkoutData);
+      if (response.success) {
+        console.log(response.message);
+      } else {
+        alert(response.message || "Checkout failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+    }
+    /* navigate("/checkout", {
       state: {
         cartItems,
         ServiceTotal,
@@ -178,7 +185,7 @@ const Cart = () => {
         BookingDate,
         couponCode: couponStatus === "success" ? couponCode : null,
       },
-    });
+    });*/
   };
 
   useEffect(() => {

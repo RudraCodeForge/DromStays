@@ -11,9 +11,11 @@ export const DashboardPayments = async (ownerId) => {
     if (handleServerError(error)) return;
     if (handleAuthError(error)) return;
 
-    throw error.response?.data || {
-      message: "Failed to fetch dashboard payments",
-    };
+    throw (
+      error.response?.data || {
+        message: "Failed to fetch dashboard payments",
+      }
+    );
   }
 };
 
@@ -25,9 +27,11 @@ export const getOwnerPayments = async () => {
     if (handleServerError(error)) return;
     if (handleAuthError(error)) return;
 
-    throw error.response?.data || {
-      message: "Failed to fetch owner payments",
-    };
+    throw (
+      error.response?.data || {
+        message: "Failed to fetch owner payments",
+      }
+    );
   }
 };
 
@@ -35,12 +39,28 @@ export const markPaymentAsPaid = async (payload) => {
   try {
     const res = await api.put("/payments/mark-as-paid", payload);
     return res.data;
-  }
-  catch (error) {
+  } catch (error) {
     if (handleServerError(error)) return;
     if (handleAuthError(error)) return;
-    throw error.response?.data || {
-      message: "Failed to mark payment as paid",
-    };
+    throw (
+      error.response?.data || {
+        message: "Failed to mark payment as paid",
+      }
+    );
+  }
+};
+
+export const CheckoutPayment = async (payload) => {
+  try {
+    const res = await api.post("/payments/checkout", payload);
+    return res.data;
+  } catch (error) {
+    if (handleServerError(error)) return;
+    if (handleAuthError(error)) return;
+    throw (
+      error.response?.data || {
+        message: "Failed to mark payment as paid",
+      }
+    );
   }
 };

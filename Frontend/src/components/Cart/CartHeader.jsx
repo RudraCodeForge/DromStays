@@ -17,7 +17,8 @@ const CartHeader = () => {
           </span>
           <p className={styles.bar}></p>
           <span className={styles.sp2}>
-            <FontAwesomeIcon icon={fa2} className={styles.icon} />. Review
+            <FontAwesomeIcon icon={fa2} className={styles.icon} />. Review &
+            Address
           </span>
           <p className={styles.bar2}></p>
           <span className={styles.sp3}>

@@ -45,7 +45,7 @@ const Cart = () => {
     serviceDate: "",
     serviceTime: "",
   });
-  const [pincodeLoading, setPincodeLoading] = useState(false);
+
   const ServiceTotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
@@ -75,117 +75,6 @@ const Cart = () => {
     setMaxDiscount(0);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-
-    // Auto-fetch city and state when pincode is entered
-    if (name === "pincode" && value.length === 6) {
-      fetchCityAndState(value);
-    }
-  };
-
-  const fetchCityAndState = async (pincode) => {
-    setPincodeLoading(true);
-    try {
-      // Using India Post API to fetch city/state from pincode
-      const response = await fetch(
-        `https://api.postalpincode.in/pincode/${pincode}`,
-      );
-      const data = await response.json();
-
-      if (data[0].Status === "Success" && data[0].PostOffice) {
-        const postOffice = data[0].PostOffice[0];
-        setFormData((prevData) => ({
-          ...prevData,
-          city: postOffice.District || "",
-          state: postOffice.State || "",
-        }));
-      } else {
-        alert("Invalid pincode. Please enter a valid pincode.");
-        setFormData((prevData) => ({
-          ...prevData,
-          city: "",
-          state: "",
-        }));
-      }
-    } catch (error) {
-      console.error("Error fetching city and state:", error);
-      alert("Failed to fetch location details. Please enter manually.");
-    } finally {
-      setPincodeLoading(false);
-    }
-  };
-
-  const getMinDateTime = () => {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() + 30); // Minimum 30 mins from now
-    return now.toISOString().slice(0, 16);
-  };
-
-  const handleAddressSubmit = (e) => {
-    e.preventDefault();
-    // Validate form data
-    if (!formData.address.trim()) {
-      alert("Please enter your address");
-      return;
-    }
-    if (!formData.pincode.trim() || formData.pincode.length !== 6) {
-      alert("Please enter a valid 6-digit pincode");
-      return;
-    }
-    if (!formData.city.trim()) {
-      alert("Please enter your city");
-      return;
-    }
-    if (!formData.state.trim()) {
-      alert("Please enter your state");
-      return;
-    }
-    if (!formData.mobileNumber.trim()) {
-      alert("Please enter your mobile number");
-      return;
-    }
-    if (!formData.emailId.trim()) {
-      alert("Please enter your email ID");
-      return;
-    }
-    if (!formData.serviceDate.trim()) {
-      alert("Please select a service date");
-      return;
-    }
-    if (!formData.serviceTime.trim()) {
-      alert("Please select a service time");
-      return;
-    }
-    // Validate mobile number format (basic validation for 10 digits)
-    if (!/^\d{10}$/.test(formData.mobileNumber.replace(/[^\d]/g, ""))) {
-      alert("Please enter a valid mobile number (10 digits)");
-      return;
-    }
-    // Validate email format
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailId)) {
-      alert("Please enter a valid email address");
-      return;
-    }
-    // Validate date and time are not in the past
-    const selectedDateTime = new Date(
-      `${formData.serviceDate}T${formData.serviceTime}`,
-    );
-    const minDateTime = new Date();
-    minDateTime.setMinutes(minDateTime.getMinutes() + 30);
-    if (selectedDateTime < minDateTime) {
-      alert(
-        "Please select a service date and time at least 30 minutes from now",
-      );
-      return;
-    }
-    console.log("Form Data:", formData);
-    // Form is valid, you can proceed with checkout or save this data
-  };
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
       setCouponMessage("Please enter a coupon code");

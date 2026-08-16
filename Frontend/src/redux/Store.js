@@ -5,6 +5,7 @@ import partnerReducer from "./partnerSlice";
 import ownerReducer from "./ownerSlice";
 import notificationReducer from "./notificationSlice";
 import cartReducer from "./cartSlice";
+import addressReducer from "./addressSlice";
 
 import { persistStore, persistReducer } from "redux-persist";
 
@@ -15,7 +16,16 @@ const cartPersistConfig = {
   storage,
 };
 
+const addressPersistConfig = {
+  key: "address",
+  storage,
+};
+
 const cartPersistedReducer = persistReducer(cartPersistConfig, cartReducer);
+const addressPersistedReducer = persistReducer(
+  addressPersistConfig,
+  addressReducer,
+);
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +34,7 @@ export const store = configureStore({
     partner: partnerReducer,
     owner: ownerReducer,
     cart: cartPersistedReducer,
+    address: addressPersistedReducer,
   },
 
   middleware: (getDefaultMiddleware) =>

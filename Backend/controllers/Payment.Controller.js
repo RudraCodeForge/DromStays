@@ -2,6 +2,7 @@ const Payment = require("../models/Payment");
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 const Invoice = require("../models/Invoice");
+const razorpay = require("../config/razorpay.js");
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
@@ -313,6 +314,31 @@ exports.CheckoutPayment = async (req, res) => {
     console.error("ChackoutPayment error:", error);
     return res.status(500).json({
       message: "payment processing failed",
+    });
+  }
+};
+
+exports.createRazorpayOrder = async (req, res) => {
+  try {
+    const amount = 10000;
+    const options = {
+      amount: amount,
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const order = await razorpay.orders.create(options);
+    return res.status(200).json({
+      success: true,
+      message: "Razorpay order created successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("createRazorpayOrder error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create Razorpay order",
+      error: error.message,
     });
   }
 };

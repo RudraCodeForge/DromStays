@@ -22,4 +22,10 @@ PaymentRouter.post(
   PaymentController.CheckoutPayment,
 );
 
+PaymentRouter.post(
+  "/create-order",
+  authMiddleware,
+  PaymentController.createRazorpayOrder,
+);
+
 module.exports = PaymentRouter;

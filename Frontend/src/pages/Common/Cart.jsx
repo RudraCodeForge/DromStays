@@ -168,24 +168,36 @@ const Cart = () => {
     try {
       const response = await CheckoutPayment(checkoutData);
       if (response.success) {
-        console.log(response.message);
+        console.log(response.message, response);
+
+        const options = {
+          key: import.meta.env.VITE_RAZORPAY_API_TEST_KEY,
+          amount: response.order.amount,
+          currency: response.order.currency,
+          name: "DromStays",
+          description: "Service Booking",
+          order_id: response.order.id,
+          handler: function (paymentResponse) {
+            console.log("Payment successful:", paymentResponse);
+          },
+          prefill: {
+            name: checkoutData.name,
+            email: checkoutData.email,
+            contact: checkoutData.mobileNumber,
+          },
+          theme: {
+            color: "#00000",
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
       } else {
         alert(response.message || "Checkout failed. Please try again.");
       }
     } catch (error) {
       console.error("Checkout error:", error);
     }
-    /* navigate("/checkout", {
-      state: {
-        cartItems,
-        ServiceTotal,
-        PlatformFee,
-        EffectiveDiscount,
-        FinalAmount,
-        BookingDate,
-        couponCode: couponStatus === "success" ? couponCode : null,
-      },
-    });*/
   };
 
   useEffect(() => {

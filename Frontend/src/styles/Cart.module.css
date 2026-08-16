@@ -829,6 +829,12 @@
   font-size: 14px;
 }
 
+.error {
+  color: red;
+  font-size: 13px;
+  font-weight: 400;
+}
+
 @media (max-width: 1024px) {
   .impPoints {
     margin-top: 16px;

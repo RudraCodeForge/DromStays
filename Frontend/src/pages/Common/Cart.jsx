@@ -21,6 +21,7 @@ import AddedServices from "../../components/Cart/AddedServices";
 import EmptyCart from "../../components/Cart/EmptyCart";
 import SpecialRequest from "../../components/Cart/SpecialRequest";
 import BookingSummary from "../../components/Cart/BookingSummary";
+import Address from "../../components/Cart/Address";
 import { Verify_Coupon } from "../../services/Coupon.service";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -339,137 +340,7 @@ const Cart = () => {
             >
               <AddedServices cartItems={cartItems} />
               <SpecialRequest />
-
-              <div className={styles.AddressContainer}>
-                <h3 className={styles.addressTitle}>
-                  Delivery Address & Contact
-                </h3>
-                <form
-                  className={styles.AddressForm}
-                  onSubmit={handleAddressSubmit}
-                >
-                  <div className={styles.formGroup}>
-                    <label htmlFor="address">Full Address *</label>
-                    <textarea
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      placeholder="Enter your complete address (Street, City, State, Postal Code)"
-                      rows="3"
-                      className={styles.textarea}
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="pincode">Pincode *</label>
-                      <input
-                        type="text"
-                        id="pincode"
-                        name="pincode"
-                        value={formData.pincode}
-                        onChange={handleInputChange}
-                        placeholder="Enter 6-digit pincode"
-                        maxLength="6"
-                        className={styles.input}
-                      />
-                      {pincodeLoading && (
-                        <span className={styles.loadingText}>
-                          Fetching location...
-                        </span>
-                      )}
-                    </div>
-
-                    <div className={styles.formGroup}>
-                      <label htmlFor="city">City *</label>
-                      <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        value={formData.city}
-                        onChange={handleInputChange}
-                        placeholder="City will auto-fetch or enter manually"
-                        className={styles.input}
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="state">State *</label>
-                      <input
-                        type="text"
-                        id="state"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleInputChange}
-                        placeholder="State will auto-fetch or enter manually"
-                        className={styles.input}
-                      />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                      <label htmlFor="mobileNumber">Mobile Number *</label>
-                      <input
-                        type="tel"
-                        id="mobileNumber"
-                        name="mobileNumber"
-                        value={formData.mobileNumber}
-                        onChange={handleInputChange}
-                        placeholder="Enter 10-digit mobile number"
-                        maxLength="10"
-                        className={styles.input}
-                      />
-                    </div>
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="emailId">Email ID *</label>
-                    <input
-                      type="email"
-                      id="emailId"
-                      name="emailId"
-                      value={formData.emailId}
-                      onChange={handleInputChange}
-                      placeholder="Enter your email address"
-                      className={styles.input}
-                    />
-                  </div>
-
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="serviceDate">Service Date *</label>
-                      <input
-                        type="date"
-                        id="serviceDate"
-                        name="serviceDate"
-                        value={formData.serviceDate}
-                        onChange={handleInputChange}
-                        min={new Date().toISOString().split("T")[0]}
-                        className={styles.input}
-                      />
-                    </div>
-
-                    <div className={styles.formGroup}>
-                      <label htmlFor="serviceTime">Service Time *</label>
-                      <input
-                        type="time"
-                        id="serviceTime"
-                        name="serviceTime"
-                        value={formData.serviceTime}
-                        onChange={handleInputChange}
-                        min={getMinDateTime()}
-                        className={styles.input}
-                      />
-                    </div>
-                  </div>
-
-                  <button type="submit" className={styles.submitButton}>
-                    Save Address
-                  </button>
-                </form>
-              </div>
+              <Address formData={formData} setFormData={setFormData} />
             </div>
             <div ref={rightCartRef} className={styles.RightcartItems}>
               <BookingSummary

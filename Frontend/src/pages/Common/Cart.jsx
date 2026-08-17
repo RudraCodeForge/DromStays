@@ -35,6 +35,7 @@ const Cart = () => {
   const [couponStatus, setCouponStatus] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [Discount, setDiscount] = useState(0);
+  const [specialRequest, setSpecialRequest] = useState("");
   const [maxDiscount, setMaxDiscount] = useState(0);
   const [formData, setFormData] = useState({
     address: "",
@@ -82,7 +83,6 @@ const Cart = () => {
       setCouponStatus("error");
       return;
     }
-    console.log("Coupon Code:", couponCode);
     setIsLoading(true);
     setCouponMessage("");
     setCouponStatus("loading");
@@ -135,14 +135,9 @@ const Cart = () => {
     const checkoutData = {
       services: cartItems.map((item) => ({
         id: item.serviceId,
-        name: item.serviceName,
-        price: item.price,
         quantity: item.quantity,
-        totalPrice: item.price * item.quantity,
       })),
       couponCode: couponStatus === "success" ? couponCode : null,
-      discount: couponStatus === "success" ? Discount : 0,
-      maxDiscount: couponStatus === "success" ? maxDiscount : 0,
       address: {
         fullAddress: formData.address,
         pincode: formData.pincode,
@@ -155,17 +150,13 @@ const Cart = () => {
         date: formData.serviceDate,
         time: formData.serviceTime,
       },
-      pricing: {
-        serviceTotal: ServiceTotal,
-        platformFee: PlatformFee,
-        effectiveDiscount: EffectiveDiscount,
-        finalAmount: FinalAmount,
-      },
       bookingDate: BookingDate,
+      SpecialRequest: specialRequest,
       timestamp: new Date().toISOString(),
     };
 
     try {
+      console.log("Checkout data:", checkoutData);
       const response = await CheckoutPayment(checkoutData);
       if (response.success) {
         console.log(response.message, response);
@@ -247,7 +238,10 @@ const Cart = () => {
               className={`${styles.LeftcartItems} ${styles.scrollableCart}`}
             >
               <AddedServices cartItems={cartItems} />
-              <SpecialRequest />
+              <SpecialRequest
+                Request={specialRequest}
+                setSpecialRequest={setSpecialRequest}
+              />
               <Address formData={formData} setFormData={setFormData} />
             </div>
             <div ref={rightCartRef} className={styles.RightcartItems}>

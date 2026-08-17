@@ -9,7 +9,7 @@ exports.Verify_Coupon = async (req, res) => {
         success: true,
         message: "You will get a discount of 10% upto 14000 ",
         discount: 10,
-        maxDiscount: 14000,
+        maxDiscount: 10000,
       });
     }
 

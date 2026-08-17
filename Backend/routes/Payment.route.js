@@ -25,7 +25,7 @@ PaymentRouter.post(
 PaymentRouter.post(
   "/create-order",
   authMiddleware,
-  PaymentController.createRazorpayOrder,
+  PaymentController.CheckoutPayment,
 );
 
 module.exports = PaymentRouter;

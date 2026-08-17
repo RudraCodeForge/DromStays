@@ -55,7 +55,7 @@ const Cart = () => {
   const PlatformFee = 49;
   const TotalAmount = ServiceTotal + PlatformFee;
   const CalculatedDiscount =
-    couponStatus === "success" ? (TotalAmount * Discount) / 100 : 0;
+    couponStatus === "success" ? (ServiceTotal * Discount) / 100 : 0;
   const EffectiveDiscount = Math.min(CalculatedDiscount, maxDiscount);
   const FinalAmount = TotalAmount - EffectiveDiscount;
   const handleClearCart = () => {

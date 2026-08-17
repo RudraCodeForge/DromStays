@@ -3,6 +3,41 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const Invoice = require("../models/Invoice");
 const razorpay = require("../config/razorpay.js");
+const Services = require("../models/Services");
+
+const calculateCheckoutAmount = async (services, couponCode) => {
+  const servicesData = await Services.find({
+    _id: { $in: services.map((s) => s.id) },
+  });
+
+  const serviceTotal = servicesData.reduce((total, service) => {
+    const cartService = services.find((s) => s.id === service._id.toString());
+
+    return total + (cartService?.quantity || 0) * service.price;
+  }, 0);
+
+  if (serviceTotal <= 0) {
+    throw new Error("Invalid service total amount");
+  }
+
+  let discount = 0;
+
+  if (couponCode === "DISCOUNT10") {
+    discount = Math.min(serviceTotal * 0.1, 10000);
+  }
+  let platformFee = 49; // Fixed platform fee
+  const finalAmount = serviceTotal - discount + platformFee;
+
+  // Razorpay ke liye paise mein
+  const amountInPaise = Math.round(finalAmount * 100);
+
+  return {
+    serviceTotal,
+    discount,
+    finalAmount,
+    amountInPaise,
+  };
+};
 
 exports.getOwnerDashboardPayments = async (req, res) => {
   try {
@@ -297,23 +332,31 @@ exports.markPaymentAsPaid = async (req, res) => {
 };
 
 exports.CheckoutPayment = async (req, res) => {
-  const data = req.body;
-  console.log("Checkout Payment Data:", data);
-
   try {
-    // Here you would typically call your payment gateway API to process the payment
-    // For demonstration, we'll just return a success response
+    const { services, couponCode } = req.body;
+
+    const { serviceTotal, discount, finalAmount, amountInPaise } =
+      await calculateCheckoutAmount(services, couponCode);
+
+    console.log(serviceTotal, discount, finalAmount, amountInPaise);
+
+    // Yahan Razorpay order create karna hai
+    const options = {
+      amount: amountInPaise,
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+    const order = await razorpay.orders.create(options);
     return res.status(200).json({
-      message: "Payment processed successfully",
-      data: {
-        transactionId: "txn_1234567890",
-        amount: data.amount,
-      },
+      success: true,
+      message: "Order created successfully",
+      order,
     });
   } catch (error) {
-    console.error("ChackoutPayment error:", error);
+    console.error("CheckoutPayment error:", error);
+
     return res.status(500).json({
-      message: "payment processing failed",
+      message: "Payment processing failed",
     });
   }
 };

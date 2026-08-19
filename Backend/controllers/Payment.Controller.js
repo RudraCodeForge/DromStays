@@ -4,6 +4,7 @@ const Notification = require("../models/Notification");
 const Invoice = require("../models/Invoice");
 const razorpay = require("../config/razorpay.js");
 const Services = require("../models/Services");
+const crypto = require("crypto");
 
 const calculateCheckoutAmount = async (services, couponCode) => {
   const servicesData = await Services.find({
@@ -338,8 +339,6 @@ exports.CheckoutPayment = async (req, res) => {
     const { serviceTotal, discount, finalAmount, amountInPaise } =
       await calculateCheckoutAmount(services, couponCode);
 
-    console.log(serviceTotal, discount, finalAmount, amountInPaise);
-
     // Yahan Razorpay order create karna hai
     const options = {
       amount: amountInPaise,
@@ -361,27 +360,38 @@ exports.CheckoutPayment = async (req, res) => {
   }
 };
 
-exports.createRazorpayOrder = async (req, res) => {
+exports.VerifyPayment = async (req, res) => {
   try {
-    const amount = 10000;
-    const options = {
-      amount: amount,
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`,
-    };
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+      req.body;
 
-    const order = await razorpay.orders.create(options);
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_API_TEST_SECRET)
+      .update(body)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    // Payment genuine hai
+    // Yahin booking ko confirmed karna
+
     return res.status(200).json({
       success: true,
-      message: "Razorpay order created successfully",
-      order,
+      message: "Payment verified successfully",
     });
   } catch (error) {
-    console.error("createRazorpayOrder error:", error);
+    console.error(error);
+
     return res.status(500).json({
       success: false,
-      message: "Failed to create Razorpay order",
-      error: error.message,
+      message: "Payment verification error",
     });
   }
 };

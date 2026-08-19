@@ -23,7 +23,7 @@ import SpecialRequest from "../../components/Cart/SpecialRequest";
 import BookingSummary from "../../components/Cart/BookingSummary";
 import Address from "../../components/Cart/Address";
 import { Verify_Coupon } from "../../services/Coupon.service";
-import { CheckoutPayment } from "../../services/Payment.service";
+import { CheckoutPayment, VerifyPayment } from "../../services/Payment.service";
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
@@ -156,7 +156,6 @@ const Cart = () => {
     };
 
     try {
-      console.log("Checkout data:", checkoutData);
       const response = await CheckoutPayment(checkoutData);
       if (response.success) {
         console.log(response.message, response);
@@ -168,8 +167,21 @@ const Cart = () => {
           name: "DromStays",
           description: "Service Booking",
           order_id: response.order.id,
-          handler: function (paymentResponse) {
+          handler: async function (paymentResponse) {
             console.log("Payment successful:", paymentResponse);
+
+            const verifyResponse = await VerifyPayment({
+              razorpay_order_id: paymentResponse.razorpay_order_id,
+              razorpay_payment_id: paymentResponse.razorpay_payment_id,
+              razorpay_signature: paymentResponse.razorpay_signature,
+            });
+
+            if (verifyResponse.success) {
+              dispatch(clearCart());
+              navigate("/booking-confirmation");
+            } else {
+              alert("Payment verification failed.");
+            }
           },
           prefill: {
             name: checkoutData.name,
@@ -183,6 +195,12 @@ const Cart = () => {
 
         const razorpay = new window.Razorpay(options);
         razorpay.open();
+
+        if (response.paymentStatus === "success") {
+          alert("Payment successful! Your booking is confirmed.");
+          dispatch(clearCart());
+          navigate("/booking-confirmation");
+        }
       } else {
         alert(response.message || "Checkout failed. Please try again.");
       }

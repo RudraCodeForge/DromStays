@@ -16,16 +16,17 @@ PaymentRouter.put(
   authMiddleware,
   PaymentController.markPaymentAsPaid,
 );
-PaymentRouter.post(
-  "/checkout",
-  authMiddleware,
-  PaymentController.CheckoutPayment,
-);
 
 PaymentRouter.post(
   "/create-order",
   authMiddleware,
   PaymentController.CheckoutPayment,
+);
+
+PaymentRouter.post(
+  "/verify-payment",
+  authMiddleware,
+  PaymentController.VerifyPayment,
 );
 
 module.exports = PaymentRouter;

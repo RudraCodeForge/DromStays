@@ -50,25 +50,25 @@ export const markPaymentAsPaid = async (payload) => {
   }
 };
 
-/*export const CheckoutPayment = async (payload) => {
-  try {
-    const res = await api.post("/payments/checkout", payload);
-    return res.data;
-  } catch (error) {
-    if (handleServerError(error)) return;
-    if (handleAuthError(error)) return;
-    throw (
-      error.response?.data || {
-        message: "Failed to mark payment as paid",
-      }
-    );
-  }
-};*/
 export const CheckoutPayment = async (payload) => {
   try {
     const res = await api.post("/payments/create-order", payload);
     return res.data;
   } catch (error) {
     return res.data;
+  }
+};
+
+export const VerifyPayment = async (payload) => {
+  try {
+    const res = await api.post("/payments/verify-payment", payload);
+    return res.data;
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    throw (
+      error.response?.data || {
+        message: "Failed to verify payment",
+      }
+    );
   }
 };

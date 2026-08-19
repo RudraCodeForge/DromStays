@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const couponSchema = new mongoose.Schema(
   {
@@ -102,10 +102,9 @@ const couponSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-couponSchema.index({ code: 1 });
 couponSchema.index({ status: 1 });
 couponSchema.index({ createdBy: 1 });
 couponSchema.index({ applicableOn: 1 });
 couponSchema.index({ validFrom: 1, validUntill: 1 });
-export default mongoose.model("Coupon", couponSchema);
+
+module.exports = mongoose.model("Coupon", couponSchema);
